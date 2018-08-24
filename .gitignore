@@ -1,2 +1,5 @@
 GASE.exe
 lastupdate.tmp
+conf
+conf/*
+conf/app.conf

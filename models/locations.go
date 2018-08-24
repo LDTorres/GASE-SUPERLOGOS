@@ -10,6 +10,7 @@ import (
 type Locations struct {
 	Id         int
 	Name       string
+	Slug       string
 	Country    *Countries    `orm:"rel(fk)"`
 	Portfolios []*Portfolios `orm:"reverse(many)"`
 	Created    time.Time     `orm:"auto_now_add;type(datetime)"`

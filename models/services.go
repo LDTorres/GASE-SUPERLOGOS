@@ -10,6 +10,7 @@ import (
 type Services struct {
 	Id         int
 	Name       string
+	Slug       string
 	Percentage float32
 	Prices     []*Prices     `orm:"reverse(many)"`
 	Portfolios []*Portfolios `orm:"reverse(many)"`

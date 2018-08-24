@@ -9,7 +9,8 @@ import (
 // Countries Model
 type Countries struct {
 	Id        int
-	Name      string       `orm:"size(100)"`
+	Name      string `orm:"size(100)"`
+	Slug      string
 	Iso       string       `orm:"size(3)"`
 	Phone     string       `orm:"size(20)"`
 	Currency  *Currencies  `orm:"rel(fk)"`
