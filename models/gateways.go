@@ -23,10 +23,6 @@ func (t *Gateways) TableName() string {
 	return "gateways"
 }
 
-func init() {
-	orm.RegisterModel(new(Gateways))
-}
-
 // AddGateways insert a new Gateways into database and returns
 // last inserted Id on success.
 func AddGateways(m *Gateways) (id int64, err error) {

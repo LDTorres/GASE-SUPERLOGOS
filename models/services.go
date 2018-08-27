@@ -24,10 +24,6 @@ func (t *Services) TableName() string {
 	return "services"
 }
 
-func init() {
-	orm.RegisterModel(new(Services))
-}
-
 // AddServices insert a new Services into database and returns
 // last inserted Id on success.
 func AddServices(m *Services) (id int64, err error) {

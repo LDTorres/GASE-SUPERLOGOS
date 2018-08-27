@@ -23,14 +23,6 @@ type Images struct {
 	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"`
 }
 
-func (t *Images) TableName() string {
-	return "images"
-}
-
-func init() {
-	orm.RegisterModel(new(Images))
-}
-
 // AddImages insert a new Images into database and returns
 // last inserted Id on success.
 func AddImages(m *Images) (id int64, err error) {

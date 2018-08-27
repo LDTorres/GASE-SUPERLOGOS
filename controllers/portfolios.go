@@ -36,12 +36,12 @@ func (c *PortfoliosController) Post() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if _, err := models.AddPortfolios(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			c.Data["data"] = v
+			c.Data["json"] = v
 		} else {
-			c.Data["data"] = err.Error()
+			c.Data["json"] = err.Error()
 		}
 	} else {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
@@ -58,9 +58,9 @@ func (c *PortfoliosController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetPortfoliosById(id)
 	if err != nil {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	} else {
-		c.Data["data"] = v
+		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -110,7 +110,7 @@ func (c *PortfoliosController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
 			if len(kv) != 2 {
-				c.Data["data"] = errors.New("Error: invalid query key/value pair")
+				c.Data["json"] = errors.New("Error: invalid query key/value pair")
 				c.ServeJSON()
 				return
 			}
@@ -121,9 +121,9 @@ func (c *PortfoliosController) GetAll() {
 
 	l, err := models.GetAllPortfolios(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	} else {
-		c.Data["data"] = l
+		c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -142,12 +142,12 @@ func (c *PortfoliosController) Put() {
 	v := models.Portfolios{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdatePortfoliosById(&v); err == nil {
-			c.Data["data"] = "OK"
+			c.Data["json"] = "OK"
 		} else {
-			c.Data["data"] = err.Error()
+			c.Data["json"] = err.Error()
 		}
 	} else {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
@@ -163,9 +163,9 @@ func (c *PortfoliosController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeletePortfolios(id); err == nil {
-		c.Data["data"] = "OK"
+		c.Data["json"] = "OK"
 	} else {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }

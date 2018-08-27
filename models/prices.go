@@ -25,10 +25,6 @@ func (t *Prices) TableName() string {
 	return "prices"
 }
 
-func init() {
-	orm.RegisterModel(new(Prices))
-}
-
 // AddPrices insert a new Prices into database and returns
 // last inserted Id on success.
 func AddPrices(m *Prices) (id int64, err error) {

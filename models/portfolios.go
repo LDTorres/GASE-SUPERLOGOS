@@ -28,10 +28,6 @@ func (t *Portfolios) TableName() string {
 	return "portfolios"
 }
 
-func init() {
-	orm.RegisterModel(new(Portfolios))
-}
-
 // AddPortfolios insert a new Portfolios into database and returns
 // last inserted Id on success.
 func AddPortfolios(m *Portfolios) (id int64, err error) {

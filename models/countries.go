@@ -29,10 +29,6 @@ func (t *Countries) TableName() string {
 	return "countries"
 }
 
-func init() {
-	orm.RegisterModel(new(Countries))
-}
-
 // AddCountries insert a new Countries into database and returns
 // last inserted Id on success.
 func AddCountries(m *Countries) (id int64, err error) {

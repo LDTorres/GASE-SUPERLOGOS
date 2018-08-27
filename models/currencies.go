@@ -25,10 +25,6 @@ func (t *Currencies) TableName() string {
 	return "currencies"
 }
 
-func init() {
-	orm.RegisterModel(new(Currencies))
-}
-
 // AddCurrencies insert a new Currencies into database and returns
 // last inserted Id on success.
 func AddCurrencies(m *Currencies) (id int64, err error) {

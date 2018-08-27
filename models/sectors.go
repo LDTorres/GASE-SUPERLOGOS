@@ -23,10 +23,6 @@ func (t *Sectors) TableName() string {
 	return "sectors"
 }
 
-func init() {
-	orm.RegisterModel(new(Sectors))
-}
-
 // AddSectors insert a new Sectors into database and returns
 // last inserted Id on success.
 func AddSectors(m *Sectors) (id int64, err error) {

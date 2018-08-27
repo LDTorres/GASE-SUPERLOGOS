@@ -25,10 +25,6 @@ func (t *Coupons) TableName() string {
 	return "coupons"
 }
 
-func init() {
-	orm.RegisterModel(new(Coupons))
-}
-
 // AddCoupons insert a new Coupons into database and returns
 // last inserted Id on success.
 func AddCoupons(m *Coupons) (id int64, err error) {

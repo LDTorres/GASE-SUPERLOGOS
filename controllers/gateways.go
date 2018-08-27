@@ -36,12 +36,12 @@ func (c *GatewaysController) Post() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if _, err := models.AddGateways(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			c.Data["data"] = v
+			c.Data["json"] = v
 		} else {
-			c.Data["data"] = err.Error()
+			c.Data["json"] = err.Error()
 		}
 	} else {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
@@ -58,9 +58,9 @@ func (c *GatewaysController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetGatewaysById(id)
 	if err != nil {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	} else {
-		c.Data["data"] = v
+		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -110,7 +110,7 @@ func (c *GatewaysController) GetAll() {
 		for _, cond := range strings.Split(v, ",") {
 			kv := strings.SplitN(cond, ":", 2)
 			if len(kv) != 2 {
-				c.Data["data"] = errors.New("Error: invalid query key/value pair")
+				c.Data["json"] = errors.New("Error: invalid query key/value pair")
 				c.ServeJSON()
 				return
 			}
@@ -121,9 +121,9 @@ func (c *GatewaysController) GetAll() {
 
 	l, err := models.GetAllGateways(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	} else {
-		c.Data["data"] = l
+		c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -142,12 +142,12 @@ func (c *GatewaysController) Put() {
 	v := models.Gateways{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateGatewaysById(&v); err == nil {
-			c.Data["data"] = "OK"
+			c.Data["json"] = "OK"
 		} else {
-			c.Data["data"] = err.Error()
+			c.Data["json"] = err.Error()
 		}
 	} else {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
@@ -163,9 +163,9 @@ func (c *GatewaysController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteGateways(id); err == nil {
-		c.Data["data"] = "OK"
+		c.Data["json"] = "OK"
 	} else {
-		c.Data["data"] = err.Error()
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }

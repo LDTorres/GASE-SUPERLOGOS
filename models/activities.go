@@ -25,10 +25,6 @@ func (t *Activities) TableName() string {
 	return "activities"
 }
 
-func init() {
-	orm.RegisterModel(new(Activities))
-}
-
 // AddActivities insert a new Activities into database and returns
 // last inserted Id on success.
 func AddActivities(m *Activities) (id int64, err error) {
