@@ -10,49 +10,50 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-type Services struct {
+type Coupons struct {
 	ID         int       `orm:"column(id);auto"`
-	Name       string    `orm:"column(name);size(255)"`
-	Percertage float32   `orm:"column(percertage)"`
-	Slug       string    `orm:"column(slug);size(255)"`
+	Percentage float32   `orm:"column(percentage)"`
+	Code       string    `orm:"column(code);size(45)"`
+	Status     int8      `orm:"column(status);null"`
+	Orders     []*Orders `orm:"reverse(many)"`
 	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add"`
-	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null"`
+	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null;auto_now_add"`
 	DeletedAt  time.Time `orm:"column(deleted_at);type(datetime);null"`
 }
 
-func (t *Services) TableName() string {
-	return "services"
+func (t *Coupons) TableName() string {
+	return "coupons"
 }
 
 func init() {
-	orm.RegisterModel(new(Services))
+	orm.RegisterModel(new(Coupons))
 }
 
-// AddServices insert a new Services into database and returns
+// AddCoupons insert a new Coupons into database and returns
 // last inserted Id on success.
-func AddServices(m *Services) (id int64, err error) {
+func AddCoupons(m *Coupons) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetServicesById retrieves Services by Id. Returns error if
+// GetCouponsById retrieves Coupons by Id. Returns error if
 // Id doesn't exist
-func GetServicesById(id int) (v *Services, err error) {
+func GetCouponsById(id int) (v *Coupons, err error) {
 	o := orm.NewOrm()
-	v = &Services{ID: id}
+	v = &Coupons{ID: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllServices retrieves all Services matches certain condition. Returns empty list if
+// GetAllCoupons retrieves all Coupons matches certain condition. Returns empty list if
 // no records exist
-func GetAllServices(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllCoupons(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Services))
+	qs := o.QueryTable(new(Coupons))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -102,7 +103,7 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 		}
 	}
 
-	var l []Services
+	var l []Coupons
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -125,11 +126,11 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 	return nil, err
 }
 
-// UpdateServices updates Services by Id and returns error if
+// UpdateCoupons updates Coupons by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateServicesById(m *Services) (err error) {
+func UpdateCouponsById(m *Coupons) (err error) {
 	o := orm.NewOrm()
-	v := Services{ID: m.ID}
+	v := Coupons{ID: m.ID}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -140,15 +141,15 @@ func UpdateServicesById(m *Services) (err error) {
 	return
 }
 
-// DeleteServices deletes Services by Id and returns error if
+// DeleteCoupons deletes Coupons by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteServices(id int) (err error) {
+func DeleteCoupons(id int) (err error) {
 	o := orm.NewOrm()
-	v := Services{ID: id}
+	v := Coupons{ID: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Services{ID: id}); err == nil {
+		if num, err = o.Delete(&Coupons{ID: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

@@ -15,10 +15,84 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/v1",
+
+		beego.NSNamespace("/activities",
+			beego.NSInclude(
+				&controllers.ActivitiesController{},
+			),
+		),
+
+		beego.NSNamespace("/clients",
+			beego.NSInclude(
+				&controllers.ClientsController{},
+			),
+		),
+
+		beego.NSNamespace("/countries",
+			beego.NSInclude(
+				&controllers.CountriesController{},
+			),
+		),
+
+		beego.NSNamespace("/coupons",
+			beego.NSInclude(
+				&controllers.CouponsController{},
+			),
+		),
+
+		beego.NSNamespace("/currencies",
+			beego.NSInclude(
+				&controllers.CurrenciesController{},
+			),
+		),
+
+		beego.NSNamespace("/gateways",
+			beego.NSInclude(
+				&controllers.GatewaysController{},
+			),
+		),
+
+		beego.NSNamespace("/images",
+			beego.NSInclude(
+				&controllers.ImagesController{},
+			),
+		),
+
+		beego.NSNamespace("/locations",
+			beego.NSInclude(
+				&controllers.LocationsController{},
+			),
+		),
+
 		beego.NSNamespace("/orders",
 			beego.NSInclude(
-				&controllers.OrderController{},
+				&controllers.OrdersController{},
 			),
-		))
+		),
+
+		beego.NSNamespace("/portfolios",
+			beego.NSInclude(
+				&controllers.PortfoliosController{},
+			),
+		),
+
+		beego.NSNamespace("/prices",
+			beego.NSInclude(
+				&controllers.PricesController{},
+			),
+		),
+
+		beego.NSNamespace("/sectors",
+			beego.NSInclude(
+				&controllers.SectorsController{},
+			),
+		),
+
+		beego.NSNamespace("/services",
+			beego.NSInclude(
+				&controllers.ServicesController{},
+			),
+		),
+	)
 	beego.AddNamespace(ns)
 }
