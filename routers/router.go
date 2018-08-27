@@ -8,10 +8,17 @@
 package routers
 
 import (
+	"GASE/controllers"
+
 	"github.com/astaxie/beego"
 )
 
 func init() {
-	ns := beego.NewNamespace("/v1")
+	ns := beego.NewNamespace("/v1",
+		beego.NSNamespace("/orders",
+			beego.NSInclude(
+				&controllers.OrderController{},
+			),
+		))
 	beego.AddNamespace(ns)
 }

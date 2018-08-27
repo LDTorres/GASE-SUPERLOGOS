@@ -1,14 +1,14 @@
 package main
 
 import (
-	_ "./routers"
+	_ "GASE/routers"
 
 	"github.com/astaxie/beego"
 )
 
 func main() {
 
-	beego.AppConfigPath = "conf/env.conf"
+	beego.AppConfig.Set("PATH", "conf/env.conf")
 
 	if beego.BConfig.RunMode == "dev" {
 		beego.BConfig.WebConfig.DirectoryIndex = true
