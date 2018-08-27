@@ -32,18 +32,6 @@ func init() {
 
 	orm.RegisterModel(new(Activities), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services))
 
-	o := orm.NewOrm()
-
-	client := Clients{ID: 1}
-
-	err := o.Read(&client)
-
-	if err != nil {
-		fmt.Println(err.Error())
-	} else {
-		fmt.Println(client)
-	}
-
 	/*
 		// Database alias.
 		name := "default"
