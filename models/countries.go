@@ -177,7 +177,7 @@ func addDefaultData(err error) {
 
 		currency := Currencies{Iso: dummyCountry["currency"].(string)}
 
-		err := o.Read(&currency)
+		err := o.Read(&currency, "Iso")
 
 		if err != nil {
 			continue
@@ -193,7 +193,7 @@ func addDefaultData(err error) {
 			Skype:    dummyCountry["skype"].(string),
 		}
 
-		o.ReadOrCreate(&country)
+		o.ReadOrCreate(&country, "Iso")
 
 	}
 
