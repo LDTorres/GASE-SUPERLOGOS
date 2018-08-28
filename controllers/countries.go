@@ -54,7 +54,7 @@ func (c *CountriesController) Post() {
 func (c *CountriesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetCountriesById(id)
+	v, err := models.GetCountriesByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *CountriesController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Countries{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateCountriesById(&v); err == nil {
+		if err := models.UpdateCountriesByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

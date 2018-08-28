@@ -54,7 +54,7 @@ func (c *GatewaysController) Post() {
 func (c *GatewaysController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetGatewaysById(id)
+	v, err := models.GetGatewaysByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *GatewaysController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Gateways{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateGatewaysById(&v); err == nil {
+		if err := models.UpdateGatewaysByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

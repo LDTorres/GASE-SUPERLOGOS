@@ -10,16 +10,16 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-// Currencies struct
+// Currencies Model
 type Currencies struct {
-	ID        int         `orm:"column(id);auto"`
-	Name      string      `orm:"column(name);size(255)"`
-	Iso       string      `orm:"column(iso);size(3)"`
-	Symbol    string      `orm:"column(symbol);size(3)"`
-	Gateways  []*Gateways `orm:"reverse(many)"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"`
+	ID        int         `orm:"column(id);auto" json:"id"`
+	Name      string      `orm:"column(name);size(255)" json:"name"`
+	Iso       string      `orm:"column(iso);size(3)" json:"iso"`
+	Symbol    string      `orm:"column(symbol);size(3)" json:"symbol"`
+	Gateways  []*Gateways `orm:"reverse(many)" json:"gateways"`
+	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
 // TableName =
@@ -35,9 +35,9 @@ func AddCurrencies(m *Currencies) (id int64, err error) {
 	return
 }
 
-// GetCurrenciesById retrieves Currencies by Id. Returns error if
+// GetCurrenciesByID retrieves Currencies by Id. Returns error if
 // Id doesn't exist
-func GetCurrenciesById(id int) (v *Currencies, err error) {
+func GetCurrenciesByID(id int) (v *Currencies, err error) {
 	o := orm.NewOrm()
 	v = &Currencies{ID: id}
 	if err = o.Read(v); err == nil {
@@ -124,9 +124,9 @@ func GetAllCurrencies(query map[string]string, fields []string, sortby []string,
 	return nil, err
 }
 
-// UpdateCurrencies updates Currencies by Id and returns error if
+// UpdateCurrenciesByID updates Currencies by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateCurrenciesById(m *Currencies) (err error) {
+func UpdateCurrenciesByID(m *Currencies) (err error) {
 	o := orm.NewOrm()
 	v := Currencies{ID: m.ID}
 	// ascertain id exists in the database

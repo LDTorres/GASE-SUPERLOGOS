@@ -10,16 +10,18 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+//Gateways Model
 type Gateways struct {
-	ID         int           `orm:"column(id);auto"`
-	Name       string        `orm:"column(name);size(255)"`
-	Code       string        `orm:"column(code);size(255)"`
-	Currencies []*Currencies `orm:"rel(m2m)"`
-	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add"`
-	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null"`
-	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null"`
+	ID         int           `orm:"column(id);auto" json:"id"`
+	Name       string        `orm:"column(name);size(255)" json:"name"`
+	Code       string        `orm:"column(code);size(255)" json:"-"`
+	Currencies []*Currencies `orm:"rel(m2m)" json:"currencies"`
+	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
+//TableName =
 func (t *Gateways) TableName() string {
 	return "gateways"
 }
@@ -32,9 +34,9 @@ func AddGateways(m *Gateways) (id int64, err error) {
 	return
 }
 
-// GetGatewaysById retrieves Gateways by Id. Returns error if
+// GetGatewaysByID retrieves Gateways by Id. Returns error if
 // Id doesn't exist
-func GetGatewaysById(id int) (v *Gateways, err error) {
+func GetGatewaysByID(id int) (v *Gateways, err error) {
 	o := orm.NewOrm()
 	v = &Gateways{ID: id}
 	if err = o.Read(v); err == nil {
@@ -121,9 +123,9 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 	return nil, err
 }
 
-// UpdateGateways updates Gateways by Id and returns error if
+// UpdateGatewaysByID updates Gateways by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateGatewaysById(m *Gateways) (err error) {
+func UpdateGatewaysByID(m *Gateways) (err error) {
 	o := orm.NewOrm()
 	v := Gateways{ID: m.ID}
 	// ascertain id exists in the database

@@ -17,9 +17,9 @@ type Prices struct {
 	Service   *Services   `orm:"column(services_id);rel(fk)" json:"service"`
 	Currency  *Currencies `orm:"column(currencies_id);rel(fk)" json:"currency"`
 	Orders    []*Orders   `orm:"reverse(many)" json:"orders"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"`
+	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName define Name

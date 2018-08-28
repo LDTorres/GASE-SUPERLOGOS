@@ -11,17 +11,19 @@ import (
 	"github.com/gosimple/slug"
 )
 
+//Activities Model
 type Activities struct {
-	ID          int       `orm:"column(id);auto"`
-	Name        string    `orm:"column(name)"`
-	Description string    `orm:"column(description)"`
-	Sector      *Sectors  `orm:"column(sectors_id);rel(fk)"`
-	Slug        string    `orm:"column(slug);size(255)"`
-	CreatedAt   time.Time `orm:"column(created_at);type(datetime);null;auto_now_add"`
-	UpdatedAt   time.Time `orm:"column(updated_at);type(datetime);null"`
-	DeletedAt   time.Time `orm:"column(deleted_at);type(datetime);null"`
+	ID          int       `orm:"column(id);auto" json:"id"`
+	Name        string    `orm:"column(name)" json:"name"`
+	Description string    `orm:"column(description)" json:"description"`
+	Sector      *Sectors  `orm:"column(sectors_id);rel(fk)" json:"sector"`
+	Slug        string    `orm:"column(slug);size(255)"  json:"slug"`
+	CreatedAt   time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt   time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt   time.Time `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
+//TableName =
 func (t *Activities) TableName() string {
 	return "activities"
 }
@@ -34,9 +36,9 @@ func AddActivities(m *Activities) (id int64, err error) {
 	return
 }
 
-// GetActivitiesById retrieves Activities by Id. Returns error if
+// GetActivitiesByID retrieves Activities by Id. Returns error if
 // Id doesn't exist
-func GetActivitiesById(id int) (v *Activities, err error) {
+func GetActivitiesByID(id int) (v *Activities, err error) {
 	o := orm.NewOrm()
 	v = &Activities{ID: id}
 	if err = o.Read(v); err == nil {
@@ -123,9 +125,9 @@ func GetAllActivities(query map[string]string, fields []string, sortby []string,
 	return nil, err
 }
 
-// UpdateActivities updates Activities by Id and returns error if
+// UpdateActivitiesByID updates Activities by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateActivitiesById(m *Activities) (err error) {
+func UpdateActivitiesByID(m *Activities) (err error) {
 	o := orm.NewOrm()
 	v := Activities{ID: m.ID}
 	// ascertain id exists in the database
