@@ -30,21 +30,36 @@ func init() {
 
 	orm.RegisterModel(new(Activities), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services))
 
-	/*// Create database from models.
-	name := "default"
+	/* 	// Create database from models.
+	   	name := "default"
 
-	// Drop table and re-create.
-	force := true
+	   	// Drop table and re-create.
+	   	force := true
 
-	// Print log.
-	verbose := true
+	   	// Print log.
+	   	verbose := true
 
-	// Error.
-	err := orm.RunSyncdb(name, force, verbose)
+	   	// Error.
+	   	err := orm.RunSyncdb(name, force, verbose)
+	   	if err != nil {
+	   		fmt.Println(err)
+	   	} */
+
+	err := AddDefaultDataCurrencies()
 	if err != nil {
-		fmt.Println(err)
-	}*/
 
-	AddDefaultDataCurrencies()
-	AddDefaultDataSectors()
+	}
+
+	err = AddDefaultDataSectors()
+	if err != nil {
+
+	}
+
+	errors := addDefaultDataActivities()
+
+	if len(errors) > 0 {
+		for _, err := range errors {
+			println(err.Error())
+		}
+	}
 }

@@ -16,6 +16,7 @@ type Sectors struct {
 	ID        int       `orm:"column(id);pk"`
 	Name      string    `orm:"column(name);size(255)"`
 	Slug      string    `orm:"column(slug);size(255)"`
+	Code      string    `orm:"column(code);size(255)"`
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null"`
 	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null"`
@@ -159,7 +160,112 @@ func AddDefaultDataSectors() (err error) {
 
 	data := []*Sectors{
 		{
-			Name: "Valencia",
+			Name: "Figuras Geometricas y Abstractas",
+			Code: "01",
+		},
+		{
+			Name: "Agricultura y ganaderia",
+			Code: "02",
+		},
+		{
+			Name: "Animales y Mascotas",
+			Code: "03",
+		},
+		{
+			Name: "Arte y fotografia",
+			Code: "04",
+		},
+		{
+			Name: "Industria automotriz",
+			Code: "05",
+		},
+		{
+			Name: "Accesorios y glamour",
+			Code: "06",
+		},
+		{
+			Name: "Transporte y logistica",
+			Code: "07",
+		},
+		{
+			Name: "Asesoria y Consultoria",
+			Code: "08",
+		},
+		{
+			Name: "Construccion y arquitectura",
+			Code: "09",
+		},
+		{
+			Name: "Ropa y Moda",
+			Code: "10",
+		},
+		{
+			Name: "Educacion y Formacion",
+			Code: "01",
+		},
+		{
+			Name: "Hogar y Jardin",
+			Code: "11",
+		},
+		{
+			Name: "Alimentos y Bebidas",
+			Code: "12",
+		},
+		{
+			Name: "Belleza y Cuidado personal",
+			Code: "13",
+		},
+		{
+			Name: "Salud y Medicina",
+			Code: "14",
+		},
+		{
+			Name: "Deportes y ejercicios",
+			Code: "15",
+		},
+		{
+			Name: "Hobies y Entretenimiento",
+			Code: "16",
+		},
+		{
+			Name: "Organización sin fin de lucro",
+			Code: "17",
+		},
+		{
+			Name: "Tecnologia y telecomunicacion",
+			Code: "18",
+		},
+		{
+			Name: "Turismo y viajes",
+			Code: "19",
+		},
+		{
+			Name: "Reparaciones y Mantenimiento",
+			Code: "20",
+		},
+		{
+			Name: "Niños",
+			Code: "21",
+		},
+		{
+			Name: "Medio ambiente",
+			Code: "22",
+		},
+		{
+			Name: "Social Media",
+			Code: "23",
+		},
+		{
+			Name: "Seguridad",
+			Code: "24",
+		},
+		{
+			Name: "Personas",
+			Code: "25",
+		},
+		{
+			Name: "Espiritualidad",
+			Code: "26",
 		},
 	}
 
