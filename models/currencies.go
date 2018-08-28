@@ -10,6 +10,7 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+// Currencies struct
 type Currencies struct {
 	ID        int         `orm:"column(id);auto"`
 	Name      string      `orm:"column(name);size(255)"`
@@ -21,6 +22,7 @@ type Currencies struct {
 	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"`
 }
 
+// TableName =
 func (t *Currencies) TableName() string {
 	return "currencies"
 }
@@ -150,4 +152,27 @@ func DeleteCurrencies(id int) (err error) {
 		}
 	}
 	return
+}
+
+//AddDefaultData on init app
+func AddDefaultDataCurrencies() (err error) {
+
+	o := orm.NewOrm()
+
+	data := []*Currencies{
+		{
+			Symbol: "€",
+			Name:   "Euro",
+			Iso:    "EUR",
+		},
+		{
+			Symbol: "$",
+			Name:   "Dólar estadounidense",
+			Iso:    "USD",
+		},
+	}
+
+	_, err = o.InsertMulti(100, data)
+
+	return err
 }
