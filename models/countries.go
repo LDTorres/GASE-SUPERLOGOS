@@ -156,7 +156,7 @@ func DeleteCountries(id int) (err error) {
 	return
 }
 
-func addDefaultData(err error) {
+func addDefaultDataCountries(err error) {
 
 	o := orm.NewOrm()
 
