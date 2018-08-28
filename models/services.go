@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/gosimple/slug"
 )
 
 type Services struct {
@@ -15,6 +17,7 @@ type Services struct {
 	Name       string    `orm:"column(name);size(255)"`
 	Percertage float32   `orm:"column(percertage)"`
 	Slug       string    `orm:"column(slug);size(255)"`
+	Code       string    `orm:"column(code);size(255)"`
 	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add"`
 	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null"`
 	DeletedAt  time.Time `orm:"column(deleted_at);type(datetime);null"`
@@ -149,4 +152,25 @@ func DeleteServices(id int) (err error) {
 		}
 	}
 	return
+}
+
+//AddDefaultDataServices on init app
+func AddDefaultDataServices() (err error) {
+
+	o := orm.NewOrm()
+
+	dummyData := []*Services{
+		{
+			Name:       "Logo a Medida",
+			Percertage: 10.0,
+		},
+	}
+
+	for _, dummyService := range dummyData {
+		dummyService.Slug = slug.Make(dummyService.Name)
+	}
+
+	_, err = o.InsertMulti(100, dummyData)
+
+	return err
 }

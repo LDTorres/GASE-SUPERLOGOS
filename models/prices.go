@@ -151,3 +151,57 @@ func DeletePrices(id int) (err error) {
 	}
 	return
 }
+
+//AddDefaultDataPrices on init app
+func AddDefaultDataPrices() []error {
+
+	o := orm.NewOrm()
+
+	dummyData := map[string]map[string]Prices{
+		"codeXYZ": {
+			"USD": {
+				Value: 10.0,
+			},
+			"EUR": {
+				Value: 10.0,
+			},
+		},
+	}
+
+	var errors []error
+
+	for code, dummyService := range dummyData {
+
+		var dummyPrices []Prices
+
+		service := Services{Code: code}
+
+		err := o.Read(&service, "code")
+
+		if err != nil {
+			continue
+		}
+
+		for iso, dummyPriceByCurrency := range dummyService {
+
+			currency := Currencies{Iso: iso}
+
+			err := o.Read(&currency, "iso")
+
+			if err != nil {
+				continue
+			}
+
+			dummyPriceByCurrency.Service = &service
+			dummyPriceByCurrency.Currency = &currency
+
+			dummyPrices = append(dummyPrices, dummyPriceByCurrency)
+		}
+
+		_, err = o.InsertMulti(100, dummyPrices)
+
+		errors = append(errors, err)
+	}
+
+	return errors
+}
