@@ -10,17 +10,19 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+//Coupons Model
 type Coupons struct {
-	ID         int       `orm:"column(id);auto"`
-	Percentage float32   `orm:"column(percentage)"`
-	Code       string    `orm:"column(code);size(45)"`
-	Status     int8      `orm:"column(status);null"`
-	Orders     []*Orders `orm:"reverse(many)"`
-	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add"`
+	ID         int       `orm:"column(id);auto" json:"id"`
+	Percentage float32   `orm:"column(percentage)" json:"percentage"`
+	Code       string    `orm:"column(code);size(45)" json:"-"`
+	Status     int8      `orm:"column(status);null" json:"status"`
+	Orders     []*Orders `orm:"reverse(many)" json:"orders"`
+	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null;auto_now_add"`
-	DeletedAt  time.Time `orm:"column(deleted_at);type(datetime);null"`
+	DeletedAt  time.Time `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
+//TableName =
 func (t *Coupons) TableName() string {
 	return "coupons"
 }
@@ -33,9 +35,9 @@ func AddCoupons(m *Coupons) (id int64, err error) {
 	return
 }
 
-// GetCouponsById retrieves Coupons by Id. Returns error if
+// GetCouponsByID retrieves Coupons by Id. Returns error if
 // Id doesn't exist
-func GetCouponsById(id int) (v *Coupons, err error) {
+func GetCouponsByID(id int) (v *Coupons, err error) {
 	o := orm.NewOrm()
 	v = &Coupons{ID: id}
 	if err = o.Read(v); err == nil {
@@ -122,9 +124,9 @@ func GetAllCoupons(query map[string]string, fields []string, sortby []string, or
 	return nil, err
 }
 
-// UpdateCoupons updates Coupons by Id and returns error if
+// UpdateCouponsByID updates Coupons by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateCouponsById(m *Coupons) (err error) {
+func UpdateCouponsByID(m *Coupons) (err error) {
 	o := orm.NewOrm()
 	v := Coupons{ID: m.ID}
 	// ascertain id exists in the database

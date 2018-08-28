@@ -54,7 +54,7 @@ func (c *ClientsController) Post() {
 func (c *ClientsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetClientsById(id)
+	v, err := models.GetClientsByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *ClientsController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Clients{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateClientsById(&v); err == nil {
+		if err := models.UpdateClientsByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

@@ -54,7 +54,7 @@ func (c *CouponsController) Post() {
 func (c *CouponsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetCouponsById(id)
+	v, err := models.GetCouponsByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *CouponsController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Coupons{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateCouponsById(&v); err == nil {
+		if err := models.UpdateCouponsByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

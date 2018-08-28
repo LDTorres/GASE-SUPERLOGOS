@@ -19,9 +19,9 @@ type Portfolios struct {
 	Location    *Locations  `orm:"column(locations_id);rel(fk)"`
 	Service     *Services   `orm:"column(services_id);rel(fk)"`
 	Slug        string      `orm:"column(slug);size(255)"`
-	CreatedAt   time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add"`
-	UpdatedAt   time.Time   `orm:"column(updated_at);type(datetime);null"`
-	DeletedAt   time.Time   `orm:"column(deleted_at);type(datetime);null"`
+	CreatedAt   time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt   time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt   time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
 func (t *Portfolios) TableName() string {

@@ -54,7 +54,7 @@ func (c *CurrenciesController) Post() {
 func (c *CurrenciesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetCurrenciesById(id)
+	v, err := models.GetCurrenciesByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *CurrenciesController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Currencies{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateCurrenciesById(&v); err == nil {
+		if err := models.UpdateCurrenciesByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

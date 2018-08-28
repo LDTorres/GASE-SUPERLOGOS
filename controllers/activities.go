@@ -34,15 +34,13 @@ func (c *ActivitiesController) Post() {
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
-	// If the content is empty
 	if err != nil {
-		c.ServeErrorJSON(err)
+		c.BadRequest()
 		return
 	}
 
 	_, err = models.AddActivities(&v)
 
-	// If the has a model error
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -64,7 +62,7 @@ func (c *ActivitiesController) Post() {
 func (c *ActivitiesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetActivitiesById(id)
+	v, err := models.GetActivitiesByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -149,7 +147,7 @@ func (c *ActivitiesController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Activities{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateActivitiesById(&v); err == nil {
+		if err := models.UpdateActivitiesByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

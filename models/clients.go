@@ -10,17 +10,19 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+//Clients Model
 type Clients struct {
 	ID        int       `orm:"column(id);auto" json:"id"`
 	Name      string    `orm:"column(name);size(255)" json:"name"`
 	Email     string    `orm:"column(email);size(255)" json:"email"`
 	Password  string    `orm:"column(password);size(255)" json:"password"`
 	Phone     string    `orm:"column(phone);size(255)" json:"phone"`
-	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"created_at"`
-	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"updated_at"`
-	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"delete_at"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
+//TableName =
 func (t *Clients) TableName() string {
 	return "clients"
 }
@@ -33,9 +35,9 @@ func AddClients(m *Clients) (id int64, err error) {
 	return
 }
 
-// GetClientsById retrieves Clients by Id. Returns error if
+// GetClientsByID retrieves Clients by Id. Returns error if
 // Id doesn't exist
-func GetClientsById(id int) (v *Clients, err error) {
+func GetClientsByID(id int) (v *Clients, err error) {
 	o := orm.NewOrm()
 	v = &Clients{ID: id}
 	if err = o.Read(v); err == nil {
@@ -122,9 +124,9 @@ func GetAllClients(query map[string]string, fields []string, sortby []string, or
 	return nil, err
 }
 
-// UpdateClients updates Clients by Id and returns error if
+// UpdateClientsByID updates Clients by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateClientsById(m *Clients) (err error) {
+func UpdateClientsByID(m *Clients) (err error) {
 	o := orm.NewOrm()
 	v := Clients{ID: m.ID}
 	// ascertain id exists in the database

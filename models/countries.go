@@ -11,21 +11,23 @@ import (
 	"github.com/gosimple/slug"
 )
 
+//Countries Model
 type Countries struct {
-	ID        int         `orm:"column(id);auto"`
-	Name      string      `orm:"column(name);size(255)"`
-	Iso       string      `orm:"column(iso);size(3)"`
-	Phone     string      `orm:"column(phone);size(45)"`
+	ID        int         `orm:"column(id);auto" json:"id"`
+	Name      string      `orm:"column(name);size(255)" json:"name"`
+	Iso       string      `orm:"column(iso);size(3)" json:"iso"`
+	Phone     string      `orm:"column(phone);size(45)" json:"phone"`
 	Currency  *Currencies `orm:"column(currency_id);rel(fk)"`
-	Slug      string      `orm:"column(slug);size(255)"`
-	Tax       float32     `orm:"column(tax)"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"`
-	Email     string      `orm:"column(email);size(45);null"`
-	Skype     string      `orm:"column(skype);size(45);null"`
+	Slug      string      `orm:"column(slug);size(255)" json:"slug"`
+	Tax       float32     `orm:"column(tax)" json:"tax"`
+	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	Email     string      `orm:"column(email);size(45);null" json:"email"`
+	Skype     string      `orm:"column(skype);size(45);null" json:"skype"`
 }
 
+//TableName =
 func (t *Countries) TableName() string {
 	return "countries"
 }
@@ -38,9 +40,9 @@ func AddCountries(m *Countries) (id int64, err error) {
 	return
 }
 
-// GetCountriesById retrieves Countries by Id. Returns error if
+// GetCountriesByID retrieves Countries by Id. Returns error if
 // Id doesn't exist
-func GetCountriesById(id int) (v *Countries, err error) {
+func GetCountriesByID(id int) (v *Countries, err error) {
 	o := orm.NewOrm()
 	v = &Countries{ID: id}
 	if err = o.Read(v); err == nil {
@@ -127,9 +129,9 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 	return nil, err
 }
 
-// UpdateCountries updates Countries by Id and returns error if
+// UpdateCountriesByID updates Countries by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateCountriesById(m *Countries) (err error) {
+func UpdateCountriesByID(m *Countries) (err error) {
 	o := orm.NewOrm()
 	v := Countries{ID: m.ID}
 	// ascertain id exists in the database
