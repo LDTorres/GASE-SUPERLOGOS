@@ -35,8 +35,8 @@ func AddOrders(m *Orders) (id int64, err error) {
 	return
 }
 
-// GetOrdersById retrieves Orders by Id. Returns error if Id doesn't exist
-func GetOrdersById(id int) (v *Orders, err error) {
+// GetOrdersByID retrieves Orders by Id. Returns error if Id doesn't exist
+func GetOrdersByID(id int) (v *Orders, err error) {
 	o := orm.NewOrm()
 	v = &Orders{ID: id}
 	if err = o.Read(v); err == nil {
@@ -123,8 +123,8 @@ func GetAllOrders(query map[string]string, fields []string, sortby []string, ord
 	return nil, err
 }
 
-//UpdateOrdersById updates Orders by Id and returns error if the record to be updated doesn't exist
-func UpdateOrdersById(m *Orders) (err error) {
+//UpdateOrdersByID updates Orders by Id and returns error if the record to be updated doesn't exist
+func UpdateOrdersByID(m *Orders) (err error) {
 	o := orm.NewOrm()
 	v := Orders{ID: m.ID}
 	// ascertain id exists in the database

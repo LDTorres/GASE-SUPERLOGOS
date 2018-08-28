@@ -21,6 +21,7 @@ type Locations struct {
 	DeletedAt time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
+//TableName define Name
 func (t *Locations) TableName() string {
 	return "locations"
 }
@@ -33,8 +34,8 @@ func AddLocations(m *Locations) (id int64, err error) {
 	return
 }
 
-//GetLocationsById retrieves Locations by Id. Returns error if Id doesn't exist
-func GetLocationsById(id int) (v *Locations, err error) {
+//GetLocationsByID retrieves Locations by Id. Returns error if Id doesn't exist
+func GetLocationsByID(id int) (v *Locations, err error) {
 	o := orm.NewOrm()
 	v = &Locations{ID: id}
 	if err = o.Read(v); err == nil {
@@ -120,8 +121,8 @@ func GetAllLocations(query map[string]string, fields []string, sortby []string, 
 	return nil, err
 }
 
-//UpdateLocationsById updates Locations by Id and returns error if the record to be updated doesn't exist
-func UpdateLocationsById(m *Locations) (err error) {
+//UpdateLocationsByID updates Locations by Id and returns error if the record to be updated doesn't exist
+func UpdateLocationsByID(m *Locations) (err error) {
 	o := orm.NewOrm()
 	v := Locations{ID: m.ID}
 	// ascertain id exists in the database

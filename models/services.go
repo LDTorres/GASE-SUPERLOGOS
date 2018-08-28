@@ -36,8 +36,8 @@ func AddServices(m *Services) (id int64, err error) {
 	return
 }
 
-//GetServicesById retrieves Services by Id. Returns error if Id doesn't exist
-func GetServicesById(id int) (v *Services, err error) {
+//GetServicesByID retrieves Services by Id. Returns error if Id doesn't exist
+func GetServicesByID(id int) (v *Services, err error) {
 	o := orm.NewOrm()
 	v = &Services{ID: id}
 	if err = o.Read(v); err == nil {
@@ -123,8 +123,8 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 	return nil, err
 }
 
-//UpdateServicesById updates Services by Id and returns error if the record to be updated doesn't exist
-func UpdateServicesById(m *Services) (err error) {
+//UpdateServicesByID updates Services by Id and returns error if the record to be updated doesn't exist
+func UpdateServicesByID(m *Services) (err error) {
 	o := orm.NewOrm()
 	v := Services{ID: m.ID}
 	// ascertain id exists in the database

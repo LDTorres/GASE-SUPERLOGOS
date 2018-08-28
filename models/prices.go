@@ -35,8 +35,8 @@ func AddPrices(m *Prices) (id int64, err error) {
 	return
 }
 
-//GetPricesById retrieves Prices by Id. Returns error if Id doesn't exist
-func GetPricesById(id int) (v *Prices, err error) {
+//GetPricesByID retrieves Prices by Id. Returns error if Id doesn't exist
+func GetPricesByID(id int) (v *Prices, err error) {
 	o := orm.NewOrm()
 	v = &Prices{ID: id}
 	if err = o.Read(v); err == nil {
@@ -122,8 +122,8 @@ func GetAllPrices(query map[string]string, fields []string, sortby []string, ord
 	return nil, err
 }
 
-//UpdatePricesById updates Prices by Id and returns error if the record to be updated doesn't exist
-func UpdatePricesById(m *Prices) (err error) {
+//UpdatePricesByID updates Prices by Id and returns error if the record to be updated doesn't exist
+func UpdatePricesByID(m *Prices) (err error) {
 	o := orm.NewOrm()
 	v := Prices{ID: m.ID}
 	// ascertain id exists in the database

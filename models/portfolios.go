@@ -37,8 +37,8 @@ func AddPortfolios(m *Portfolios) (id int64, err error) {
 	return
 }
 
-// GetPortfoliosById retrieves Portfolios by Id. Returns error if Id doesn't exist
-func GetPortfoliosById(id int) (v *Portfolios, err error) {
+// GetPortfoliosByID retrieves Portfolios by Id. Returns error if Id doesn't exist
+func GetPortfoliosByID(id int) (v *Portfolios, err error) {
 	o := orm.NewOrm()
 	v = &Portfolios{ID: id}
 	if err = o.Read(v); err == nil {
@@ -124,8 +124,8 @@ func GetAllPortfolios(query map[string]string, fields []string, sortby []string,
 	return nil, err
 }
 
-//UpdatePortfoliosById updates Portfolios by Id and returns error if the record to be updated doesn't exist
-func UpdatePortfoliosById(m *Portfolios) (err error) {
+//UpdatePortfoliosByID updates Portfolios by Id and returns error if the record to be updated doesn't exist
+func UpdatePortfoliosByID(m *Portfolios) (err error) {
 	o := orm.NewOrm()
 	v := Portfolios{ID: m.ID}
 	// ascertain id exists in the database

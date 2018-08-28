@@ -35,8 +35,8 @@ func AddSectors(m *Sectors) (id int64, err error) {
 	return
 }
 
-//GetSectorsById retrieves Sectors by Id. Returns error if Id doesn't exist
-func GetSectorsById(id int) (v *Sectors, err error) {
+//GetSectorsByID retrieves Sectors by Id. Returns error if Id doesn't exist
+func GetSectorsByID(id int) (v *Sectors, err error) {
 	o := orm.NewOrm()
 	v = &Sectors{ID: id}
 	if err = o.Read(v); err == nil {
@@ -122,8 +122,8 @@ func GetAllSectors(query map[string]string, fields []string, sortby []string, or
 	return nil, err
 }
 
-//UpdateSectorsById updates Sectors by Id and returns error if the record to be updated doesn't exist
-func UpdateSectorsById(m *Sectors) (err error) {
+//UpdateSectorsByID updates Sectors by Id and returns error if the record to be updated doesn't exist
+func UpdateSectorsByID(m *Sectors) (err error) {
 	o := orm.NewOrm()
 	v := Sectors{ID: m.ID}
 	// ascertain id exists in the database

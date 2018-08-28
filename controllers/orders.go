@@ -54,7 +54,7 @@ func (c *OrdersController) Post() {
 func (c *OrdersController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetOrdersById(id)
+	v, err := models.GetOrdersByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *OrdersController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Orders{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateOrdersById(&v); err == nil {
+		if err := models.UpdateOrdersByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

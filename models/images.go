@@ -31,8 +31,8 @@ func AddImages(m *Images) (id int64, err error) {
 	return
 }
 
-//GetImagesById retrieves Images by Id. Returns error if Id doesn't exist
-func GetImagesById(id int) (v *Images, err error) {
+//GetImagesByID retrieves Images by Id. Returns error if Id doesn't exist
+func GetImagesByID(id int) (v *Images, err error) {
 	o := orm.NewOrm()
 	v = &Images{ID: id}
 	if err = o.Read(v); err == nil {
@@ -118,8 +118,8 @@ func GetAllImages(query map[string]string, fields []string, sortby []string, ord
 	return nil, err
 }
 
-//UpdateImagesById updates Images by Id and returns error if the record to be updated doesn't exist
-func UpdateImagesById(m *Images) (err error) {
+//UpdateImagesByID updates Images by Id and returns error if the record to be updated doesn't exist
+func UpdateImagesByID(m *Images) (err error) {
 	o := orm.NewOrm()
 	v := Images{ID: m.ID}
 	// ascertain id exists in the database
