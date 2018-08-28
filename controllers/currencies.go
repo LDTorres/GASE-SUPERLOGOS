@@ -6,13 +6,11 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // CurrenciesController operations for Currencies
 type CurrenciesController struct {
-	beego.Controller
+	BaseController
 }
 
 // URLMapping ...

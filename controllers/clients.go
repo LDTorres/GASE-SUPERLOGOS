@@ -6,13 +6,11 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // ClientsController operations for Clients
 type ClientsController struct {
-	beego.Controller
+	BaseController
 }
 
 // URLMapping ...

@@ -154,11 +154,11 @@ func DeleteSectors(id int) (err error) {
 }
 
 //AddDefaultDataSectors on init app
-func AddDefaultDataSectors() (err error) {
+func AddDefaultDataSectors() (count int64, err error) {
 
 	o := orm.NewOrm()
 
-	data := []*Sectors{
+	dummyData := []*Sectors{
 		{
 			Name: "Figuras Geometricas y Abstractas",
 			Code: "01",
@@ -269,11 +269,11 @@ func AddDefaultDataSectors() (err error) {
 		},
 	}
 
-	for _, v := range data {
+	for _, v := range dummyData {
 		v.Slug = slug.Make(v.Name)
 	}
 
-	_, err = o.InsertMulti(100, data)
+	count, err = o.InsertMulti(100, dummyData)
 
-	return err
+	return
 }

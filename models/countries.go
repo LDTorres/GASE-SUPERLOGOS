@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/gosimple/slug"
 )
 
 type Countries struct {
@@ -16,7 +17,7 @@ type Countries struct {
 	Iso       string      `orm:"column(iso);size(3)"`
 	Phone     string      `orm:"column(phone);size(45)"`
 	Currency  *Currencies `orm:"column(currency_id);rel(fk)"`
-	Slug      string      `orm:"column(slug);size(45)"`
+	Slug      string      `orm:"column(slug);size(255)"`
 	Tax       float32     `orm:"column(tax)"`
 	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add"`
 	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null"`
@@ -156,7 +157,7 @@ func DeleteCountries(id int) (err error) {
 	return
 }
 
-func addDefaultDataCountries(err error) {
+func addDefaultDataCountries() (count int64, err error) {
 
 	o := orm.NewOrm()
 
@@ -173,6 +174,8 @@ func addDefaultDataCountries(err error) {
 		},
 	}
 
+	var dummyCountries []Countries
+
 	for _, dummyCountry := range dummyData {
 
 		currency := Currencies{Iso: dummyCountry["currency"].(string)}
@@ -188,13 +191,18 @@ func addDefaultDataCountries(err error) {
 			Iso:      dummyCountry["iso"].(string),
 			Phone:    dummyCountry["phone"].(string),
 			Currency: &currency,
-			Slug:     dummyCountry["slug"].(string),
+			Slug:     slug.Make(dummyCountry["slug"].(string)),
 			Email:    dummyCountry["email"].(string),
 			Skype:    dummyCountry["skype"].(string),
 		}
 
 		o.ReadOrCreate(&country, "Iso")
 
+		dummyCountries = append(dummyCountries, country)
+
 	}
 
+	count, err = o.InsertMulti(100, dummyCountries)
+
+	return
 }

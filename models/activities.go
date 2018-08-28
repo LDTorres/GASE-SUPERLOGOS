@@ -153,7 +153,7 @@ func DeleteActivities(id int) (err error) {
 	return
 }
 
-func addDefaultDataActivities() []error {
+func addDefaultDataActivities() (count int64, errors []error) {
 
 	o := orm.NewOrm()
 
@@ -204,8 +204,6 @@ func addDefaultDataActivities() []error {
 		},
 	}
 
-	var errors []error
-
 	for key, dummySector := range dummyData {
 
 		sector := Sectors{Code: key}
@@ -223,13 +221,17 @@ func addDefaultDataActivities() []error {
 
 		}
 
-		_, err = o.InsertMulti(100, dummySector)
+		result, err := o.InsertMulti(100, dummySector)
 
 		if err != nil {
+
 			errors = append(errors, err)
+			continue
 		}
+
+		count += result
 
 	}
 
-	return errors
+	return
 }

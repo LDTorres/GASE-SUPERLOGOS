@@ -6,13 +6,11 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // ActivitiesController operations for Activities
 type ActivitiesController struct {
-	beego.Controller
+	BaseController
 }
 
 // URLMapping ...
@@ -33,16 +31,26 @@ func (c *ActivitiesController) URLMapping() {
 // @router / [post]
 func (c *ActivitiesController) Post() {
 	var v models.Activities
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddActivities(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	// If the content is empty
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	_, err = models.AddActivities(&v)
+
+	// If the has a model error
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+
 	c.ServeJSON()
 }
 

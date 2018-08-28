@@ -6,13 +6,11 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // PricesController operations for Prices
 type PricesController struct {
-	beego.Controller
+	BaseController
 }
 
 // URLMapping ...

@@ -6,13 +6,11 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // CountriesController operations for Countries
 type CountriesController struct {
-	beego.Controller
+	BaseController
 }
 
 // URLMapping ...

@@ -152,7 +152,7 @@ func DeleteGateways(id int) (err error) {
 }
 
 //AddDefaultDataGateways on init app
-func AddDefaultDataGateways() (err error) {
+func AddDefaultDataGateways() (count int64, err error) {
 
 	o := orm.NewOrm()
 
@@ -163,7 +163,7 @@ func AddDefaultDataGateways() (err error) {
 		},
 	}
 
-	_, err = o.InsertMulti(100, dummyData)
+	count, err = o.InsertMulti(100, dummyData)
 
-	return err
+	return
 }

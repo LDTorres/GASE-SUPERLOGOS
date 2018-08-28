@@ -155,7 +155,7 @@ func DeleteServices(id int) (err error) {
 }
 
 //AddDefaultDataServices on init app
-func AddDefaultDataServices() (err error) {
+func AddDefaultDataServices() (result int64, err error) {
 
 	o := orm.NewOrm()
 
@@ -163,6 +163,7 @@ func AddDefaultDataServices() (err error) {
 		{
 			Name:       "Logo a Medida",
 			Percertage: 10.0,
+			Code:       "01",
 		},
 	}
 
@@ -170,7 +171,7 @@ func AddDefaultDataServices() (err error) {
 		dummyService.Slug = slug.Make(dummyService.Name)
 	}
 
-	_, err = o.InsertMulti(100, dummyData)
+	result, err = o.InsertMulti(100, dummyData)
 
-	return err
+	return
 }

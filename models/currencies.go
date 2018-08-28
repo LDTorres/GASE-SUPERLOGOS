@@ -155,7 +155,7 @@ func DeleteCurrencies(id int) (err error) {
 }
 
 //AddDefaultData on init app
-func AddDefaultDataCurrencies() (err error) {
+func AddDefaultDataCurrencies() (count int64, err error) {
 
 	o := orm.NewOrm()
 
@@ -172,12 +172,12 @@ func AddDefaultDataCurrencies() (err error) {
 		},
 	}
 
-	_, err = o.InsertMulti(100, dummyData)
+	count, err = o.InsertMulti(100, dummyData)
 
-	return err
+	return
 }
 
-func addRelationsGatewaysCurrencies() []error {
+func addRelationsGatewaysCurrencies() (count int64, errors []error) {
 
 	o := orm.NewOrm()
 
@@ -186,8 +186,6 @@ func addRelationsGatewaysCurrencies() []error {
 			"USD",
 		},
 	}
-
-	var errors []error
 
 	for key, dummyGateway := range dummyData {
 
@@ -217,13 +215,16 @@ func addRelationsGatewaysCurrencies() []error {
 
 		}
 
-		_, err = m2m.Add(InsertManyCurrencies)
+		result, err := m2m.Add(InsertManyCurrencies)
 
 		if err != nil {
 			errors = append(errors, err)
+			continue
 		}
+
+		count += result
 
 	}
 
-	return errors
+	return
 }

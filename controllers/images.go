@@ -6,13 +6,11 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 // ImagesController operations for Images
 type ImagesController struct {
-	beego.Controller
+	BaseController
 }
 
 // URLMapping ...

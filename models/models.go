@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
@@ -45,39 +47,43 @@ func init() {
 	   		fmt.Println(err)
 	   	} */
 
-	err := AddDefaultDataCurrencies()
-	if err != nil {
-
+	count, _ := AddDefaultDataCurrencies()
+	if count > 0 {
+		fmt.Println("Added Currencies : ", count)
 	}
 
-	err = AddDefaultDataSectors()
-	if err != nil {
-
+	count, _ = addDefaultDataCountries()
+	if count > 0 {
+		fmt.Println("Added Countries : ", count)
 	}
 
-	errors := addDefaultDataActivities()
-
-	if len(errors) > 0 {
-		/* for _, err := range errors {
-			println(err.Error())
-		} */
+	count, _ = AddDefaultDataSectors()
+	if count > 0 {
+		fmt.Println("Added Sectors : ", count)
 	}
 
-	err = AddDefaultDataGateways()
-	if err != nil {
-
+	count, _ = addDefaultDataActivities()
+	if count > 0 {
+		fmt.Println("Added Activities : ", count)
 	}
 
-	err = AddDefaultDataCurrencies()
-	if err != nil {
-
+	count, _ = AddDefaultDataGateways()
+	if count > 0 {
+		fmt.Println("Added Gateways : ", count)
 	}
 
-	errors = addRelationsGatewaysCurrencies()
+	count, _ = addRelationsGatewaysCurrencies()
+	if count > 0 {
+		fmt.Println("Added relations GatewaysCurrencies : ", count)
+	}
 
-	if len(errors) > 0 {
-		/* for _, err := range errors {
-			println(err.Error())
-		} */
+	count, _ = AddDefaultDataServices()
+	if count > 0 {
+		fmt.Println("Added Services : ", count)
+	}
+
+	count, _ = AddDefaultDataPrices()
+	if count > 0 {
+		fmt.Println("Added Prices : ", count)
 	}
 }
