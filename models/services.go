@@ -12,31 +12,31 @@ import (
 	"github.com/gosimple/slug"
 )
 
+//Services Model
 type Services struct {
-	ID         int       `orm:"column(id);auto"`
-	Name       string    `orm:"column(name);size(255)"`
-	Percertage float32   `orm:"column(percertage)"`
-	Slug       string    `orm:"column(slug);size(255)"`
-	Code       string    `orm:"column(code);size(255)"`
+	ID         int       `orm:"column(id);auto" json:"id"`
+	Name       string    `orm:"column(name);size(255)" json:"name"`
+	Percertage float32   `orm:"column(percertage)" json:"percentage"`
+	Slug       string    `orm:"column(slug);size(255)" json:"slug"`
+	Code       string    `orm:"column(code);size(255)" json:"-"`
 	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add"`
 	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null"`
 	DeletedAt  time.Time `orm:"column(deleted_at);type(datetime);null"`
 }
 
+//TableName define Name
 func (t *Services) TableName() string {
 	return "services"
 }
 
-// AddServices insert a new Services into database and returns
-// last inserted Id on success.
+//AddServices insert a new Services into database and returns last inserted Id on success.
 func AddServices(m *Services) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetServicesById retrieves Services by Id. Returns error if
-// Id doesn't exist
+//GetServicesById retrieves Services by Id. Returns error if Id doesn't exist
 func GetServicesById(id int) (v *Services, err error) {
 	o := orm.NewOrm()
 	v = &Services{ID: id}
@@ -46,8 +46,7 @@ func GetServicesById(id int) (v *Services, err error) {
 	return nil, err
 }
 
-// GetAllServices retrieves all Services matches certain condition. Returns empty list if
-// no records exist
+//GetAllServices retrieves all Services matches certain condition. Returns empty list if no records exist
 func GetAllServices(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
@@ -124,8 +123,7 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 	return nil, err
 }
 
-// UpdateServices updates Services by Id and returns error if
-// the record to be updated doesn't exist
+//UpdateServicesById updates Services by Id and returns error if the record to be updated doesn't exist
 func UpdateServicesById(m *Services) (err error) {
 	o := orm.NewOrm()
 	v := Services{ID: m.ID}
