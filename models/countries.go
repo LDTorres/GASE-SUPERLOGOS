@@ -155,3 +155,46 @@ func DeleteCountries(id int) (err error) {
 	}
 	return
 }
+
+func addDefaultData(err error) {
+
+	o := orm.NewOrm()
+
+	dummyData := []map[string]interface{}{
+		{
+			"name":     "USA",
+			"iso":      "US",
+			"phone":    "122353",
+			"currency": "USD",
+			"slug":     "USA",
+			"tax":      10.0,
+			"email":    "liderlogo@gmail.com",
+			"skype":    "1024234",
+		},
+	}
+
+	for _, dummyCountry := range dummyData {
+
+		currency := Currencies{Iso: dummyCountry["currency"].(string)}
+
+		err := o.Read(&currency)
+
+		if err != nil {
+			continue
+		}
+
+		country := Countries{
+			Name:     dummyCountry["name"].(string),
+			Iso:      dummyCountry["iso"].(string),
+			Phone:    dummyCountry["phone"].(string),
+			Currency: &currency,
+			Slug:     dummyCountry["slug"].(string),
+			Email:    dummyCountry["email"].(string),
+			Skype:    dummyCountry["skype"].(string),
+		}
+
+		o.ReadOrCreate(&country)
+
+	}
+
+}
