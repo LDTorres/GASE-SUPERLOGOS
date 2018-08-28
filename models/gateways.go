@@ -13,6 +13,7 @@ import (
 type Gateways struct {
 	ID         int           `orm:"column(id);auto"`
 	Name       string        `orm:"column(name);size(255)"`
+	Code       string        `orm:"column(code);size(255)"`
 	Currencies []*Currencies `orm:"rel(m2m)"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add"`
 	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null"`
@@ -148,4 +149,21 @@ func DeleteGateways(id int) (err error) {
 		}
 	}
 	return
+}
+
+//AddDefaultDataGateways on init app
+func AddDefaultDataGateways() (err error) {
+
+	o := orm.NewOrm()
+
+	dummyData := []*Gateways{
+		{
+			Name: "Paypal",
+			Code: "01",
+		},
+	}
+
+	_, err = o.InsertMulti(100, dummyData)
+
+	return err
 }

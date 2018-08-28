@@ -159,7 +159,7 @@ func AddDefaultDataCurrencies() (err error) {
 
 	o := orm.NewOrm()
 
-	data := []*Currencies{
+	dummyData := []*Currencies{
 		{
 			Symbol: "€",
 			Name:   "Euro",
@@ -172,7 +172,58 @@ func AddDefaultDataCurrencies() (err error) {
 		},
 	}
 
-	_, err = o.InsertMulti(100, data)
+	_, err = o.InsertMulti(100, dummyData)
 
 	return err
+}
+
+func addRelationsGatewaysCurrencies() []error {
+
+	o := orm.NewOrm()
+
+	dummyData := map[string][]string{
+		"01": /* Paypal */ {
+			"USD",
+		},
+	}
+
+	var errors []error
+
+	for key, dummyGateway := range dummyData {
+
+		gateway := Gateways{Code: key}
+
+		err := o.Read(&gateway, "code")
+
+		if err != nil {
+			continue
+		}
+
+		m2m := o.QueryM2M(&gateway, "Currencies")
+
+		var InsertManyCurrencies []*Currencies
+
+		for _, iso := range dummyGateway {
+
+			currency := Currencies{Iso: iso}
+
+			err := o.Read(&currency, "iso")
+
+			if err != nil {
+				continue
+			}
+
+			InsertManyCurrencies = append(InsertManyCurrencies, &currency)
+
+		}
+
+		_, err = m2m.Add(InsertManyCurrencies)
+
+		if err != nil {
+			errors = append(errors, err)
+		}
+
+	}
+
+	return errors
 }

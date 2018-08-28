@@ -58,8 +58,26 @@ func init() {
 	errors := addDefaultDataActivities()
 
 	if len(errors) > 0 {
-		for _, err := range errors {
+		/* for _, err := range errors {
 			println(err.Error())
-		}
+		} */
+	}
+
+	err = AddDefaultDataGateways()
+	if err != nil {
+
+	}
+
+	err = AddDefaultDataCurrencies()
+	if err != nil {
+
+	}
+
+	errors = addRelationsGatewaysCurrencies()
+
+	if len(errors) > 0 {
+		/* for _, err := range errors {
+			println(err.Error())
+		} */
 	}
 }
