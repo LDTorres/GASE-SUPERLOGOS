@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/gosimple/slug"
 )
 
 type Sectors struct {
@@ -148,4 +150,24 @@ func DeleteSectors(id int) (err error) {
 		}
 	}
 	return
+}
+
+//AddDefaultDataSectors on init app
+func AddDefaultDataSectors() (err error) {
+
+	o := orm.NewOrm()
+
+	data := []*Sectors{
+		{
+			Name: "Valencia",
+		},
+	}
+
+	for _, v := range data {
+		v.Slug = slug.Make(v.Name)
+	}
+
+	_, err = o.InsertMulti(100, data)
+
+	return err
 }
