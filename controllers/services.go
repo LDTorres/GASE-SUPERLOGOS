@@ -54,7 +54,7 @@ func (c *ServicesController) Post() {
 func (c *ServicesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetServicesById(id)
+	v, err := models.GetServicesByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *ServicesController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Services{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateServicesById(&v); err == nil {
+		if err := models.UpdateServicesByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

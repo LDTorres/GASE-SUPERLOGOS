@@ -12,31 +12,31 @@ import (
 	"github.com/gosimple/slug"
 )
 
+//Sectors model
 type Sectors struct {
-	ID        int       `orm:"column(id);pk"`
-	Name      string    `orm:"column(name);size(255)"`
-	Slug      string    `orm:"column(slug);size(255)"`
-	Code      string    `orm:"column(code);size(255)"`
+	ID        int       `orm:"column(id);pk" json:"id"`
+	Name      string    `orm:"column(name);size(255)" json:"name"`
+	Slug      string    `orm:"column(slug);size(255)" json:"slug"`
+	Code      string    `orm:"column(code);size(255)" json:"-"`
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
+//TableName define Name
 func (t *Sectors) TableName() string {
 	return "sectors"
 }
 
-// AddSectors insert a new Sectors into database and returns
-// last inserted Id on success.
+// AddSectors insert a new Sectors into database and returns last inserted Id on success.
 func AddSectors(m *Sectors) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetSectorsById retrieves Sectors by Id. Returns error if
-// Id doesn't exist
-func GetSectorsById(id int) (v *Sectors, err error) {
+//GetSectorsByID retrieves Sectors by Id. Returns error if Id doesn't exist
+func GetSectorsByID(id int) (v *Sectors, err error) {
 	o := orm.NewOrm()
 	v = &Sectors{ID: id}
 	if err = o.Read(v); err == nil {
@@ -45,8 +45,7 @@ func GetSectorsById(id int) (v *Sectors, err error) {
 	return nil, err
 }
 
-// GetAllSectors retrieves all Sectors matches certain condition. Returns empty list if
-// no records exist
+//GetAllSectors retrieves all Sectors matches certain condition. Returns empty list if no records exist
 func GetAllSectors(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
@@ -123,9 +122,8 @@ func GetAllSectors(query map[string]string, fields []string, sortby []string, or
 	return nil, err
 }
 
-// UpdateSectors updates Sectors by Id and returns error if
-// the record to be updated doesn't exist
-func UpdateSectorsById(m *Sectors) (err error) {
+//UpdateSectorsByID updates Sectors by Id and returns error if the record to be updated doesn't exist
+func UpdateSectorsByID(m *Sectors) (err error) {
 	o := orm.NewOrm()
 	v := Sectors{ID: m.ID}
 	// ascertain id exists in the database
@@ -138,8 +136,7 @@ func UpdateSectorsById(m *Sectors) (err error) {
 	return
 }
 
-// DeleteSectors deletes Sectors by Id and returns error if
-// the record to be deleted doesn't exist
+//DeleteSectors deletes Sectors by Id and returns error if the record to be deleted doesn't exist
 func DeleteSectors(id int) (err error) {
 	o := orm.NewOrm()
 	v := Sectors{ID: id}

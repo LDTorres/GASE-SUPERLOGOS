@@ -10,30 +10,29 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+//Images Model
 type Images struct {
-	ID        int         `orm:"column(id);pk"`
-	Priority  int8        `orm:"column(priority)"`
-	URL       time.Time   `orm:"column(url);type(datetime)"`
-	Slug      string      `orm:"column(slug);size(255)"`
-	Portfolio *Portfolios `orm:"column(portfolios_id);rel(fk)"`
-	UUID      string      `orm:"column(uuid);size(255)"`
-	Mimetype  string      `orm:"column(mimetype)"`
+	ID        int         `orm:"column(id);pk" json:"id"`
+	Priority  int8        `orm:"column(priority)" json:"priority"`
+	URL       time.Time   `orm:"column(url);type(datetime)" json:"url"`
+	Slug      string      `orm:"column(slug);size(255)" json:"slug"`
+	Portfolio *Portfolios `orm:"column(portfolios_id);rel(fk)" json:"portfolio"`
+	UUID      string      `orm:"column(uuid);size(255)" json:"uuid"`
+	Mimetype  string      `orm:"column(mimetype)" json:"mime_type"`
 	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
-// AddImages insert a new Images into database and returns
-// last inserted Id on success.
+//AddImages insert a new Images into database and returns last inserted Id on success.
 func AddImages(m *Images) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetImagesById retrieves Images by Id. Returns error if
-// Id doesn't exist
-func GetImagesById(id int) (v *Images, err error) {
+//GetImagesByID retrieves Images by Id. Returns error if Id doesn't exist
+func GetImagesByID(id int) (v *Images, err error) {
 	o := orm.NewOrm()
 	v = &Images{ID: id}
 	if err = o.Read(v); err == nil {
@@ -42,8 +41,7 @@ func GetImagesById(id int) (v *Images, err error) {
 	return nil, err
 }
 
-// GetAllImages retrieves all Images matches certain condition. Returns empty list if
-// no records exist
+//GetAllImages retrieves all Images matches certain condition. Returns empty list if no records exist
 func GetAllImages(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
@@ -120,9 +118,8 @@ func GetAllImages(query map[string]string, fields []string, sortby []string, ord
 	return nil, err
 }
 
-// UpdateImages updates Images by Id and returns error if
-// the record to be updated doesn't exist
-func UpdateImagesById(m *Images) (err error) {
+//UpdateImagesByID updates Images by Id and returns error if the record to be updated doesn't exist
+func UpdateImagesByID(m *Images) (err error) {
 	o := orm.NewOrm()
 	v := Images{ID: m.ID}
 	// ascertain id exists in the database

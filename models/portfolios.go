@@ -10,35 +10,35 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+//Portfolios Model
 type Portfolios struct {
-	ID          int         `orm:"column(id);auto"`
-	Name        string      `orm:"column(name);size(255)"`
-	Activity    *Activities `orm:"column(activities_id);rel(fk)"`
-	Description string      `orm:"column(description)"`
-	Client      string      `orm:"column(client);size(255)"`
-	Location    *Locations  `orm:"column(locations_id);rel(fk)"`
-	Service     *Services   `orm:"column(services_id);rel(fk)"`
-	Slug        string      `orm:"column(slug);size(255)"`
+	ID          int         `orm:"column(id);auto" json:"id"`
+	Name        string      `orm:"column(name);size(255)" json:"name"`
+	Activity    *Activities `orm:"column(activities_id);rel(fk)" json:"activity"`
+	Description string      `orm:"column(description)" json:"description"`
+	Client      string      `orm:"column(client);size(255)" json:"client"`
+	Location    *Locations  `orm:"column(locations_id);rel(fk)" json:"location"`
+	Service     *Services   `orm:"column(services_id);rel(fk)" json:"service"`
+	Slug        string      `orm:"column(slug);size(255)" json:"slug"`
 	CreatedAt   time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt   time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt   time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	DeletedAt   time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
+//TableName define Name
 func (t *Portfolios) TableName() string {
 	return "portfolios"
 }
 
-// AddPortfolios insert a new Portfolios into database and returns
-// last inserted Id on success.
+// AddPortfolios insert a new Portfolios into database and returns last inserted Id on success.
 func AddPortfolios(m *Portfolios) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetPortfoliosById retrieves Portfolios by Id. Returns error if
-// Id doesn't exist
-func GetPortfoliosById(id int) (v *Portfolios, err error) {
+// GetPortfoliosByID retrieves Portfolios by Id. Returns error if Id doesn't exist
+func GetPortfoliosByID(id int) (v *Portfolios, err error) {
 	o := orm.NewOrm()
 	v = &Portfolios{ID: id}
 	if err = o.Read(v); err == nil {
@@ -47,8 +47,7 @@ func GetPortfoliosById(id int) (v *Portfolios, err error) {
 	return nil, err
 }
 
-// GetAllPortfolios retrieves all Portfolios matches certain condition. Returns empty list if
-// no records exist
+// GetAllPortfolios retrieves all Portfolios matches certain condition. Returns empty list if no records exist
 func GetAllPortfolios(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
@@ -125,9 +124,8 @@ func GetAllPortfolios(query map[string]string, fields []string, sortby []string,
 	return nil, err
 }
 
-// UpdatePortfolios updates Portfolios by Id and returns error if
-// the record to be updated doesn't exist
-func UpdatePortfoliosById(m *Portfolios) (err error) {
+//UpdatePortfoliosByID updates Portfolios by Id and returns error if the record to be updated doesn't exist
+func UpdatePortfoliosByID(m *Portfolios) (err error) {
 	o := orm.NewOrm()
 	v := Portfolios{ID: m.ID}
 	// ascertain id exists in the database

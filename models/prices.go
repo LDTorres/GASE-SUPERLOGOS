@@ -10,17 +10,19 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+//Prices Model
 type Prices struct {
-	ID        int         `orm:"column(id);auto"`
-	Value     float32     `orm:"column(value)"`
-	Service   *Services   `orm:"column(services_id);rel(fk)"`
-	Currency  *Currencies `orm:"column(currencies_id);rel(fk)"`
-	Orders    []*Orders   `orm:"reverse(many)"`
+	ID        int         `orm:"column(id);auto" json:"id"`
+	Value     float32     `orm:"column(value)" json:"value"`
+	Service   *Services   `orm:"column(services_id);rel(fk)" json:"service"`
+	Currency  *Currencies `orm:"column(currencies_id);rel(fk)" json:"currency"`
+	Orders    []*Orders   `orm:"reverse(many)" json:"orders"`
 	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
+//TableName define Name
 func (t *Prices) TableName() string {
 	return "prices"
 }
@@ -33,9 +35,8 @@ func AddPrices(m *Prices) (id int64, err error) {
 	return
 }
 
-// GetPricesById retrieves Prices by Id. Returns error if
-// Id doesn't exist
-func GetPricesById(id int) (v *Prices, err error) {
+//GetPricesByID retrieves Prices by Id. Returns error if Id doesn't exist
+func GetPricesByID(id int) (v *Prices, err error) {
 	o := orm.NewOrm()
 	v = &Prices{ID: id}
 	if err = o.Read(v); err == nil {
@@ -44,8 +45,7 @@ func GetPricesById(id int) (v *Prices, err error) {
 	return nil, err
 }
 
-// GetAllPrices retrieves all Prices matches certain condition. Returns empty list if
-// no records exist
+//GetAllPrices retrieves all Prices matches certain condition. Returns empty list if no records exist
 func GetAllPrices(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
@@ -122,9 +122,8 @@ func GetAllPrices(query map[string]string, fields []string, sortby []string, ord
 	return nil, err
 }
 
-// UpdatePrices updates Prices by Id and returns error if
-// the record to be updated doesn't exist
-func UpdatePricesById(m *Prices) (err error) {
+//UpdatePricesByID updates Prices by Id and returns error if the record to be updated doesn't exist
+func UpdatePricesByID(m *Prices) (err error) {
 	o := orm.NewOrm()
 	v := Prices{ID: m.ID}
 	// ascertain id exists in the database

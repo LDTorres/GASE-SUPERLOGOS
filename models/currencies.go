@@ -154,7 +154,7 @@ func DeleteCurrencies(id int) (err error) {
 	return
 }
 
-//AddDefaultData on init app
+//AddDefaultDataCurrencies on init app
 func AddDefaultDataCurrencies() (count int64, err error) {
 
 	o := orm.NewOrm()

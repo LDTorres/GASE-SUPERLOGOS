@@ -54,7 +54,7 @@ func (c *PortfoliosController) Post() {
 func (c *PortfoliosController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetPortfoliosById(id)
+	v, err := models.GetPortfoliosByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *PortfoliosController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Portfolios{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdatePortfoliosById(&v); err == nil {
+		if err := models.UpdatePortfoliosByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

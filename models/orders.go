@@ -10,33 +10,33 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+//Orders Model
 type Orders struct {
-	ID           int        `orm:"column(id);auto"`
-	InitialValue float32    `orm:"column(initial_value)"`
-	FinalValue   float32    `orm:"column(final_value)"`
-	State        string     `orm:"column(state)"`
-	Prices       []*Prices  `orm:"rel(m2m)"`
-	Coupons      []*Coupons `orm:"rel(m2m)"`
+	ID           int        `orm:"column(id);auto" json:"id"`
+	InitialValue float32    `orm:"column(initial_value)" json:"initial_value"`
+	FinalValue   float32    `orm:"column(final_value)" json:"final_value"`
+	State        string     `orm:"column(state)" json:"state"`
+	Prices       []*Prices  `orm:"rel(m2m)" json:"prices"`
+	Coupons      []*Coupons `orm:"rel(m2m)" json:"coupons"`
 	CreatedAt    time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt    time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt    time.Time  `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	DeletedAt    time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
+//TableName define Name
 func (t *Orders) TableName() string {
 	return "orders"
 }
 
-// AddOrders insert a new Orders into database and returns
-// last inserted Id on success.
+// AddOrders insert a new Orders into database and returns last inserted Id on success.
 func AddOrders(m *Orders) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetOrdersById retrieves Orders by Id. Returns error if
-// Id doesn't exist
-func GetOrdersById(id int) (v *Orders, err error) {
+// GetOrdersByID retrieves Orders by Id. Returns error if Id doesn't exist
+func GetOrdersByID(id int) (v *Orders, err error) {
 	o := orm.NewOrm()
 	v = &Orders{ID: id}
 	if err = o.Read(v); err == nil {
@@ -123,9 +123,8 @@ func GetAllOrders(query map[string]string, fields []string, sortby []string, ord
 	return nil, err
 }
 
-// UpdateOrders updates Orders by Id and returns error if
-// the record to be updated doesn't exist
-func UpdateOrdersById(m *Orders) (err error) {
+//UpdateOrdersByID updates Orders by Id and returns error if the record to be updated doesn't exist
+func UpdateOrdersByID(m *Orders) (err error) {
 	o := orm.NewOrm()
 	v := Orders{ID: m.ID}
 	// ascertain id exists in the database

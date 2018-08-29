@@ -54,7 +54,7 @@ func (c *PricesController) Post() {
 func (c *PricesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetPricesById(id)
+	v, err := models.GetPricesByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *PricesController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Prices{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdatePricesById(&v); err == nil {
+		if err := models.UpdatePricesByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()

@@ -10,16 +10,18 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+//Locations Model
 type Locations struct {
-	ID        int        `orm:"column(id);auto"`
-	Name      string     `orm:"column(name);size(255)"`
-	Slug      string     `orm:"column(slug);size(255)"`
+	ID        int        `orm:"column(id);auto" json:"id"`
+	Name      string     `orm:"column(name);size(255)" json:"name"`
+	Slug      string     `orm:"column(slug);size(255)" json:"slug"`
+	Country   *Countries `orm:"column(countries_id);rel(fk)" json:"country"`
 	CreatedAt time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time  `orm:"column(deleted_at);type(datetime);null"  json:"-"`
-	Country   *Countries `orm:"column(countries_id);rel(fk)"`
+	DeletedAt time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
+//TableName define Name
 func (t *Locations) TableName() string {
 	return "locations"
 }
@@ -32,9 +34,8 @@ func AddLocations(m *Locations) (id int64, err error) {
 	return
 }
 
-// GetLocationsById retrieves Locations by Id. Returns error if
-// Id doesn't exist
-func GetLocationsById(id int) (v *Locations, err error) {
+//GetLocationsByID retrieves Locations by Id. Returns error if Id doesn't exist
+func GetLocationsByID(id int) (v *Locations, err error) {
 	o := orm.NewOrm()
 	v = &Locations{ID: id}
 	if err = o.Read(v); err == nil {
@@ -43,8 +44,7 @@ func GetLocationsById(id int) (v *Locations, err error) {
 	return nil, err
 }
 
-// GetAllLocations retrieves all Locations matches certain condition. Returns empty list if
-// no records exist
+//GetAllLocations retrieves all Locations matches certain condition. Returns empty list if no records exist
 func GetAllLocations(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
@@ -121,9 +121,8 @@ func GetAllLocations(query map[string]string, fields []string, sortby []string, 
 	return nil, err
 }
 
-// UpdateLocations updates Locations by Id and returns error if
-// the record to be updated doesn't exist
-func UpdateLocationsById(m *Locations) (err error) {
+//UpdateLocationsByID updates Locations by Id and returns error if the record to be updated doesn't exist
+func UpdateLocationsByID(m *Locations) (err error) {
 	o := orm.NewOrm()
 	v := Locations{ID: m.ID}
 	// ascertain id exists in the database

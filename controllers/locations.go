@@ -54,7 +54,7 @@ func (c *LocationsController) Post() {
 func (c *LocationsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetLocationsById(id)
+	v, err := models.GetLocationsByID(id)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -139,7 +139,7 @@ func (c *LocationsController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	v := models.Locations{ID: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateLocationsById(&v); err == nil {
+		if err := models.UpdateLocationsByID(&v); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
