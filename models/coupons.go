@@ -13,9 +13,9 @@ import (
 //Coupons Model
 type Coupons struct {
 	ID         int       `orm:"column(id);auto" json:"id"`
-	Percentage float32   `orm:"column(percentage)" json:"percentage"`
-	Code       string    `orm:"column(code);size(45)" json:"-"`
-	Status     int8      `orm:"column(status);null" json:"status"`
+	Percentage float32   `orm:"column(percentage)" json:"percentage" valid:"Required"`
+	Code       string    `orm:"column(code);size(45)" json:"code" valid:"Required; AlphaNumeric"`
+	Status     int8      `orm:"column(status);null" json:"status" valid:"Required"`
 	Orders     []*Orders `orm:"reverse(many)" json:"orders"`
 	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null;auto_now_add"`

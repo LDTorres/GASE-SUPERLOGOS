@@ -13,7 +13,7 @@ import (
 //Prices Model
 type Prices struct {
 	ID        int         `orm:"column(id);auto" json:"id"`
-	Value     float32     `orm:"column(value)" json:"value"`
+	Value     float32     `orm:"column(value)" json:"value" valid:"Required"`
 	Service   *Services   `orm:"column(services_id);rel(fk)" json:"service"`
 	Currency  *Currencies `orm:"column(currencies_id);rel(fk)" json:"currency"`
 	Orders    []*Orders   `orm:"reverse(many)" json:"orders"`

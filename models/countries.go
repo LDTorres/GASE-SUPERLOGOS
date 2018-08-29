@@ -14,17 +14,17 @@ import (
 //Countries Model
 type Countries struct {
 	ID        int         `orm:"column(id);auto" json:"id"`
-	Name      string      `orm:"column(name);size(255)" json:"name"`
-	Iso       string      `orm:"column(iso);size(3)" json:"iso"`
+	Name      string      `orm:"column(name);size(255)" json:"name" valid:"Required"`
+	Iso       string      `orm:"column(iso);size(3)" json:"iso" valid:"Required; Length(3); Alpha"`
 	Phone     string      `orm:"column(phone);size(45)" json:"phone"`
-	Currency  *Currencies `orm:"column(currency_id);rel(fk)"`
-	Slug      string      `orm:"column(slug);size(255)" json:"slug"`
+	Email     string      `orm:"column(email);size(45);null" json:"email" valid:"Email"`
+	Skype     string      `orm:"column(skype);size(45);null" json:"skype"`
+	Slug      string      `orm:"column(slug);size(255)" json:"slug" valid:"AlphaDash"`
 	Tax       float32     `orm:"column(tax)" json:"tax"`
+	Currency  *Currencies `orm:"column(currency_id);rel(fk)"`
 	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
-	Email     string      `orm:"column(email);size(45);null" json:"email"`
-	Skype     string      `orm:"column(skype);size(45);null" json:"skype"`
 }
 
 //TableName =
@@ -169,7 +169,6 @@ func addDefaultDataCountries() (count int64, err error) {
 			"iso":      "US",
 			"phone":    "122353",
 			"currency": "USD",
-			"slug":     "USA",
 			"tax":      10.0,
 			"email":    "liderlogo@gmail.com",
 			"skype":    "1024234",
@@ -193,7 +192,7 @@ func addDefaultDataCountries() (count int64, err error) {
 			Iso:      dummyCountry["iso"].(string),
 			Phone:    dummyCountry["phone"].(string),
 			Currency: &currency,
-			Slug:     slug.Make(dummyCountry["slug"].(string)),
+			Slug:     slug.Make(dummyCountry["name"].(string)),
 			Email:    dummyCountry["email"].(string),
 			Skype:    dummyCountry["skype"].(string),
 		}

@@ -13,8 +13,8 @@ import (
 //Locations Model
 type Locations struct {
 	ID        int        `orm:"column(id);auto" json:"id"`
-	Name      string     `orm:"column(name);size(255)" json:"name"`
-	Slug      string     `orm:"column(slug);size(255)" json:"slug"`
+	Name      string     `orm:"column(name);size(255)" json:"name" valid:"Required"`
+	Slug      string     `orm:"column(slug);size(255)" json:"slug" valid:"Required; AlphaDash"`
 	Country   *Countries `orm:"column(countries_id);rel(fk)" json:"country"`
 	CreatedAt time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
