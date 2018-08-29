@@ -49,10 +49,11 @@ func (c *CountriesController) Post() {
 		c.BadRequestErrors(valid.Errors)
 	}
 
-	err = models.ValidateExists("Currency", v.Currency)
+	exists := models.ValidateExists("Currencies", v.Currency.ID)
 
-	if err != nil {
-		c.ServeErrorJSON(err)
+	if !exists {
+		c.BadRequestDontExists("Currency")
+		return
 	}
 
 	_, err = models.AddCountries(&v)
@@ -180,6 +181,21 @@ func (c *CountriesController) Put() {
 
 	if err != nil {
 		c.ServeErrorJSON(err)
+		return
+	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors)
+	}
+
+	exists := models.ValidateExists("Currencies", v.Currency.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Currency")
 		return
 	}
 
