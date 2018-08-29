@@ -32,6 +32,9 @@ func (t *Services) TableName() string {
 //AddServices insert a new Services into database and returns last inserted Id on success.
 func AddServices(m *Services) (id int64, err error) {
 	o := orm.NewOrm()
+
+	m.Slug = GenerateSlug("Services", m.Name)
+
 	id, err = o.Insert(m)
 	return
 }

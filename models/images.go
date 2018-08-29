@@ -14,7 +14,7 @@ import (
 type Images struct {
 	ID        int         `orm:"column(id);pk" json:"id"`
 	Priority  int8        `orm:"column(priority)" json:"priority"`
-	URL       time.Time   `orm:"column(url);type(datetime)" json:"url" valid:"Required"`
+	Name      string      `orm:"column(url);size(255)" json:"url" valid:"Required"`
 	Slug      string      `orm:"column(slug);size(255)" json:"slug" valid:"Required; AlphaDash"`
 	UUID      string      `orm:"column(uuid);size(255)" json:"uuid" valid:"Required"`
 	Mimetype  string      `orm:"column(mimetype)" json:"mime_type" valid:"Required"`
@@ -27,6 +27,9 @@ type Images struct {
 //AddImages insert a new Images into database and returns last inserted Id on success.
 func AddImages(m *Images) (id int64, err error) {
 	o := orm.NewOrm()
+
+	m.Slug = GenerateSlug("Images", m.Name)
+
 	id, err = o.Insert(m)
 	return
 }

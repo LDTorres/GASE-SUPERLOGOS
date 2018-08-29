@@ -31,6 +31,9 @@ func (t *Sectors) TableName() string {
 // AddSectors insert a new Sectors into database and returns last inserted Id on success.
 func AddSectors(m *Sectors) (id int64, err error) {
 	o := orm.NewOrm()
+
+	m.Slug = GenerateSlug("Sectors", m.Name)
+
 	id, err = o.Insert(m)
 	return
 }

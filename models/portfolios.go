@@ -34,6 +34,9 @@ func (t *Portfolios) TableName() string {
 // AddPortfolios insert a new Portfolios into database and returns last inserted Id on success.
 func AddPortfolios(m *Portfolios) (id int64, err error) {
 	o := orm.NewOrm()
+
+	m.Slug = GenerateSlug("Porfolios", m.Name)
+
 	id, err = o.Insert(m)
 	return
 }
