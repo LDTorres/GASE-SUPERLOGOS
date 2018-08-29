@@ -22,6 +22,12 @@ func init() {
 			),
 		),
 
+		beego.NSNamespace("/carts",
+			beego.NSInclude(
+				&controllers.CartsController{},
+			),
+		),
+
 		beego.NSNamespace("/clients",
 			beego.NSInclude(
 				&controllers.ClientsController{},

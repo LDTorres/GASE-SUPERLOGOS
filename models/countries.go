@@ -15,13 +15,13 @@ import (
 type Countries struct {
 	ID        int         `orm:"column(id);auto" json:"id"`
 	Name      string      `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Iso       string      `orm:"column(iso);size(3)" json:"iso" valid:"Required; Length(3); Alpha"`
+	Iso       string      `orm:"column(iso);size(2)" json:"iso" valid:"Required; Length(2); Alpha"`
 	Phone     string      `orm:"column(phone);size(45)" json:"phone"`
 	Email     string      `orm:"column(email);size(45);null" json:"email" valid:"Email"`
 	Skype     string      `orm:"column(skype);size(45);null" json:"skype"`
 	Slug      string      `orm:"column(slug);size(255)" json:"slug" valid:"AlphaDash"`
 	Tax       float32     `orm:"column(tax)" json:"tax"`
-	Currency  *Currencies `orm:"column(currency_id);rel(fk)"`
+	Currency  *Currencies `orm:"column(currency_id);rel(fk)" json:"currency"`
 	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
@@ -36,6 +36,9 @@ func (t *Countries) TableName() string {
 // last inserted Id on success.
 func AddCountries(m *Countries) (id int64, err error) {
 	o := orm.NewOrm()
+
+	m.Slug = GenerateSlug("Countries", m.Name)
+
 	id, err = o.Insert(m)
 	return
 }
