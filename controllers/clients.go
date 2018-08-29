@@ -46,7 +46,7 @@ func (c *ClientsController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Clients")
 	}
 
 	_, err = models.AddClients(&v)

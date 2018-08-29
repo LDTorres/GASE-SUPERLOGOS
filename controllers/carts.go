@@ -46,7 +46,28 @@ func (c *CartsController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Carts")
+	}
+
+	for _, price := range v.Prices {
+		// Validations of data types
+		var v models.Prices
+		validM2M := validation.Validation{}
+
+		b, err = validM2M.Valid(&v)
+
+		if !b {
+			c.BadRequestErrors(validM2M.Errors, "Price")
+			return
+		}
+
+		// Validate if Exists the element on the database
+		exists := models.ValidateExists("Prices", price.ID)
+
+		if !exists {
+			c.BadRequestDontExists("Price")
+			return
+		}
 	}
 
 	_, err = models.AddCarts(&v)

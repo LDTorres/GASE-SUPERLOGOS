@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 
@@ -45,6 +47,26 @@ func init() {
 	})
 }
 
+//BadRequest =
+func (c *BaseController) BadRequest() {
+	c.Ctx.Output.SetStatus(400)
+	c.Data["json"] = MessageResponse{
+		Message:       "Bad request body",
+		PrettyMessage: "Peticion mal formada",
+	}
+	c.ServeJSON()
+}
+
+//BadRequestDontExists =
+func (c *BaseController) BadRequestDontExists(message string) {
+	c.Ctx.Output.SetStatus(400)
+	c.Data["json"] = MessageResponse{
+		Message:       "Dont exist the element " + message,
+		PrettyMessage: "No existe el elemento a relacionar " + message,
+	}
+	c.ServeJSON()
+}
+
 //ServeErrorJSON : Serve Json error
 func (c *BaseController) ServeErrorJSON(err error) {
 
@@ -71,37 +93,18 @@ func (c *BaseController) ServeErrorJSON(err error) {
 	c.ServeJSON()
 }
 
-//BadRequestDontExists =
-func (c *BaseController) BadRequestDontExists(message string) {
-	c.Ctx.Output.SetStatus(400)
-	c.Data["json"] = MessageResponse{
-		Message:       "Dont exist the element " + message,
-		PrettyMessage: "No existe el elemento a relacionar " + message,
-	}
-	c.ServeJSON()
-}
-
-//BadRequest =
-func (c *BaseController) BadRequest() {
-	c.Ctx.Output.SetStatus(400)
-	c.Data["json"] = MessageResponse{
-		Message:       "Bad request body",
-		PrettyMessage: "Peticion mal formada",
-	}
-	c.ServeJSON()
-}
-
-//BadRequestErrors =
-func (c *BaseController) BadRequestErrors(errors []*validation.Error) {
+//BadRequestErrors = Validar
+func (c *BaseController) BadRequestErrors(errors []*validation.Error, entity string) {
 
 	var errorsMessages []map[string]string
 
 	for _, err := range errors {
 
 		var errorMessage = map[string]string{
+			"entity":     entity,
 			"message":    err.Message,
-			"field":      err.Field,
-			"validation": err.Name,
+			"field":      strings.ToLower(err.Field),
+			"validation": strings.ToLower(err.Name),
 		}
 
 		errorsMessages = append(errorsMessages, errorMessage)
