@@ -14,7 +14,7 @@ import (
 //Activities Model
 type Activities struct {
 	ID          int       `orm:"column(id);auto" json:"id"`
-	Name        string    `orm:"column(name)" json:"name"`
+	Name        string    `orm:"column(name)" json:"name" valid:"Required"`
 	Description string    `orm:"column(description)" json:"description"`
 	Sector      *Sectors  `orm:"column(sectors_id);rel(fk)" json:"sector"`
 	Slug        string    `orm:"column(slug);size(255)"  json:"slug"`
