@@ -16,7 +16,7 @@ type Currencies struct {
 	Name      string      `orm:"column(name);size(255)" json:"name" valid:"Required"`
 	Iso       string      `orm:"column(iso);size(3)" json:"iso" valid:"Required; Length(3); Alpha"`
 	Symbol    string      `orm:"column(symbol);size(3)" json:"symbol" valid:"Required"`
-	Gateways  []*Gateways `orm:"reverse(many)" json:"gateways"`
+	Gateways  []*Gateways `orm:"reverse(many)" json:"gateways,omitempty"`
 	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`

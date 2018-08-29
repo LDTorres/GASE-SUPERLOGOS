@@ -16,8 +16,8 @@ type Orders struct {
 	InitialValue float32    `orm:"column(initial_value)" json:"initial_value" valid:"Required"`
 	FinalValue   float32    `orm:"column(final_value)" json:"final_value" valid:"Required"`
 	State        string     `orm:"column(state)" json:"state" valid:"Required; Alpha"`
-	Prices       []*Prices  `orm:"rel(m2m)" json:"prices"`
-	Coupons      []*Coupons `orm:"rel(m2m)" json:"coupons"`
+	Prices       []*Prices  `orm:"rel(m2m)" json:"prices,omitempty"`
+	Coupons      []*Coupons `orm:"rel(m2m)" json:"coupons,omitempty"`
 	CreatedAt    time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt    time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt    time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
