@@ -10,47 +10,44 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-//Gateways Model
-type Gateways struct {
-	ID         int           `orm:"column(id);auto" json:"id"`
-	Name       string        `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
-	Currencies []*Currencies `orm:"rel(m2m)" json:"currencies" valid:"Required"`
-	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+//Carts Model
+type Carts struct {
+	ID        int       `orm:"column(id);auto" json:"id"`
+	Cookie    string    `orm:"column(cookie);size(255)" json:"cookie"`
+	Prices    []*Prices `orm:"rel(m2m)" json:"prices"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
-//TableName =
-func (t *Gateways) TableName() string {
-	return "gateways"
+//TableName define Name
+func (t *Carts) TableName() string {
+	return "carts"
 }
 
-// AddGateways insert a new Gateways into database and returns
-// last inserted Id on success.
-func AddGateways(m *Gateways) (id int64, err error) {
+// AddCarts insert a new Carts into database and returns last inserted Id on success.
+func AddCarts(m *Carts) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
 }
 
-// GetGatewaysByID retrieves Gateways by Id. Returns error if
-// Id doesn't exist
-func GetGatewaysByID(id int) (v *Gateways, err error) {
+// GetCartsByID retrieves Carts by Id. Returns error if Id doesn't exist
+func GetCartsByID(id int) (v *Carts, err error) {
 	o := orm.NewOrm()
-	v = &Gateways{ID: id}
+	v = &Carts{ID: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
 	return nil, err
 }
 
-// GetAllGateways retrieves all Gateways matches certain condition. Returns empty list if
+// GetAllCarts retrieves all Carts matches certain condition. Returns empty list if
 // no records exist
-func GetAllGateways(query map[string]string, fields []string, sortby []string, order []string,
+func GetAllCarts(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Gateways))
+	qs := o.QueryTable(new(Carts))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -100,7 +97,7 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 		}
 	}
 
-	var l []Gateways
+	var l []Carts
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -123,11 +120,10 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 	return nil, err
 }
 
-// UpdateGatewaysByID updates Gateways by Id and returns error if
-// the record to be updated doesn't exist
-func UpdateGatewaysByID(m *Gateways) (err error) {
+//UpdateCartsByID updates Carts by Id and returns error if the record to be updated doesn't exist
+func UpdateCartsByID(m *Carts) (err error) {
 	o := orm.NewOrm()
-	v := Gateways{ID: m.ID}
+	v := Carts{ID: m.ID}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -138,34 +134,17 @@ func UpdateGatewaysByID(m *Gateways) (err error) {
 	return
 }
 
-// DeleteGateways deletes Gateways by Id and returns error if
+// DeleteCarts deletes Carts by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteGateways(id int) (err error) {
+func DeleteCarts(id int) (err error) {
 	o := orm.NewOrm()
-	v := Gateways{ID: id}
+	v := Carts{ID: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Gateways{ID: id}); err == nil {
+		if num, err = o.Delete(&Carts{ID: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
-	return
-}
-
-//AddDefaultDataGateways on init app
-func AddDefaultDataGateways() (count int64, err error) {
-
-	o := orm.NewOrm()
-
-	dummyData := []*Gateways{
-		{
-			Name: "Paypal",
-			Code: "01",
-		},
-	}
-
-	count, err = o.InsertMulti(100, dummyData)
-
 	return
 }

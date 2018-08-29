@@ -10,13 +10,13 @@ import (
 	"github.com/astaxie/beego/validation"
 )
 
-// CountriesController operations for Countries
-type CountriesController struct {
+// CartsController operations for Carts
+type CartsController struct {
 	BaseController
 }
 
 // URLMapping ...
-func (c *CountriesController) URLMapping() {
+func (c *CartsController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -26,13 +26,13 @@ func (c *CountriesController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create Countries
-// @Param	body		body 	models.Countries	true		"body for Countries content"
-// @Success 201 {int} models.Countries
+// @Description create Carts
+// @Param	body		body 	models.Carts	true		"body for Carts content"
+// @Success 201 {int} models.Carts
 // @Failure 400 body is empty
 // @router / [post]
-func (c *CountriesController) Post() {
-	var v models.Countries
+func (c *CartsController) Post() {
+	var v models.Carts
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
@@ -49,13 +49,7 @@ func (c *CountriesController) Post() {
 		c.BadRequestErrors(valid.Errors)
 	}
 
-	err = models.ValidateExists("Currency", v.Currency)
-
-	if err != nil {
-		c.ServeErrorJSON(err)
-	}
-
-	_, err = models.AddCountries(&v)
+	_, err = models.AddCarts(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -70,12 +64,12 @@ func (c *CountriesController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Countries by id
+// @Description get Carts by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Countries
+// @Success 200 {object} models.Carts
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *CountriesController) GetOne() {
+func (c *CartsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -84,7 +78,7 @@ func (c *CountriesController) GetOne() {
 		return
 	}
 
-	v, err := models.GetCountriesByID(id)
+	v, err := models.GetCartsByID(id)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -96,17 +90,17 @@ func (c *CountriesController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get Countries
+// @Description get Carts
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.Countries
+// @Success 200 {object} models.Carts
 // @Failure 403
 // @router / [get]
-func (c *CountriesController) GetAll() {
+func (c *CartsController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -148,7 +142,7 @@ func (c *CountriesController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllCountries(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllCarts(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -160,13 +154,13 @@ func (c *CountriesController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the Countries
+// @Description update the Carts
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Countries	true		"body for Countries content"
-// @Success 200 {object} models.Countries
+// @Param	body		body 	models.Carts	true		"body for Carts content"
+// @Success 200 {object} models.Carts
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *CountriesController) Put() {
+func (c *CartsController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -175,7 +169,7 @@ func (c *CountriesController) Put() {
 		return
 	}
 
-	v := models.Countries{ID: id}
+	v := models.Carts{ID: id}
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -183,7 +177,7 @@ func (c *CountriesController) Put() {
 		return
 	}
 
-	err = models.UpdateCountriesByID(&v)
+	err = models.UpdateCartsByID(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -200,12 +194,12 @@ func (c *CountriesController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the Countries
+// @Description delete the Carts
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *CountriesController) Delete() {
+func (c *CartsController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -214,7 +208,7 @@ func (c *CountriesController) Delete() {
 		return
 	}
 
-	err = models.DeleteCountries(id)
+	err = models.DeleteCarts(id)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
