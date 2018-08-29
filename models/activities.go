@@ -15,12 +15,12 @@ import (
 type Activities struct {
 	ID          int       `orm:"column(id);auto" json:"id"`
 	Name        string    `orm:"column(name)" json:"name" valid:"Required"`
-	Description string    `orm:"column(description)" json:"description"`
+	Description string    `orm:"column(description)" json:"description" valid:"Required"`
 	Sector      *Sectors  `orm:"column(sectors_id);rel(fk)" json:"sector"`
-	Slug        string    `orm:"column(slug);size(255)"  json:"slug"`
+	Slug        string    `orm:"column(slug);size(255)"  json:"slug" valid:"AlphaDash"`
 	CreatedAt   time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt   time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt   time.Time `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	DeletedAt   time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName =

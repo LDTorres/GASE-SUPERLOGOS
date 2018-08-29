@@ -13,9 +13,9 @@ import (
 //Orders Model
 type Orders struct {
 	ID           int        `orm:"column(id);auto" json:"id"`
-	InitialValue float32    `orm:"column(initial_value)" json:"initial_value"`
-	FinalValue   float32    `orm:"column(final_value)" json:"final_value"`
-	State        string     `orm:"column(state)" json:"state"`
+	InitialValue float32    `orm:"column(initial_value)" json:"initial_value" valid:"Required"`
+	FinalValue   float32    `orm:"column(final_value)" json:"final_value" valid:"Required"`
+	State        string     `orm:"column(state)" json:"state" valid:"Required; Alpha"`
 	Prices       []*Prices  `orm:"rel(m2m)" json:"prices"`
 	Coupons      []*Coupons `orm:"rel(m2m)" json:"coupons"`
 	CreatedAt    time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`

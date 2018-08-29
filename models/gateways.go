@@ -13,8 +13,8 @@ import (
 //Gateways Model
 type Gateways struct {
 	ID         int           `orm:"column(id);auto" json:"id"`
-	Name       string        `orm:"column(name);size(255)" json:"name"`
-	Code       string        `orm:"column(code);size(255)" json:"-"`
+	Name       string        `orm:"column(name);size(255)" json:"name" valid:"Required"`
+	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
 	Currencies []*Currencies `orm:"rel(m2m)" json:"currencies"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
