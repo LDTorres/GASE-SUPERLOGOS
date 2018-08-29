@@ -6,6 +6,8 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego/validation"
 )
 
 // SectorsController operations for Sectors
@@ -27,20 +29,36 @@ func (c *SectorsController) URLMapping() {
 // @Description create Sectors
 // @Param	body		body 	models.Sectors	true		"body for Sectors content"
 // @Success 201 {int} models.Sectors
-// @Failure 403 body is empty
+// @Failure 400 body is empty
 // @router / [post]
 func (c *SectorsController) Post() {
 	var v models.Sectors
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddSectors(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors)
+	}
+
+	_, err = models.AddSectors(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+
 	c.ServeJSON()
 }
 
@@ -53,13 +71,20 @@ func (c *SectorsController) Post() {
 // @router /:id [get]
 func (c *SectorsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
+	}
+
 	v, err := models.GetSectorsByID(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = v
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }
 
@@ -119,10 +144,11 @@ func (c *SectorsController) GetAll() {
 
 	l, err := models.GetAllSectors(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = l
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = l
 	c.ServeJSON()
 }
 
@@ -136,17 +162,33 @@ func (c *SectorsController) GetAll() {
 // @router /:id [put]
 func (c *SectorsController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.Sectors{ID: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateSectorsByID(&v); err == nil {
-			c.Data["json"] = "OK"
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	v := models.Sectors{ID: id}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	err = models.UpdateSectorsByID(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Updated element",
+		PrettyMessage: "Elemento Actualizado",
+	}
+
 	c.ServeJSON()
 }
 
@@ -159,11 +201,24 @@ func (c *SectorsController) Put() {
 // @router /:id [delete]
 func (c *SectorsController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteSectors(id); err == nil {
-		c.Data["json"] = "OK"
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	err = models.DeleteSectors(id)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Deleted element",
+		PrettyMessage: "Elemento Eliminado",
+	}
+
 	c.ServeJSON()
 }

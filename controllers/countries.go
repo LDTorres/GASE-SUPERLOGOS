@@ -6,6 +6,8 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego/validation"
 )
 
 // CountriesController operations for Countries
@@ -27,20 +29,36 @@ func (c *CountriesController) URLMapping() {
 // @Description create Countries
 // @Param	body		body 	models.Countries	true		"body for Countries content"
 // @Success 201 {int} models.Countries
-// @Failure 403 body is empty
+// @Failure 400 body is empty
 // @router / [post]
 func (c *CountriesController) Post() {
 	var v models.Countries
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddCountries(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors)
+	}
+
+	_, err = models.AddCountries(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+
 	c.ServeJSON()
 }
 
@@ -53,13 +71,20 @@ func (c *CountriesController) Post() {
 // @router /:id [get]
 func (c *CountriesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
+	}
+
 	v, err := models.GetCountriesByID(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = v
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }
 
@@ -119,10 +144,11 @@ func (c *CountriesController) GetAll() {
 
 	l, err := models.GetAllCountries(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = l
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = l
 	c.ServeJSON()
 }
 
@@ -136,17 +162,33 @@ func (c *CountriesController) GetAll() {
 // @router /:id [put]
 func (c *CountriesController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.Countries{ID: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateCountriesByID(&v); err == nil {
-			c.Data["json"] = "OK"
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	v := models.Countries{ID: id}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	err = models.UpdateCountriesByID(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Updated element",
+		PrettyMessage: "Elemento Actualizado",
+	}
+
 	c.ServeJSON()
 }
 
@@ -159,11 +201,24 @@ func (c *CountriesController) Put() {
 // @router /:id [delete]
 func (c *CountriesController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteCountries(id); err == nil {
-		c.Data["json"] = "OK"
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	err = models.DeleteCountries(id)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Deleted element",
+		PrettyMessage: "Elemento Eliminado",
+	}
+
 	c.ServeJSON()
 }

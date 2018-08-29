@@ -29,7 +29,7 @@ func (c *ActivitiesController) URLMapping() {
 // @Description create Activities
 // @Param	body		body 	models.Activities	true		"body for Activities content"
 // @Success 201 {int} models.Activities
-// @Failure 403 body is empty
+// @Failure 400 body is empty
 // @router / [post]
 func (c *ActivitiesController) Post() {
 	var v models.Activities
@@ -186,8 +186,8 @@ func (c *ActivitiesController) Put() {
 	}
 
 	c.Data["json"] = MessageResponse{
-		Message:       "Deleted element",
-		PrettyMessage: "Elemento Eliminado",
+		Message:       "Updated element",
+		PrettyMessage: "Elemento Actualizado",
 	}
 
 	c.ServeJSON()

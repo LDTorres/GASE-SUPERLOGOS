@@ -6,6 +6,8 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego/validation"
 )
 
 // ServicesController operations for Services
@@ -27,20 +29,36 @@ func (c *ServicesController) URLMapping() {
 // @Description create Services
 // @Param	body		body 	models.Services	true		"body for Services content"
 // @Success 201 {int} models.Services
-// @Failure 403 body is empty
+// @Failure 400 body is empty
 // @router / [post]
 func (c *ServicesController) Post() {
 	var v models.Services
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddServices(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors)
+	}
+
+	_, err = models.AddServices(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+
 	c.ServeJSON()
 }
 
@@ -53,13 +71,20 @@ func (c *ServicesController) Post() {
 // @router /:id [get]
 func (c *ServicesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
+	}
+
 	v, err := models.GetServicesByID(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = v
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }
 
@@ -119,10 +144,11 @@ func (c *ServicesController) GetAll() {
 
 	l, err := models.GetAllServices(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = l
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = l
 	c.ServeJSON()
 }
 
@@ -136,17 +162,33 @@ func (c *ServicesController) GetAll() {
 // @router /:id [put]
 func (c *ServicesController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.Services{ID: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateServicesByID(&v); err == nil {
-			c.Data["json"] = "OK"
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	v := models.Services{ID: id}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	err = models.UpdateServicesByID(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Updated element",
+		PrettyMessage: "Elemento Actualizado",
+	}
+
 	c.ServeJSON()
 }
 
@@ -159,11 +201,24 @@ func (c *ServicesController) Put() {
 // @router /:id [delete]
 func (c *ServicesController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteServices(id); err == nil {
-		c.Data["json"] = "OK"
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	err = models.DeleteServices(id)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Deleted element",
+		PrettyMessage: "Elemento Eliminado",
+	}
+
 	c.ServeJSON()
 }

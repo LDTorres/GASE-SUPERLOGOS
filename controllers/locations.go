@@ -6,6 +6,8 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego/validation"
 )
 
 // LocationsController operations for Locations
@@ -27,20 +29,36 @@ func (c *LocationsController) URLMapping() {
 // @Description create Locations
 // @Param	body		body 	models.Locations	true		"body for Locations content"
 // @Success 201 {int} models.Locations
-// @Failure 403 body is empty
+// @Failure 400 body is empty
 // @router / [post]
 func (c *LocationsController) Post() {
 	var v models.Locations
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddLocations(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors)
+	}
+
+	_, err = models.AddLocations(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+
 	c.ServeJSON()
 }
 
@@ -53,13 +71,20 @@ func (c *LocationsController) Post() {
 // @router /:id [get]
 func (c *LocationsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
+	}
+
 	v, err := models.GetLocationsByID(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = v
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }
 
@@ -119,10 +144,11 @@ func (c *LocationsController) GetAll() {
 
 	l, err := models.GetAllLocations(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = l
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = l
 	c.ServeJSON()
 }
 
@@ -136,17 +162,33 @@ func (c *LocationsController) GetAll() {
 // @router /:id [put]
 func (c *LocationsController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.Locations{ID: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateLocationsByID(&v); err == nil {
-			c.Data["json"] = "OK"
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	v := models.Locations{ID: id}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	err = models.UpdateLocationsByID(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Updated element",
+		PrettyMessage: "Elemento Actualizado",
+	}
+
 	c.ServeJSON()
 }
 
@@ -159,11 +201,24 @@ func (c *LocationsController) Put() {
 // @router /:id [delete]
 func (c *LocationsController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteLocations(id); err == nil {
-		c.Data["json"] = "OK"
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	err = models.DeleteLocations(id)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Deleted element",
+		PrettyMessage: "Elemento Eliminado",
+	}
+
 	c.ServeJSON()
 }

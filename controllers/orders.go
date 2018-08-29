@@ -6,6 +6,8 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego/validation"
 )
 
 // OrdersController operations for Orders
@@ -27,20 +29,36 @@ func (c *OrdersController) URLMapping() {
 // @Description create Orders
 // @Param	body		body 	models.Orders	true		"body for Orders content"
 // @Success 201 {int} models.Orders
-// @Failure 403 body is empty
+// @Failure 400 body is empty
 // @router / [post]
 func (c *OrdersController) Post() {
 	var v models.Orders
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddOrders(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors)
+	}
+
+	_, err = models.AddOrders(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+
 	c.ServeJSON()
 }
 
@@ -53,13 +71,20 @@ func (c *OrdersController) Post() {
 // @router /:id [get]
 func (c *OrdersController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
+	}
+
 	v, err := models.GetOrdersByID(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = v
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }
 
@@ -119,10 +144,11 @@ func (c *OrdersController) GetAll() {
 
 	l, err := models.GetAllOrders(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
-	} else {
-		c.Data["json"] = l
+		c.ServeErrorJSON(err)
+		return
 	}
+
+	c.Data["json"] = l
 	c.ServeJSON()
 }
 
@@ -136,17 +162,33 @@ func (c *OrdersController) GetAll() {
 // @router /:id [put]
 func (c *OrdersController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.Orders{ID: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateOrdersByID(&v); err == nil {
-			c.Data["json"] = "OK"
-		} else {
-			c.Data["json"] = err.Error()
-		}
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	v := models.Orders{ID: id}
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	err = models.UpdateOrdersByID(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Updated element",
+		PrettyMessage: "Elemento Actualizado",
+	}
+
 	c.ServeJSON()
 }
 
@@ -159,11 +201,24 @@ func (c *OrdersController) Put() {
 // @router /:id [delete]
 func (c *OrdersController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteOrders(id); err == nil {
-		c.Data["json"] = "OK"
-	} else {
-		c.Data["json"] = err.Error()
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
 	}
+
+	err = models.DeleteOrders(id)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Deleted element",
+		PrettyMessage: "Elemento Eliminado",
+	}
+
 	c.ServeJSON()
 }
