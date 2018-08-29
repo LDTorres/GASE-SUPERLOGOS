@@ -32,6 +32,7 @@ func (t *Activities) TableName() string {
 // last inserted Id on success.
 func AddActivities(m *Activities) (id int64, err error) {
 	o := orm.NewOrm()
+	m.Slug = GenerateSlug("Activities", m.Name)
 	id, err = o.Insert(m)
 	return
 }

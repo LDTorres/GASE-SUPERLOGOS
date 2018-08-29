@@ -71,6 +71,16 @@ func (c *BaseController) ServeErrorJSON(err error) {
 	c.ServeJSON()
 }
 
+//BadRequestDontExists =
+func (c *BaseController) BadRequestDontExists(message string) {
+	c.Ctx.Output.SetStatus(400)
+	c.Data["json"] = MessageResponse{
+		Message:       "Dont exist the element " + message,
+		PrettyMessage: "No existe el elemento a relacionar " + message,
+	}
+	c.ServeJSON()
+}
+
 //BadRequest =
 func (c *BaseController) BadRequest() {
 	c.Ctx.Output.SetStatus(400)

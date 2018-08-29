@@ -49,6 +49,13 @@ func (c *ActivitiesController) Post() {
 		c.BadRequestErrors(valid.Errors)
 	}
 
+	exists := models.ValidateExists("Sectors", v.Sector.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Sectors")
+		return
+	}
+
 	_, err = models.AddActivities(&v)
 
 	if err != nil {
@@ -175,6 +182,21 @@ func (c *ActivitiesController) Put() {
 
 	if err != nil {
 		c.ServeErrorJSON(err)
+		return
+	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors)
+	}
+
+	exists := models.ValidateExists("Sectors", v.Sector.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Sectors")
 		return
 	}
 

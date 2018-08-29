@@ -76,16 +76,11 @@ func init() {
 }
 
 //ValidateExists FK
-func ValidateExists(modelName string, model interface{}) (err error) {
+func ValidateExists(modelName string, id int) (exists bool) {
 
-	switch modelName {
-	case "Currency":
-		o := orm.NewOrm()
-
-		if err = o.Read(model.(*Currencies)); err != nil {
-			return err
-		}
-	}
+	o := orm.NewOrm()
+	modelName = strings.ToLower(modelName)
+	exists = o.QueryTable(modelName).Filter("id", id).Exist()
 
 	return
 }
