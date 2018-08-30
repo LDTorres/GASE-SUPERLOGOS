@@ -17,6 +17,7 @@ type Clients struct {
 	Email     string    `orm:"column(email);size(255)" json:"email" valid:"Required; Email"`
 	Password  string    `orm:"column(password);size(255)" json:"password" valid:"Required; MinSize(8); MaxSize(20); AlphaDash"`
 	Phone     string    `orm:"column(phone);size(255)" json:"phone" valid:"Required"`
+	Orders    []*Orders `orm:"reverse(many)" json:"orders,omitempty"`
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`

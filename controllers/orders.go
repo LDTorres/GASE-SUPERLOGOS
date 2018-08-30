@@ -51,7 +51,7 @@ func (c *OrdersController) Post() {
 	}
 
 	foreignsModels := map[string]int{
-		"Clients":   v.Client.ID,
+		"Clients": v.Client.ID,
 	}
 
 	resume := c.doForeignModelsValidation(foreignsModels)
@@ -157,6 +157,7 @@ func (c *OrdersController) GetAll() {
 	}
 
 	l, err := models.GetAllOrders(query, fields, sortby, order, offset, limit)
+
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -201,7 +202,7 @@ func (c *OrdersController) Put() {
 	}
 
 	foreignsModels := map[string]int{
-		"Clients":   v.Client.ID,
+		"Clients": v.Client.ID,
 	}
 
 	resume := c.doForeignModelsValidation(foreignsModels)

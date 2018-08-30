@@ -16,7 +16,7 @@ type Coupons struct {
 	Percentage float32   `orm:"column(percentage)" json:"percentage" valid:"Required"`
 	Code       string    `orm:"column(code);size(45)" json:"code" valid:"Required; AlphaNumeric"`
 	Status     int8      `orm:"column(status);null" json:"status" valid:"Required"`
-	Orders     []*Orders `orm:"reverse(many)" json:"orders"`
+	Orders     []*Orders `orm:"reverse(many)" json:"orders,omitempty"`
 	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null;auto_now_add"`
 	DeletedAt  time.Time `orm:"column(deleted_at);type(datetime);null"  json:"-"`

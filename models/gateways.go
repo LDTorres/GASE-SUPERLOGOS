@@ -16,6 +16,7 @@ type Gateways struct {
 	Name       string        `orm:"column(name);size(255)" json:"name" valid:"Required"`
 	Code       string        `orm:"column(code);size(255)" json:"code" valid:"Required; AlphaNumeric"`
 	Currencies []*Currencies `orm:"rel(m2m)" json:"currencies,omitempty"`
+	Orders     []*Orders     `orm:"reverse(many)" json:"orders,omitempty"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null"  json:"-"`

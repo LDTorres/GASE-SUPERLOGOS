@@ -3,6 +3,8 @@ package controllers
 import (
 	"strings"
 
+	"github.com/astaxie/beego/orm"
+
 	"GASE/models"
 
 	"github.com/astaxie/beego"
@@ -60,7 +62,7 @@ func (c *BaseController) BadRequest() {
 
 //BadRequestDontExists =
 func (c *BaseController) BadRequestDontExists(message string) {
-	c.Ctx.Output.SetStatus(400)
+	c.Ctx.Output.SetStatus(404)
 	c.Data["json"] = MessageResponse{
 		Message:       "Dont exist the element " + message,
 		PrettyMessage: "No existe el elemento a relacionar " + message,
@@ -70,6 +72,17 @@ func (c *BaseController) BadRequestDontExists(message string) {
 
 //ServeErrorJSON : Serve Json error
 func (c *BaseController) ServeErrorJSON(err error) {
+
+	if err == orm.ErrNoRows {
+		c.Ctx.Output.SetStatus(404)
+		c.Data["json"] = MessageResponse{
+			Message:       "No results",
+			PrettyMessage: "No se encontraron resultados",
+		}
+		c.ServeJSON()
+
+		return
+	}
 
 	if driverErr, ok := err.(*mysql.MySQLError); ok {
 
