@@ -34,6 +34,8 @@ func (c *ActivitiesController) URLMapping() {
 func (c *ActivitiesController) Post() {
 	var v models.Activities
 
+	// Validate empty body
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -41,18 +43,26 @@ func (c *ActivitiesController) Post() {
 		return
 	}
 
+	// Validate context body
+
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Activities")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
-	exists := models.ValidateExists("Sectors", v.Sector.ID)
+	// Validate foreings keys
 
-	if !exists {
-		c.BadRequestDontExists("Sectors")
+	foreignsModels := map[string]int{
+		"Sectors": v.Sector.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
 		return
 	}
 
@@ -178,6 +188,9 @@ func (c *ActivitiesController) Put() {
 	}
 
 	v := models.Activities{ID: id}
+
+	// Validate empty body
+
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -185,18 +198,26 @@ func (c *ActivitiesController) Put() {
 		return
 	}
 
+	// Validate context body
+
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Activities")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
-	exists := models.ValidateExists("Sectors", v.Sector.ID)
+	// Validate foreings keys
 
-	if !exists {
-		c.BadRequestDontExists("Sectors")
+	foreignsModels := map[string]int{
+		"Sectors": v.Sector.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
 		return
 	}
 

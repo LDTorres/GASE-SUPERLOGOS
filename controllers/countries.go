@@ -34,6 +34,8 @@ func (c *CountriesController) URLMapping() {
 func (c *CountriesController) Post() {
 	var v models.Countries
 
+	// Validate empty body
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -41,18 +43,26 @@ func (c *CountriesController) Post() {
 		return
 	}
 
+	// Validate context body
+
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Countries")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
-	exists := models.ValidateExists("Currencies", v.Currency.ID)
+	// Validate foreings keys
 
-	if !exists {
-		c.BadRequestDontExists("Currencies")
+	foreignsModels := map[string]int{
+		"Currencies": v.Currency.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
 		return
 	}
 
@@ -177,6 +187,7 @@ func (c *CountriesController) Put() {
 	}
 
 	v := models.Countries{ID: id}
+	// Validate context body
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {

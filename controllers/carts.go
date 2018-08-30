@@ -34,6 +34,8 @@ func (c *CartsController) URLMapping() {
 func (c *CartsController) Post() {
 	var v models.Carts
 
+	// Validate empty body
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -41,16 +43,19 @@ func (c *CartsController) Post() {
 		return
 	}
 
+	// Validate context body
+
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Carts")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
 	for _, price := range v.Prices {
-		// Validations of data types
+		// Validate context body
 		var v models.Prices
 		validM2M := validation.Validation{}
 
@@ -61,7 +66,6 @@ func (c *CartsController) Post() {
 			return
 		}
 
-		// Validate if Exists the element on the database
 		exists := models.ValidateExists("Prices", price.ID)
 
 		if !exists {
@@ -191,6 +195,8 @@ func (c *CartsController) Put() {
 	}
 
 	v := models.Carts{ID: id}
+
+	// Validate context body
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {

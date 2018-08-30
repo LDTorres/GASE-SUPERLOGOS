@@ -34,6 +34,8 @@ func (c *GatewaysController) URLMapping() {
 func (c *GatewaysController) Post() {
 	var v models.Gateways
 
+	// Validate empty body
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -41,22 +43,28 @@ func (c *GatewaysController) Post() {
 		return
 	}
 
+	// Validate context body
+
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Gateway")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
 	for _, currency := range v.Currencies {
 		var v models.Currencies
+
+		// Validate context body
+
 		validM2M := validation.Validation{}
 
 		b, err = validM2M.Valid(&v)
 
 		if !b {
-			c.BadRequestErrors(validM2M.Errors, "Currency")
+			c.BadRequestErrors(validM2M.Errors, v.TableName())
 			return
 		}
 
@@ -189,6 +197,8 @@ func (c *GatewaysController) Put() {
 	}
 
 	v := models.Gateways{ID: id}
+
+	// Validate context body
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
