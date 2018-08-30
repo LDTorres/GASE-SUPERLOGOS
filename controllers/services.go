@@ -46,7 +46,7 @@ func (c *ServicesController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Services")
 	}
 
 	_, err = models.AddServices(&v)

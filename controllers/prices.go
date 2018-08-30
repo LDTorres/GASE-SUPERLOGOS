@@ -50,7 +50,7 @@ func (c *PricesController) Post() {
 		c.BadRequestErrors(valid.Errors, "Services")
 	}
 
-	exists := models.ValidateExists("Services", v.Location.ID)
+	exists := models.ValidateExists("Services", v.Currency.ID)
 
 	if !exists {
 		c.BadRequestDontExists("Services")
@@ -196,7 +196,7 @@ func (c *PricesController) Put() {
 		c.BadRequestErrors(valid.Errors, "Services")
 	}
 
-	exists := models.ValidateExists("Services", v.Location.ID)
+	exists := models.ValidateExists("Services", v.Currency.ID)
 
 	if !exists {
 		c.BadRequestDontExists("Services")
