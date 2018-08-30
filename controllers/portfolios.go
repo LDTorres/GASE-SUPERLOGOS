@@ -48,17 +48,20 @@ func (c *PortfoliosController) Post() {
 
 	if !b {
 		c.BadRequestErrors(valid.Errors, "Locations")
-	}
-
-	exists := models.ValidateExists("Locations", v.Location.ID)
-
-	if !exists {
-		c.BadRequestDontExists("Locations")
 		return
 	}
 
-	//TODO: VALIDATE SERVICE
-	//TODO: VALIDATE ACTIVITY
+	foreignsModels := map[string]int{
+		"Locations":  v.Location.ID,
+		"Services":   v.Service.ID,
+		"Activities": v.Activity.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
+		return
+	}
 
 	_, err = models.AddPortfolios(&v)
 

@@ -18,6 +18,9 @@ type mysqlConnData struct {
 	dbName string
 }
 
+type BaseModel struct {
+}
+
 func init() {
 
 	RunMode := beego.BConfig.RunMode

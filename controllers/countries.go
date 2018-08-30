@@ -52,7 +52,7 @@ func (c *CountriesController) Post() {
 	exists := models.ValidateExists("Currencies", v.Currency.ID)
 
 	if !exists {
-		c.BadRequestDontExists("Currency")
+		c.BadRequestDontExists("Currencies")
 		return
 	}
 

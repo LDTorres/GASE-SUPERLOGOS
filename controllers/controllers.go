@@ -3,9 +3,10 @@ package controllers
 import (
 	"strings"
 
+	"GASE/models"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
-
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -116,4 +117,23 @@ func (c *BaseController) BadRequestErrors(errors []*validation.Error, entity str
 	}
 
 	c.ServeJSON()
+}
+
+func (c *BaseController) doForeignModelsValidation(foreignModels map[string]int) (resume bool) {
+
+	for foreignModelName, foreignModelID := range foreignModels {
+
+		exists := models.ValidateExists(foreignModelName, foreignModelID)
+
+		if !exists {
+			c.BadRequestDontExists(foreignModelName)
+			return
+		}
+
+	}
+
+	resume = true
+
+	return
+
 }
