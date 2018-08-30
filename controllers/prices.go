@@ -41,13 +41,23 @@ func (c *PricesController) Post() {
 		return
 	}
 
+	// VALIDATE SERVICE
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Services")
 	}
+
+	exists := models.ValidateExists("Services", v.Location.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Services")
+		return
+	}
+
+	//TODO: VALIDATE CURRENCY
 
 	_, err = models.AddPrices(&v)
 
@@ -176,6 +186,24 @@ func (c *PricesController) Put() {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	// VALIDATE SERVICE
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, "Services")
+	}
+
+	exists := models.ValidateExists("Services", v.Location.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Services")
+		return
+	}
+
+	//TODO: VALIDATE CURRENCY
 
 	err = models.UpdatePricesByID(&v)
 

@@ -46,7 +46,14 @@ func (c *ImagesController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Portfolios")
+	}
+
+	exists := models.ValidateExists("Portfolios", v.Portfolio.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Portfolios")
+		return
 	}
 
 	_, err = models.AddImages(&v)
@@ -174,6 +181,21 @@ func (c *ImagesController) Put() {
 
 	if err != nil {
 		c.ServeErrorJSON(err)
+		return
+	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, "Portfolios")
+	}
+
+	exists := models.ValidateExists("Portfolios", v.Portfolio.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Portfolios")
 		return
 	}
 

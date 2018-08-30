@@ -46,8 +46,18 @@ func (c *OrdersController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Clients")
 	}
+
+	exists := models.ValidateExists("Clients", v.Client.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Clients")
+		return
+	}
+
+	//TODO: VERIFICAR CON TOKEN QUE SEA LA MISMA PERSONA
+	//TODO: VERITICAR DATOS DE TARJETA DE CREDITO
 
 	_, err = models.AddOrders(&v)
 
@@ -176,6 +186,24 @@ func (c *OrdersController) Put() {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, "Clients")
+	}
+
+	exists := models.ValidateExists("Clients", v.Client.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Clients")
+		return
+	}
+
+	//TODO: VERIFICAR CON TOKEN QUE SEA LA MISMA PERSONA
+	//TODO: VERITICAR DATOS DE TARJETA DE CREDITO
 
 	err = models.UpdateOrdersByID(&v)
 

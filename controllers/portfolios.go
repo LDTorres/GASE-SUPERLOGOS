@@ -41,13 +41,24 @@ func (c *PortfoliosController) Post() {
 		return
 	}
 
+	//VALIDATE LOCATION
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Locations")
 	}
+
+	exists := models.ValidateExists("Locations", v.Location.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Locations")
+		return
+	}
+
+	//TODO: VALIDATE SERVICE
+	//TODO: VALIDATE ACTIVITY
 
 	_, err = models.AddPortfolios(&v)
 
@@ -176,6 +187,25 @@ func (c *PortfoliosController) Put() {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	// VALIDATE LOCATION
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, "Locations")
+	}
+
+	exists := models.ValidateExists("Locations", v.Location.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Locations")
+		return
+	}
+
+	//TODO: VALIDATE SERVICE
+	//TODO: VALIDATE ACTIVITY
 
 	err = models.UpdatePortfoliosByID(&v)
 

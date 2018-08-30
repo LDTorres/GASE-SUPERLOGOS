@@ -46,9 +46,15 @@ func (c *LocationsController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Countries")
 	}
 
+	exists := models.ValidateExists("Countries", v.Country.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Countries")
+		return
+	}
 	_, err = models.AddLocations(&v)
 
 	if err != nil {
@@ -174,6 +180,21 @@ func (c *LocationsController) Put() {
 
 	if err != nil {
 		c.ServeErrorJSON(err)
+		return
+	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, "Countries")
+	}
+
+	exists := models.ValidateExists("Countries", v.Country.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Countries")
 		return
 	}
 
