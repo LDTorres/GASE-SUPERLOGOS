@@ -46,7 +46,7 @@ func (c *CouponsController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Coupons")
 	}
 
 	_, err = models.AddCoupons(&v)

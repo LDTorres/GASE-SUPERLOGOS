@@ -46,7 +46,7 @@ func (c *ActivitiesController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Activities")
 	}
 
 	exists := models.ValidateExists("Sectors", v.Sector.ID)
@@ -190,7 +190,7 @@ func (c *ActivitiesController) Put() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Activities")
 	}
 
 	exists := models.ValidateExists("Sectors", v.Sector.ID)

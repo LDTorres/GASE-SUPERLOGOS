@@ -46,7 +46,7 @@ func (c *CountriesController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Countries")
 	}
 
 	exists := models.ValidateExists("Currencies", v.Currency.ID)
@@ -189,7 +189,7 @@ func (c *CountriesController) Put() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Countries")
 	}
 
 	exists := models.ValidateExists("Currencies", v.Currency.ID)

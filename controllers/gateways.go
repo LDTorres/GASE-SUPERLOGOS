@@ -46,7 +46,26 @@ func (c *GatewaysController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Gateway")
+	}
+
+	for _, currency := range v.Currencies {
+		var v models.Currencies
+		validM2M := validation.Validation{}
+
+		b, err = validM2M.Valid(&v)
+
+		if !b {
+			c.BadRequestErrors(validM2M.Errors, "Currency")
+			return
+		}
+
+		exists := models.ValidateExists("currencies", currency.ID)
+
+		if !exists {
+			c.BadRequestDontExists("currenccy")
+			return
+		}
 	}
 
 	_, err = models.AddGateways(&v)

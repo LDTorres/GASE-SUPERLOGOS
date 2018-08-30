@@ -46,7 +46,7 @@ func (c *CurrenciesController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors)
+		c.BadRequestErrors(valid.Errors, "Currencies")
 	}
 
 	_, err = models.AddCurrencies(&v)
