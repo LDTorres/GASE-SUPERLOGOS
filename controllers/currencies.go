@@ -34,6 +34,8 @@ func (c *CurrenciesController) URLMapping() {
 func (c *CurrenciesController) Post() {
 	var v models.Currencies
 
+	// Validate empty body
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -41,12 +43,15 @@ func (c *CurrenciesController) Post() {
 		return
 	}
 
+	// Validate context body
+
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Currencies")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
 	_, err = models.AddCurrencies(&v)
@@ -170,6 +175,8 @@ func (c *CurrenciesController) Put() {
 	}
 
 	v := models.Currencies{ID: id}
+
+	// Validate context body
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {

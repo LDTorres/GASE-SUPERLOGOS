@@ -34,6 +34,8 @@ func (c *CouponsController) URLMapping() {
 func (c *CouponsController) Post() {
 	var v models.Coupons
 
+	// Validate empty body
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -41,12 +43,15 @@ func (c *CouponsController) Post() {
 		return
 	}
 
+	// Validate context body
+
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Coupons")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
 	_, err = models.AddCoupons(&v)
@@ -170,6 +175,8 @@ func (c *CouponsController) Put() {
 	}
 
 	v := models.Coupons{ID: id}
+
+	// Validate context body
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {

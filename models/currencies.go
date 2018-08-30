@@ -12,7 +12,6 @@ import (
 
 // Currencies Model
 type Currencies struct {
-	BaseModel
 	ID        int         `orm:"column(id);auto" json:"id"`
 	Name      string      `orm:"column(name);size(255)" json:"name" valid:"Required"`
 	Iso       string      `orm:"column(iso);size(3)" json:"iso" valid:"Required; Length(3); Alpha"`

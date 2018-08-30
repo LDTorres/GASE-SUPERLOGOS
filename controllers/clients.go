@@ -34,6 +34,8 @@ func (c *ClientsController) URLMapping() {
 func (c *ClientsController) Post() {
 	var v models.Clients
 
+	// Validate empty body
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -41,12 +43,15 @@ func (c *ClientsController) Post() {
 		return
 	}
 
+	// Validate context body
+
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Clients")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
 	_, err = models.AddClients(&v)
@@ -171,6 +176,8 @@ func (c *ClientsController) Put() {
 	}
 
 	v := models.Clients{ID: id}
+
+	// Validate context body
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
