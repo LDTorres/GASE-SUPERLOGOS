@@ -41,23 +41,25 @@ func (c *PricesController) Post() {
 		return
 	}
 
-	// VALIDATE SERVICE
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Services")
-	}
-
-	exists := models.ValidateExists("Services", v.Currency.ID)
-
-	if !exists {
-		c.BadRequestDontExists("Services")
+		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
 
-	//TODO: VALIDATE CURRENCY
+	foreignsModels := map[string]int{
+		"Currencies":  v.Currency.ID,
+		"Services":   v.Service.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
+		return
+	}
 
 	_, err = models.AddPrices(&v)
 
@@ -187,23 +189,25 @@ func (c *PricesController) Put() {
 		return
 	}
 
-	// VALIDATE SERVICE
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Services")
-	}
-
-	exists := models.ValidateExists("Services", v.Currency.ID)
-
-	if !exists {
-		c.BadRequestDontExists("Services")
+		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
 
-	//TODO: VALIDATE CURRENCY
+	foreignsModels := map[string]int{
+		"Currencies":  v.Currency.ID,
+		"Services":   v.Service.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
+		return
+	}
 
 	err = models.UpdatePricesByID(&v)
 

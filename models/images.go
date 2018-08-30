@@ -24,6 +24,11 @@ type Images struct {
 	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
+//TableName define Name
+func (t *Images) TableName() string {
+	return "images"
+}
+
 //AddImages insert a new Images into database and returns last inserted Id on success.
 func AddImages(m *Images) (id int64, err error) {
 	o := orm.NewOrm()

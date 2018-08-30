@@ -41,13 +41,12 @@ func (c *PortfoliosController) Post() {
 		return
 	}
 
-	//VALIDATE LOCATION
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Locations")
+		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
 
@@ -191,24 +190,26 @@ func (c *PortfoliosController) Put() {
 		return
 	}
 
-	// VALIDATE LOCATION
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Locations")
-	}
-
-	exists := models.ValidateExists("Locations", v.Location.ID)
-
-	if !exists {
-		c.BadRequestDontExists("Locations")
+		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
 
-	//TODO: VALIDATE SERVICE
-	//TODO: VALIDATE ACTIVITY
+	foreignsModels := map[string]int{
+		"Locations":  v.Location.ID,
+		"Services":   v.Service.ID,
+		"Activities": v.Activity.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
+		return
+	}
 
 	err = models.UpdatePortfoliosByID(&v)
 

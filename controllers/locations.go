@@ -46,15 +46,20 @@ func (c *LocationsController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Countries")
-	}
-
-	exists := models.ValidateExists("Countries", v.Country.ID)
-
-	if !exists {
-		c.BadRequestDontExists("Countries")
+		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
+
+	foreignsModels := map[string]int{
+		"Countries": v.Country.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
+		return
+	}
+
 	_, err = models.AddLocations(&v)
 
 	if err != nil {
@@ -188,13 +193,17 @@ func (c *LocationsController) Put() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Countries")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
-	exists := models.ValidateExists("Countries", v.Country.ID)
+	foreignsModels := map[string]int{
+		"Countries": v.Country.ID,
+	}
 
-	if !exists {
-		c.BadRequestDontExists("Countries")
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
 		return
 	}
 

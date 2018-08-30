@@ -46,13 +46,17 @@ func (c *OrdersController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Clients")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
-	exists := models.ValidateExists("Clients", v.Client.ID)
+	foreignsModels := map[string]int{
+		"Clients":   v.Client.ID,
+	}
 
-	if !exists {
-		c.BadRequestDontExists("Clients")
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
 		return
 	}
 
@@ -192,13 +196,17 @@ func (c *OrdersController) Put() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Clients")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
-	exists := models.ValidateExists("Clients", v.Client.ID)
+	foreignsModels := map[string]int{
+		"Clients":   v.Client.ID,
+	}
 
-	if !exists {
-		c.BadRequestDontExists("Clients")
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
 		return
 	}
 

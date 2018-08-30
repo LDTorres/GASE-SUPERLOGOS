@@ -46,13 +46,17 @@ func (c *ImagesController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Portfolios")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
-	exists := models.ValidateExists("Portfolios", v.Portfolio.ID)
+	foreignsModels := map[string]int{
+		"Portfolios": v.Portfolio.ID,
+	}
 
-	if !exists {
-		c.BadRequestDontExists("Portfolios")
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
 		return
 	}
 
@@ -189,13 +193,17 @@ func (c *ImagesController) Put() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Portfolios")
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
 	}
 
-	exists := models.ValidateExists("Portfolios", v.Portfolio.ID)
+	foreignsModels := map[string]int{
+		"Portfolios": v.Portfolio.ID,
+	}
 
-	if !exists {
-		c.BadRequestDontExists("Portfolios")
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
 		return
 	}
 
