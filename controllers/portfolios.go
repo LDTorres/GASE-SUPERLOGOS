@@ -92,6 +92,7 @@ func (c *PortfoliosController) GetOne() {
 	}
 
 	v, err := models.GetPortfoliosByID(id)
+
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return

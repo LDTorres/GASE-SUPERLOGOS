@@ -13,8 +13,8 @@ import (
 //Gateways Model
 type Gateways struct {
 	ID         int           `orm:"column(id);auto" json:"id"`
-	Name       string        `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Code       string        `orm:"column(code);size(255)" json:"code" valid:"Required; AlphaNumeric"`
+	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Code       string        `orm:"column(code);size(255)" json:"code,omitempty" valid:"Required; AlphaNumeric"`
 	Currencies []*Currencies `orm:"rel(m2m)" json:"currencies,omitempty"`
 	Orders     []*Orders     `orm:"reverse(many)" json:"orders,omitempty"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
@@ -42,6 +42,8 @@ func GetGatewaysByID(id int) (v *Gateways, err error) {
 	o := orm.NewOrm()
 	v = &Gateways{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Currencies")
+		o.LoadRelated(&v, "Orders")
 		return v, nil
 	}
 	return nil, err
@@ -52,7 +54,7 @@ func GetGatewaysByID(id int) (v *Gateways, err error) {
 func GetAllGateways(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Gateways))
+	qs := o.QueryTable(new(Gateways)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -107,6 +109,10 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+
+				o.LoadRelated(&v, "Currencies")
+				o.LoadRelated(&v, "Orders")
+
 				ml = append(ml, v)
 			}
 		} else {
@@ -117,6 +123,10 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+
+				o.LoadRelated(&v, "Currencies")
+				o.LoadRelated(&v, "Orders")
+
 				ml = append(ml, m)
 			}
 		}

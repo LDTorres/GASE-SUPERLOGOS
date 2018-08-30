@@ -13,18 +13,19 @@ import (
 
 //Countries Model
 type Countries struct {
-	ID        int         `orm:"column(id);auto" json:"id"`
-	Name      string      `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Iso       string      `orm:"column(iso);size(2)" json:"iso" valid:"Required; Length(2); Alpha"`
-	Phone     string      `orm:"column(phone);size(45)" json:"phone"`
-	Email     string      `orm:"column(email);size(45);null" json:"email" valid:"Email"`
-	Skype     string      `orm:"column(skype);size(45);null" json:"skype"`
-	Slug      string      `orm:"column(slug);size(255)" json:"slug" valid:"AlphaDash"`
-	Tax       float32     `orm:"column(tax)" json:"tax"`
-	Currency  *Currencies `orm:"column(currency_id);rel(fk)" json:"currency"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	ID        int          `orm:"column(id);auto" json:"id"`
+	Name      string       `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Iso       string       `orm:"column(iso);size(2)" json:"iso,omitempty" valid:"Required; Length(2); Alpha"`
+	Phone     string       `orm:"column(phone);size(45)" json:"phone,omitempty"`
+	Email     string       `orm:"column(email);size(45);null" json:"email,omitempty" valid:"Email"`
+	Skype     string       `orm:"column(skype);size(45);null" json:"skype,omitempty"`
+	Slug      string       `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
+	Tax       float32      `orm:"column(tax)" json:"tax,omitempty"`
+	Currency  *Currencies  `orm:"column(currency_id);rel(fk)" json:"currency,omitempty"`
+	Locations []*Locations `orm:"reverse(many)" json:"locations,omitempty"`
+	CreatedAt time.Time    `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time    `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time    `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
 //TableName =
@@ -37,7 +38,7 @@ func (t *Countries) TableName() string {
 func AddCountries(m *Countries) (id int64, err error) {
 	o := orm.NewOrm()
 
-	m.Slug = GenerateSlug("Countries", m.Name)
+	m.Slug = GenerateSlug(m.TableName(), m.Name)
 
 	id, err = o.Insert(m)
 	return
@@ -49,6 +50,7 @@ func GetCountriesByID(id int) (v *Countries, err error) {
 	o := orm.NewOrm()
 	v = &Countries{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Locations")
 		return v, nil
 	}
 	return nil, err
@@ -114,6 +116,7 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Locations")
 				ml = append(ml, v)
 			}
 		} else {
@@ -124,6 +127,7 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Locations")
 				ml = append(ml, m)
 			}
 		}

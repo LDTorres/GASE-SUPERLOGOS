@@ -13,10 +13,10 @@ import (
 //Clients Model
 type Clients struct {
 	ID        int       `orm:"column(id);auto" json:"id"`
-	Name      string    `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Email     string    `orm:"column(email);size(255)" json:"email" valid:"Required; Email"`
-	Password  string    `orm:"column(password);size(255)" json:"password" valid:"Required; MinSize(8); MaxSize(20); AlphaDash"`
-	Phone     string    `orm:"column(phone);size(255)" json:"phone" valid:"Required"`
+	Name      string    `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Email     string    `orm:"column(email);size(255)" json:"email,omitempty" valid:"Required; Email"`
+	Password  string    `orm:"column(password);size(255)" json:"password,omitempty" valid:"Required; MinSize(8); MaxSize(20); AlphaDash"`
+	Phone     string    `orm:"column(phone);size(255)" json:"phone,omitempty" valid:"Required"`
 	Orders    []*Orders `orm:"reverse(many)" json:"orders,omitempty"`
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
@@ -42,6 +42,7 @@ func GetClientsByID(id int) (v *Clients, err error) {
 	o := orm.NewOrm()
 	v = &Clients{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Orders")
 		return v, nil
 	}
 	return nil, err
@@ -107,6 +108,7 @@ func GetAllClients(query map[string]string, fields []string, sortby []string, or
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Orders")
 				ml = append(ml, v)
 			}
 		} else {
@@ -117,6 +119,7 @@ func GetAllClients(query map[string]string, fields []string, sortby []string, or
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Orders")
 				ml = append(ml, m)
 			}
 		}

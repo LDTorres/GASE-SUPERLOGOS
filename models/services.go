@@ -14,14 +14,15 @@ import (
 
 //Services Model
 type Services struct {
-	ID         int       `orm:"column(id);auto" json:"id"`
-	Name       string    `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Percertage float32   `orm:"column(percertage)" json:"percentage" valid:"Required"`
-	Slug       string    `orm:"column(slug);size(255)" json:"slug" valid:"Required; AlphaDash"`
-	Code       string    `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
-	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt  time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID         int           `orm:"column(id);auto" json:"id"`
+	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Percertage float32       `orm:"column(percertage)" json:"percentage,omitempty" valid:"Required"`
+	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"Required; AlphaDash"`
+	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
+	Portfolios []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`
+	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName define Name
@@ -33,7 +34,7 @@ func (t *Services) TableName() string {
 func AddServices(m *Services) (id int64, err error) {
 	o := orm.NewOrm()
 
-	m.Slug = GenerateSlug("Services", m.Name)
+	m.Slug = GenerateSlug(m.TableName(), m.Name)
 
 	id, err = o.Insert(m)
 	return
@@ -44,6 +45,7 @@ func GetServicesByID(id int) (v *Services, err error) {
 	o := orm.NewOrm()
 	v = &Services{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Portfolios")
 		return v, nil
 	}
 	return nil, err
@@ -108,6 +110,7 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Portfolios")
 				ml = append(ml, v)
 			}
 		} else {
@@ -118,6 +121,7 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Portfolios")
 				ml = append(ml, m)
 			}
 		}

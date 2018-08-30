@@ -13,9 +13,9 @@ import (
 //Prices Model
 type Prices struct {
 	ID        int         `orm:"column(id);auto" json:"id"`
-	Value     float32     `orm:"column(value)" json:"value" valid:"Required"`
-	Service   *Services   `orm:"column(services_id);rel(fk)" json:"service"`
-	Currency  *Currencies `orm:"column(currencies_id);rel(fk)" json:"currency"`
+	Value     float32     `orm:"column(value)" json:"value,omitempty" valid:"Required"`
+	Service   *Services   `orm:"column(services_id);rel(fk)" json:"service,omitempty"`
+	Currency  *Currencies `orm:"column(currencies_id);rel(fk)" json:"currency,omitempty"`
 	Orders    []*Orders   `orm:"reverse(many)" json:"orders,omitempty"`
 	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
@@ -40,6 +40,7 @@ func GetPricesByID(id int) (v *Prices, err error) {
 	o := orm.NewOrm()
 	v = &Prices{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Orders")
 		return v, nil
 	}
 	return nil, err
@@ -104,6 +105,7 @@ func GetAllPrices(query map[string]string, fields []string, sortby []string, ord
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Orders")
 				ml = append(ml, v)
 			}
 		} else {
@@ -114,6 +116,7 @@ func GetAllPrices(query map[string]string, fields []string, sortby []string, ord
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Orders")
 				ml = append(ml, m)
 			}
 		}

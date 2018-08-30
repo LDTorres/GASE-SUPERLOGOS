@@ -13,12 +13,12 @@ import (
 //Coupons Model
 type Coupons struct {
 	ID         int       `orm:"column(id);auto" json:"id"`
-	Percentage float32   `orm:"column(percentage)" json:"percentage" valid:"Required"`
-	Code       string    `orm:"column(code);size(45)" json:"code" valid:"Required; AlphaNumeric"`
-	Status     int8      `orm:"column(status);null" json:"status" valid:"Required"`
+	Percentage float32   `orm:"column(percentage)" json:"percentage,omitempty" valid:"Required"`
+	Code       string    `orm:"column(code);size(45)" json:"code,omitempty" valid:"Required; AlphaNumeric"`
+	Status     int8      `orm:"column(status);null" json:"status,omitempty" valid:"Required"`
 	Orders     []*Orders `orm:"reverse(many)" json:"orders,omitempty"`
 	CreatedAt  time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null;auto_now_add"`
+	UpdatedAt  time.Time `orm:"column(updated_at);type(datetime);null;auto_now_add" json:"-"`
 	DeletedAt  time.Time `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
@@ -41,6 +41,7 @@ func GetCouponsByID(id int) (v *Coupons, err error) {
 	o := orm.NewOrm()
 	v = &Coupons{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Orders")
 		return v, nil
 	}
 	return nil, err
@@ -106,6 +107,7 @@ func GetAllCoupons(query map[string]string, fields []string, sortby []string, or
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Orders")
 				ml = append(ml, v)
 			}
 		} else {
@@ -116,6 +118,7 @@ func GetAllCoupons(query map[string]string, fields []string, sortby []string, or
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Orders")
 				ml = append(ml, m)
 			}
 		}

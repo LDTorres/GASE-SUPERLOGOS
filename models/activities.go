@@ -13,14 +13,15 @@ import (
 
 //Activities Model
 type Activities struct {
-	ID          int       `orm:"column(id);auto" json:"id"`
-	Name        string    `orm:"column(name)" json:"name" valid:"Required"`
-	Description string    `orm:"column(description)" json:"description" valid:"Required"`
-	Sector      *Sectors  `orm:"column(sectors_id);rel(fk)" json:"sector"`
-	Slug        string    `orm:"column(slug);size(255)"  json:"slug" valid:"AlphaDash"`
-	CreatedAt   time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt   time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt   time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID          int           `orm:"column(id);auto" json:"id"`
+	Name        string        `orm:"column(name)" json:"name,omitempty" valid:"Required"`
+	Description string        `orm:"column(description)" json:"description,omitempty" valid:"Required"`
+	Sector      *Sectors      `orm:"column(sectors_id);rel(fk)" json:"sector,omitempty"`
+	Portfolios  []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`
+	Slug        string        `orm:"column(slug);size(255)"  json:"slug,omitempty" valid:"AlphaDash"`
+	CreatedAt   time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt   time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt   time.Time     `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName =
@@ -32,7 +33,7 @@ func (t *Activities) TableName() string {
 // last inserted Id on success.
 func AddActivities(m *Activities) (id int64, err error) {
 	o := orm.NewOrm()
-	m.Slug = GenerateSlug("Activities", m.Name)
+	m.Slug = GenerateSlug(m.TableName(), m.Name)
 	id, err = o.Insert(m)
 	return
 }
@@ -43,6 +44,7 @@ func GetActivitiesByID(id int) (v *Activities, err error) {
 	o := orm.NewOrm()
 	v = &Activities{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Portfolios")
 		return v, nil
 	}
 	return nil, err
@@ -108,6 +110,7 @@ func GetAllActivities(query map[string]string, fields []string, sortby []string,
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Portfolios")
 				ml = append(ml, v)
 			}
 		} else {
@@ -118,6 +121,7 @@ func GetAllActivities(query map[string]string, fields []string, sortby []string,
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Portfolios")
 				ml = append(ml, m)
 			}
 		}

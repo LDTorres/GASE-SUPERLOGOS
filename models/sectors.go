@@ -14,13 +14,14 @@ import (
 
 //Sectors model
 type Sectors struct {
-	ID        int       `orm:"column(id);pk" json:"id"`
-	Name      string    `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Slug      string    `orm:"column(slug);size(255)" json:"slug" valid:"Required; AlphaDash"`
-	Code      string    `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
-	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID         int           `orm:"column(id);pk" json:"id"`
+	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"Required; AlphaDash"`
+	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
+	Activities []*Activities `orm:"reverse(many)" json:"activities,omitempty"`
+	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName define Name
@@ -32,7 +33,7 @@ func (t *Sectors) TableName() string {
 func AddSectors(m *Sectors) (id int64, err error) {
 	o := orm.NewOrm()
 
-	m.Slug = GenerateSlug("Sectors", m.Name)
+	m.Slug = GenerateSlug(m.TableName(), m.Name)
 
 	id, err = o.Insert(m)
 	return
@@ -43,6 +44,7 @@ func GetSectorsByID(id int) (v *Sectors, err error) {
 	o := orm.NewOrm()
 	v = &Sectors{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Activities")
 		return v, nil
 	}
 	return nil, err
@@ -107,6 +109,7 @@ func GetAllSectors(query map[string]string, fields []string, sortby []string, or
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Activities")
 				ml = append(ml, v)
 			}
 		} else {
@@ -117,6 +120,7 @@ func GetAllSectors(query map[string]string, fields []string, sortby []string, or
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Activities")
 				ml = append(ml, m)
 			}
 		}

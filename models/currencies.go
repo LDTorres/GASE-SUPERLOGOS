@@ -12,14 +12,15 @@ import (
 
 // Currencies Model
 type Currencies struct {
-	ID        int         `orm:"column(id);auto" json:"id"`
-	Name      string      `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Iso       string      `orm:"column(iso);size(3)" json:"iso" valid:"Required; Length(3); Alpha"`
-	Symbol    string      `orm:"column(symbol);size(3)" json:"symbol" valid:"Required"`
-	Gateways  []*Gateways `orm:"reverse(many)" json:"gateways,omitempty"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	ID        int          `orm:"column(id);auto" json:"id"`
+	Name      string       `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Iso       string       `orm:"column(iso);size(3)" json:"iso,omitempty" valid:"Required; Length(3); Alpha"`
+	Symbol    string       `orm:"column(symbol);size(3)" json:"symbol,omitempty" valid:"Required"`
+	Gateways  []*Gateways  `orm:"reverse(many)" json:"gateways,omitempty"`
+	Countries []*Countries `orm:"reverse(many)" json:"countries,omitempty"`
+	CreatedAt time.Time    `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time    `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time    `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
 // TableName =
@@ -41,6 +42,8 @@ func GetCurrenciesByID(id int) (v *Currencies, err error) {
 	o := orm.NewOrm()
 	v = &Currencies{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Countries")
+		o.LoadRelated(&v, "Gateways")
 		return v, nil
 	}
 	return nil, err
@@ -106,6 +109,8 @@ func GetAllCurrencies(query map[string]string, fields []string, sortby []string,
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Countries")
+				o.LoadRelated(&v, "Gateways")
 				ml = append(ml, v)
 			}
 		} else {
@@ -116,6 +121,8 @@ func GetAllCurrencies(query map[string]string, fields []string, sortby []string,
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Countries")
+				o.LoadRelated(&v, "Gateways")
 				ml = append(ml, m)
 			}
 		}

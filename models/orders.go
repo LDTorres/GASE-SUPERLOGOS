@@ -13,11 +13,11 @@ import (
 //Orders Model
 type Orders struct {
 	ID           int        `orm:"column(id);auto" json:"id"`
-	InitialValue float32    `orm:"column(initial_value)" json:"initial_value" valid:"Required"`
-	FinalValue   float32    `orm:"column(final_value)" json:"final_value" valid:"Required"`
-	State        string     `orm:"column(state)" json:"state" valid:"Required; Alpha"`
-	Client       *Clients   `orm:"column(clients_id);rel(fk)" json:"clients" valid:"Required;"`
-	Gateway      *Gateways  `orm:"column(gateways_id);rel(fk)" json:"gateways" valid:"Required;"`
+	InitialValue float32    `orm:"column(initial_value)" json:"initial_value,omitempty" valid:"Required"`
+	FinalValue   float32    `orm:"column(final_value)" json:"final_value,omitempty" valid:"Required"`
+	State        string     `orm:"column(state)" json:"state,omitempty" valid:"Required; Alpha"`
+	Client       *Clients   `orm:"column(clients_id);rel(fk)" json:"clients,omitempty" valid:"Required;"`
+	Gateway      *Gateways  `orm:"column(gateways_id);rel(fk)" json:"gateways,omitempty" valid:"Required;"`
 	Prices       []*Prices  `orm:"rel(m2m)" json:"prices,omitempty"`
 	Coupons      []*Coupons `orm:"rel(m2m)" json:"coupons,omitempty"`
 	CreatedAt    time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
@@ -42,6 +42,8 @@ func GetOrdersByID(id int) (v *Orders, err error) {
 	o := orm.NewOrm()
 	v = &Orders{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Prices")
+		o.LoadRelated(&v, "Coupons")
 		return v, nil
 	}
 	return nil, err
@@ -107,6 +109,8 @@ func GetAllOrders(query map[string]string, fields []string, sortby []string, ord
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Prices")
+				o.LoadRelated(&v, "Coupons")
 				ml = append(ml, v)
 			}
 		} else {
@@ -117,6 +121,8 @@ func GetAllOrders(query map[string]string, fields []string, sortby []string, ord
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Prices")
+				o.LoadRelated(&v, "Coupons")
 				ml = append(ml, m)
 			}
 		}

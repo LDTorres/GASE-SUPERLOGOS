@@ -13,14 +13,15 @@ import (
 //Portfolios Model
 type Portfolios struct {
 	ID          int         `orm:"column(id);auto" json:"id"`
-	Name        string      `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Slug        string      `orm:"column(slug);size(255)" json:"slug" valid:"Required; AlphaDash"`
-	Description string      `orm:"column(description)" json:"description" valid:"Required"`
-	Client      string      `orm:"column(client);size(255)" json:"client" valid:"Required"`
-	Priority    int8        `orm:"column(priority)" json:"priority"`
-	Location    *Locations  `orm:"column(locations_id);rel(fk)" json:"location"`
-	Service     *Services   `orm:"column(services_id);rel(fk)" json:"service"`
-	Activity    *Activities `orm:"column(activities_id);rel(fk)" json:"activity"`
+	Name        string      `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Slug        string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"Required; AlphaDash"`
+	Description string      `orm:"column(description)" json:"description,omitempty" valid:"Required"`
+	Client      string      `orm:"column(client);size(255)" json:"client,omitempty" valid:"Required"`
+	Priority    int8        `orm:"column(priority)" json:"priority,omitempty"`
+	Location    *Locations  `orm:"column(locations_id);rel(fk)" json:"location,omitempty"`
+	Service     *Services   `orm:"column(services_id);rel(fk)" json:"service,omitempty"`
+	Activity    *Activities `orm:"column(activities_id);rel(fk)" json:"activity,omitempty"`
+	Images      []*Images   `orm:"reverse(many)" json:"images"`
 	CreatedAt   time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt   time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt   time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
@@ -35,7 +36,7 @@ func (t *Portfolios) TableName() string {
 func AddPortfolios(m *Portfolios) (id int64, err error) {
 	o := orm.NewOrm()
 
-	m.Slug = GenerateSlug("Porfolios", m.Name)
+	m.Slug = GenerateSlug(m.TableName(), m.Name)
 
 	id, err = o.Insert(m)
 	return
@@ -45,9 +46,11 @@ func AddPortfolios(m *Portfolios) (id int64, err error) {
 func GetPortfoliosByID(id int) (v *Portfolios, err error) {
 	o := orm.NewOrm()
 	v = &Portfolios{ID: id}
+
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
+
 	return nil, err
 }
 
@@ -110,6 +113,7 @@ func GetAllPortfolios(query map[string]string, fields []string, sortby []string,
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Images")
 				ml = append(ml, v)
 			}
 		} else {
@@ -120,6 +124,7 @@ func GetAllPortfolios(query map[string]string, fields []string, sortby []string,
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Images")
 				ml = append(ml, m)
 			}
 		}

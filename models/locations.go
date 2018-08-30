@@ -12,13 +12,14 @@ import (
 
 //Locations Model
 type Locations struct {
-	ID        int        `orm:"column(id);auto" json:"id"`
-	Name      string     `orm:"column(name);size(255)" json:"name" valid:"Required"`
-	Slug      string     `orm:"column(slug);size(255)" json:"slug" valid:"Required; AlphaDash"`
-	Country   *Countries `orm:"column(countries_id);rel(fk)" json:"country"`
-	CreatedAt time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID         int           `orm:"column(id);auto" json:"id"`
+	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"Required; AlphaDash"`
+	Country    *Countries    `orm:"column(countries_id);rel(fk)" json:"country,omitempty"`
+	Portfolios []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`
+	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName define Name
@@ -31,7 +32,7 @@ func (t *Locations) TableName() string {
 func AddLocations(m *Locations) (id int64, err error) {
 	o := orm.NewOrm()
 
-	m.Slug = GenerateSlug("Locations", m.Name)
+	m.Slug = GenerateSlug(m.TableName(), m.Name)
 
 	id, err = o.Insert(m)
 	return
@@ -42,6 +43,7 @@ func GetLocationsByID(id int) (v *Locations, err error) {
 	o := orm.NewOrm()
 	v = &Locations{ID: id}
 	if err = o.Read(v); err == nil {
+		o.LoadRelated(&v, "Portfolios")
 		return v, nil
 	}
 	return nil, err
@@ -106,6 +108,7 @@ func GetAllLocations(query map[string]string, fields []string, sortby []string, 
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "Portfolios")
 				ml = append(ml, v)
 			}
 		} else {
@@ -116,6 +119,7 @@ func GetAllLocations(query map[string]string, fields []string, sortby []string, 
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
+				o.LoadRelated(&v, "Portfolios")
 				ml = append(ml, m)
 			}
 		}
