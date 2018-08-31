@@ -39,7 +39,7 @@ func (c *CountriesController) Post() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -91,7 +91,7 @@ func (c *CountriesController) GetOne() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -182,7 +182,7 @@ func (c *CountriesController) Put() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -237,7 +237,7 @@ func (c *CountriesController) Delete() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 

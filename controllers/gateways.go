@@ -19,12 +19,12 @@ type GatewaysController struct {
 // URLMapping ...
 func (c *GatewaysController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	c.Mapping("Post", c.AddNewsCurrencies)
+	c.Mapping("AddNewsCurrencies", c.AddNewsCurrencies)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-	c.Mapping("Delete", c.DeleteCurrencies)
+	c.Mapping("DeleteCurrencies", c.DeleteCurrencies)
 }
 
 // Post ...
@@ -42,7 +42,8 @@ func (c *GatewaysController) Post() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
-		c.BadRequest()
+
+		c.BadRequest(err)
 		return
 	}
 
@@ -58,6 +59,8 @@ func (c *GatewaysController) Post() {
 	}
 
 	// Validate currencies exists
+	var relationsIDs []int
+
 	for _, el := range v.Currencies {
 
 		exists := models.ValidateExists("currencies", el.ID)
@@ -66,22 +69,20 @@ func (c *GatewaysController) Post() {
 			c.BadRequestDontExists("currenccy")
 			return
 		}
+
+		relationsIDs = append(relationsIDs, el.ID)
 	}
 
 	_, err = models.AddGateways(&v)
 
 	if err != nil {
-		fmt.Println(v)
 		c.ServeErrorJSON(err)
 		return
 	}
 
-	fmt.Println(v)
-
-	_, err = models.AddRelationGatewaysCurrencies(&v)
+	_, err = models.RelationsM2M("INSERT", "gateways", v.ID, "currencies", relationsIDs)
 
 	if err != nil {
-		fmt.Println(err.Error())
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -104,7 +105,7 @@ func (c *GatewaysController) GetOne() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -195,7 +196,7 @@ func (c *GatewaysController) Put() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -236,7 +237,7 @@ func (c *GatewaysController) Delete() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -267,7 +268,7 @@ func (c *GatewaysController) AddNewsCurrencies() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -284,6 +285,8 @@ func (c *GatewaysController) AddNewsCurrencies() {
 	}
 
 	// Validate currencies exists
+	var relationsIDs []int
+
 	for _, el := range v.Currencies {
 
 		exists := models.ValidateExists("currencies", el.ID)
@@ -292,20 +295,16 @@ func (c *GatewaysController) AddNewsCurrencies() {
 			c.BadRequestDontExists("currenccy")
 			return
 		}
+
+		relationsIDs = append(relationsIDs, el.ID)
 	}
 
-	rows, err := models.AddRelationGatewaysCurrencies(&v)
-
-	if err != nil {
-		fmt.Println(err.Error())
-		c.ServeErrorJSON(err)
-		return
-	}
+	count, err := models.RelationsM2M("INSERT", "gateways", v.ID, "currencies", relationsIDs)
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = MessageResponse{
-		Message:       "Added relations: 0" + strconv.Itoa(int(rows)),
-		PrettyMessage: "Relaciones Agregadas: 0" + strconv.Itoa(int(rows)),
+		Message:       "Added relations: " + strconv.Itoa(count),
+		PrettyMessage: "Relaciones Agregadas: " + strconv.Itoa(count),
 	}
 
 	c.ServeJSON()
@@ -323,7 +322,7 @@ func (c *GatewaysController) DeleteCurrencies() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -340,6 +339,8 @@ func (c *GatewaysController) DeleteCurrencies() {
 	}
 
 	// Validate currencies exists
+	var relationsIDs []int
+
 	for _, el := range v.Currencies {
 
 		exists := models.ValidateExists("currencies", el.ID)
@@ -348,9 +349,11 @@ func (c *GatewaysController) DeleteCurrencies() {
 			c.BadRequestDontExists("currenccy")
 			return
 		}
+
+		relationsIDs = append(relationsIDs, el.ID)
 	}
 
-	rows, err := models.DeleteRelationGatewaysCurrencies(&v)
+	count, err := models.RelationsM2M("DELETE", "gateways", v.ID, "currencies", relationsIDs)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -360,8 +363,8 @@ func (c *GatewaysController) DeleteCurrencies() {
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = MessageResponse{
-		Message:       "Deleted relations: " + strconv.Itoa(int(rows)),
-		PrettyMessage: "Relaciones Eliminadas: " + strconv.Itoa(int(rows)),
+		Message:       "Deleted relations: " + strconv.Itoa(count),
+		PrettyMessage: "Relaciones Eliminadas: " + strconv.Itoa(count),
 	}
 
 	c.ServeJSON()

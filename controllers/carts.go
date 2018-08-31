@@ -4,6 +4,7 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -39,12 +40,11 @@ func (c *CartsController) Post() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
-	// Validate context body
-
+	// Validate Format Types
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
@@ -53,18 +53,32 @@ func (c *CartsController) Post() {
 		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
-	//TODO:
-	for _, price := range v.Prices {
 
-		exists := models.ValidateExists("Prices", price.ID)
+	// Validate Prices exists
+	var pricesRelationsIDs []int
+
+	for _, el := range v.Prices {
+
+		exists := models.ValidateExists("Prices", el.ID)
 
 		if !exists {
 			c.BadRequestDontExists("Price")
 			return
 		}
+
+		pricesRelationsIDs = append(pricesRelationsIDs, el.ID)
 	}
 
 	_, err = models.AddCarts(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	// Add Prices relations
+
+	_, err = models.RelationsM2M("INSERT", "carts", v.ID, "prices", pricesRelationsIDs)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -89,7 +103,7 @@ func (c *CartsController) GetOne() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -180,7 +194,7 @@ func (c *CartsController) Put() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -221,7 +235,7 @@ func (c *CartsController) Delete() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -235,6 +249,125 @@ func (c *CartsController) Delete() {
 	c.Data["json"] = MessageResponse{
 		Message:       "Deleted element",
 		PrettyMessage: "Elemento Eliminado",
+	}
+
+	c.ServeJSON()
+}
+
+// AddNewsPrices ...
+// @Title AddNewsPrices to Carts
+// @Description AddNewsPrices to Cart
+// @Param	body		body 	models.Carts	true		"body for Carts content"
+// @Success 201 {int} models.Carts
+// @Failure 400 body is empty
+// @router /prices [post]
+func (c *CartsController) AddNewsPrices() {
+	var v models.Carts
+
+	// Validate empty body
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	// Validate Format Types
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
+	}
+
+	// Validate Prices exists
+	var pricesRelationsIDs []int
+
+	for _, el := range v.Prices {
+
+		exists := models.ValidateExists("Prices", el.ID)
+
+		if !exists {
+			c.BadRequestDontExists("Price")
+			return
+		}
+
+		pricesRelationsIDs = append(pricesRelationsIDs, el.ID)
+	}
+
+	// Add Prices relations
+	_, err = models.RelationsM2M("INSERT", "carts", v.ID, "prices", pricesRelationsIDs)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+
+	c.ServeJSON()
+
+}
+
+// DeleteCurrencies ...
+// @Title DeleteCurrencies to Gateway
+// @Description Delete Gateways relations M2M
+// @Param	body		body 	models.Gateways	true		"body for Gateways content"
+// @Success 201 {int} models.Gateways
+// @Failure 400 body is empty
+// @router /:id/currencies [delete]
+func (c *GatewaysController) DeleteCurrencies() {
+	idStr := c.Ctx.Input.Param(":id")
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v := models.Gateways{ID: id}
+
+	// Validate context body
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+
+		fmt.Println(err.Error())
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	// Validate currencies exists
+	var relationsIDs []int
+
+	for _, el := range v.Currencies {
+
+		exists := models.ValidateExists("currencies", el.ID)
+
+		if !exists {
+			c.BadRequestDontExists("currenccy")
+			return
+		}
+
+		relationsIDs = append(relationsIDs, el.ID)
+	}
+
+	count, err := models.RelationsM2M("DELETE", "gateways", v.ID, "currencies", relationsIDs)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = MessageResponse{
+		Message:       "Deleted relations: " + strconv.Itoa(count),
+		PrettyMessage: "Relaciones Eliminadas: " + strconv.Itoa(count),
 	}
 
 	c.ServeJSON()

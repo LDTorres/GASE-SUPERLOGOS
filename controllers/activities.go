@@ -39,7 +39,7 @@ func (c *ActivitiesController) Post() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -91,7 +91,7 @@ func (c *ActivitiesController) GetOne() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -183,7 +183,7 @@ func (c *ActivitiesController) Put() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -248,7 +248,7 @@ func (c *ActivitiesController) Delete() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 

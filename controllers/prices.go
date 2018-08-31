@@ -37,7 +37,7 @@ func (c *PricesController) Post() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -51,7 +51,7 @@ func (c *PricesController) Post() {
 	}
 
 	foreignsModels := map[string]int{
-		"Currencies":  v.Currency.ID,
+		"Currencies": v.Currency.ID,
 		"Services":   v.Service.ID,
 	}
 
@@ -86,7 +86,7 @@ func (c *PricesController) GetOne() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -177,7 +177,7 @@ func (c *PricesController) Put() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -199,7 +199,7 @@ func (c *PricesController) Put() {
 	}
 
 	foreignsModels := map[string]int{
-		"Currencies":  v.Currency.ID,
+		"Currencies": v.Currency.ID,
 		"Services":   v.Service.ID,
 	}
 
@@ -236,7 +236,7 @@ func (c *PricesController) Delete() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 

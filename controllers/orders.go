@@ -34,13 +34,15 @@ func (c *OrdersController) URLMapping() {
 func (c *OrdersController) Post() {
 	var v models.Orders
 
+	// Validate Context Body
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
+	// Validate Format Types
 	valid := validation.Validation{}
 
 	b, err := valid.Valid(&v)
@@ -50,20 +52,69 @@ func (c *OrdersController) Post() {
 		return
 	}
 
-	foreignsModels := map[string]int{
-		"Clients": v.Client.ID,
+	// Validate if the Client Exists
+	exists := models.ValidateExists("Clients", v.Client.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Client")
+		return
 	}
 
-	resume := c.doForeignModelsValidation(foreignsModels)
+	// Validate Prices exists
+	var pricesRelationsIDs []int
 
-	if !resume {
-		return
+	for _, el := range v.Prices {
+
+		exists := models.ValidateExists("Prices", el.ID)
+
+		if !exists {
+			c.BadRequestDontExists("Price")
+			return
+		}
+
+		pricesRelationsIDs = append(pricesRelationsIDs, el.ID)
+	}
+
+	// Validate Coupons exists
+	var couponsRelationsIDs []int
+	for _, el := range v.Coupons {
+
+		exists := models.ValidateExists("Coupons", el.ID)
+
+		if !exists {
+			c.BadRequestDontExists("Coupons")
+			return
+		}
+
+		couponsRelationsIDs = append(couponsRelationsIDs, el.ID)
+
+		// Getting the discount
+		discount := v.FinalValue * el.Percentage
+		v.Discount = discount / 100
 	}
 
 	//TODO: VERIFICAR CON TOKEN QUE SEA LA MISMA PERSONA
 	//TODO: VERITICAR DATOS DE TARJETA DE CREDITO
 
 	_, err = models.AddOrders(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	// Add Prices relations
+
+	_, err = models.RelationsM2M("INSERT", "orders", v.ID, "prices", pricesRelationsIDs)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	// Add Coupons relations
+
+	_, err = models.RelationsM2M("INSERT", "orders", v.ID, "coupons", pricesRelationsIDs)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -88,7 +139,7 @@ func (c *OrdersController) GetOne() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -180,7 +231,7 @@ func (c *OrdersController) Put() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -241,7 +292,7 @@ func (c *OrdersController) Delete() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 

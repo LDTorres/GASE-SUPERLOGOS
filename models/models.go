@@ -22,6 +22,10 @@ func init() {
 
 	RunMode := beego.BConfig.RunMode
 
+	if RunMode == "dev" {
+		orm.Debug = true
+	}
+
 	var mysqlConnData mysqlConnData
 
 	mysqlConnData.user = beego.AppConfig.String(RunMode + "::mysqluser")
@@ -32,8 +36,6 @@ func init() {
 	orm.RegisterDataBase("default", "mysql", mysqlConnData.user+":"+mysqlConnData.pass+"@/"+mysqlConnData.dbName+"?charset=utf8")
 
 	orm.RegisterModel(new(Activities), new(Carts), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services))
-
-	orm.Debug = true
 
 	// Add defaults to database
 	count, _ := AddDefaultDataCurrencies()
@@ -138,6 +140,54 @@ func formatSlug(actualSlug string, generatedSlug string, slugInt *int) (err erro
 
 	if slugNumber > *slugInt {
 		*slugInt = slugNumber
+	}
+
+	return
+}
+
+// RelationsM2M insert | delete M2M Relations on database
+func RelationsM2M(operation string, entityFieldName string, entityID int, relationFieldName string, relationsIDs []int) (count int, err error) {
+
+	tableName := entityFieldName + "_" + relationFieldName + "s"
+	entityFieldName = entityFieldName + "_id"
+	relationFieldName = relationFieldName + "_id"
+
+	QueryRaw := "INSERT INTO " + tableName + " (" + entityFieldName + "," + relationFieldName + ") VALUES (?,?)"
+
+	if operation == "DELETE" {
+
+		QueryRaw = "DELETE FROM " + tableName + " WHERE " + entityFieldName + " = ? AND " + relationFieldName + " = ?"
+
+	}
+
+	o := orm.NewOrm()
+	err = o.Begin()
+
+	if err != nil {
+		return 0, err
+	}
+
+	for _, relationID := range relationsIDs {
+
+		Args := []int{entityID, relationID}
+
+		_, err := o.Raw(QueryRaw, Args).Exec()
+
+		if err != nil {
+			errRoll := o.Rollback()
+			if errRoll != nil {
+				return 0, errRoll
+			}
+			return 0, err
+		}
+
+		count++
+	}
+
+	err = o.Commit()
+
+	if err != nil {
+		return 0, err
 	}
 
 	return
