@@ -30,6 +30,20 @@ func (t *Orders) TableName() string {
 	return "orders"
 }
 
+func (t *Orders) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Prices", "Coupons"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 // AddOrders insert a new Orders into database and returns last inserted Id on success.
 func AddOrders(m *Orders) (id int64, err error) {
 	o := orm.NewOrm()
@@ -39,14 +53,17 @@ func AddOrders(m *Orders) (id int64, err error) {
 
 // GetOrdersByID retrieves Orders by Id. Returns error if Id doesn't exist
 func GetOrdersByID(id int) (v *Orders, err error) {
-	o := orm.NewOrm()
 	v = &Orders{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Prices")
-		o.LoadRelated(&v, "Coupons")
-		return v, nil
+
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 // GetAllOrders retrieves all Orders matches certain condition. Returns empty list if
@@ -106,11 +123,10 @@ func GetAllOrders(query map[string]string, fields []string, sortby []string, ord
 
 	var l []Orders
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Prices")
-				o.LoadRelated(&v, "Coupons")
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -121,8 +137,7 @@ func GetAllOrders(query map[string]string, fields []string, sortby []string, ord
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Prices")
-				o.LoadRelated(&v, "Coupons")
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}

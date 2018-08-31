@@ -41,12 +41,14 @@ func AddImages(m *Images) (id int64, err error) {
 
 //GetImagesByID retrieves Images by Id. Returns error if Id doesn't exist
 func GetImagesByID(id int) (v *Images, err error) {
-	o := orm.NewOrm()
 	v = &Images{ID: id}
-	if err = o.Read(v); err == nil {
-		return v, nil
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	return
 }
 
 //GetAllImages retrieves all Images matches certain condition. Returns empty list if no records exist
@@ -105,7 +107,7 @@ func GetAllImages(query map[string]string, fields []string, sortby []string, ord
 
 	var l []Images
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
 				ml = append(ml, v)

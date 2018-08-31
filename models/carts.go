@@ -25,6 +25,20 @@ func (t *Carts) TableName() string {
 	return "carts"
 }
 
+func (t *Carts) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Prices"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 // AddCarts insert a new Carts into database and returns last inserted Id on success.
 func AddCarts(m *Carts) (id int64, err error) {
 	o := orm.NewOrm()
@@ -34,13 +48,16 @@ func AddCarts(m *Carts) (id int64, err error) {
 
 // GetCartsByID retrieves Carts by Id. Returns error if Id doesn't exist
 func GetCartsByID(id int) (v *Carts, err error) {
-	o := orm.NewOrm()
 	v = &Carts{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Prices")
-		return v, nil
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 // GetAllCarts retrieves all Carts matches certain condition. Returns empty list if
@@ -100,10 +117,10 @@ func GetAllCarts(query map[string]string, fields []string, sortby []string, orde
 
 	var l []Carts
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Prices")
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -114,7 +131,7 @@ func GetAllCarts(query map[string]string, fields []string, sortby []string, orde
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Prices")
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}

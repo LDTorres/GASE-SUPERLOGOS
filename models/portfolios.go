@@ -21,7 +21,7 @@ type Portfolios struct {
 	Location    *Locations  `orm:"column(locations_id);rel(fk)" json:"location,omitempty"`
 	Service     *Services   `orm:"column(services_id);rel(fk)" json:"service,omitempty"`
 	Activity    *Activities `orm:"column(activities_id);rel(fk)" json:"activity,omitempty"`
-	Images      []*Images   `orm:"reverse(many)" json:"images"`
+	Images      []*Images   `orm:"reverse(many)" json:"images,omitempty"`
 	CreatedAt   time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt   time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt   time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
@@ -30,6 +30,20 @@ type Portfolios struct {
 //TableName define Name
 func (t *Portfolios) TableName() string {
 	return "portfolios"
+}
+
+func (t *Portfolios) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Images"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
 }
 
 // AddPortfolios insert a new Portfolios into database and returns last inserted Id on success.
@@ -44,14 +58,18 @@ func AddPortfolios(m *Portfolios) (id int64, err error) {
 
 // GetPortfoliosByID retrieves Portfolios by Id. Returns error if Id doesn't exist
 func GetPortfoliosByID(id int) (v *Portfolios, err error) {
-	o := orm.NewOrm()
+
 	v = &Portfolios{ID: id}
 
-	if err = o.Read(v); err == nil {
-		return v, nil
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return nil, err
+	v.loadRelations()
+
+	return v, err
 }
 
 // GetAllPortfolios retrieves all Portfolios matches certain condition. Returns empty list if no records exist
@@ -110,10 +128,12 @@ func GetAllPortfolios(query map[string]string, fields []string, sortby []string,
 
 	var l []Portfolios
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Images")
+
+				v.loadRelations()
+
 				ml = append(ml, v)
 			}
 		} else {
@@ -124,7 +144,9 @@ func GetAllPortfolios(query map[string]string, fields []string, sortby []string,
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Images")
+
+				v.loadRelations()
+
 				ml = append(ml, m)
 			}
 		}

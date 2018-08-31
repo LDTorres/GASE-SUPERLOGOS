@@ -71,10 +71,18 @@ func init() {
 		fmt.Println("Added Services : ", count)
 	}
 
-	count, _ = AddDefaultDataPrices()
-	if count > 0 {
-		fmt.Println("Added Prices : ", count)
-	}
+	AddDefaultDataPrices()
+
+}
+
+//LoadRelations of the model
+func searchFK(tableName string, id int) (query orm.QuerySeter) {
+
+	o := orm.NewOrm()
+
+	query = o.QueryTable(tableName).Filter("id", id).RelatedSel()
+
+	return
 }
 
 //ValidateExists FK

@@ -27,6 +27,20 @@ func (t *Coupons) TableName() string {
 	return "coupons"
 }
 
+func (t *Coupons) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Orders"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 // AddCoupons insert a new Coupons into database and returns
 // last inserted Id on success.
 func AddCoupons(m *Coupons) (id int64, err error) {
@@ -38,13 +52,16 @@ func AddCoupons(m *Coupons) (id int64, err error) {
 // GetCouponsByID retrieves Coupons by Id. Returns error if
 // Id doesn't exist
 func GetCouponsByID(id int) (v *Coupons, err error) {
-	o := orm.NewOrm()
 	v = &Coupons{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Orders")
-		return v, nil
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 // GetAllCoupons retrieves all Coupons matches certain condition. Returns empty list if
@@ -104,10 +121,10 @@ func GetAllCoupons(query map[string]string, fields []string, sortby []string, or
 
 	var l []Coupons
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Orders")
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -118,7 +135,7 @@ func GetAllCoupons(query map[string]string, fields []string, sortby []string, or
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Orders")
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}

@@ -27,6 +27,20 @@ func (t *Gateways) TableName() string {
 	return "gateways"
 }
 
+func (t *Gateways) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Orders", "Currencies"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 // AddGateways insert a new Gateways into database and returns
 // last inserted Id on success.
 func AddGateways(m *Gateways) (id int64, err error) {
@@ -39,14 +53,16 @@ func AddGateways(m *Gateways) (id int64, err error) {
 // GetGatewaysByID retrieves Gateways by Id. Returns error if
 // Id doesn't exist
 func GetGatewaysByID(id int) (v *Gateways, err error) {
-	o := orm.NewOrm()
 	v = &Gateways{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Currencies")
-		o.LoadRelated(&v, "Orders")
-		return v, nil
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 // GetAllGateways retrieves all Gateways matches certain condition. Returns empty list if
@@ -106,13 +122,10 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 
 	var l []Gateways
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-
-				o.LoadRelated(&v, "Currencies")
-				o.LoadRelated(&v, "Orders")
-
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -123,10 +136,7 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-
-				o.LoadRelated(&v, "Currencies")
-				o.LoadRelated(&v, "Orders")
-
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}
@@ -162,6 +172,78 @@ func DeleteGateways(id int) (err error) {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
+	return
+}
+
+// AddRelationGatewaysCurrencies insert a new Currencies Gateways M2M into database
+func AddRelationGatewaysCurrencies(m *Gateways) (count int64, err error) {
+
+	o := orm.NewOrm()
+
+	gateway := Gateways{ID: m.ID}
+
+	err = o.Read(&gateway, "id")
+
+	if err != nil {
+		return
+	}
+
+	m2m := o.QueryM2M(&gateway, "Currencies")
+
+	var InsertManyCurrencies []*Currencies
+
+	for _, cu := range m.Currencies {
+
+		currency := Currencies{ID: cu.ID}
+
+		err := o.Read(&currency, "id")
+
+		if err != nil {
+			continue
+		}
+
+		InsertManyCurrencies = append(InsertManyCurrencies, &currency)
+
+	}
+
+	count, err = m2m.Add(InsertManyCurrencies)
+
+	return
+}
+
+// DeleteRelationGatewaysCurrencies Delete Gateways Currencies M2M
+func DeleteRelationGatewaysCurrencies(m *Gateways) (count int64, err error) {
+
+	o := orm.NewOrm()
+
+	gateway := Gateways{ID: m.ID}
+
+	err = o.Read(&gateway, "id")
+
+	if err != nil {
+		return
+	}
+
+	var currenciesArr []*Currencies
+
+	for _, val := range m.Currencies {
+
+		currency := Currencies{ID: val.ID}
+
+		err := o.Read(&currency, "id")
+
+		if err != nil {
+			continue
+		}
+
+		currenciesArr = append(currenciesArr, &currency)
+
+	}
+
+	m2m := o.QueryM2M(&gateway, "Currencies")
+
+	count, err = m2m.Remove(currenciesArr)
+
 	return
 }
 

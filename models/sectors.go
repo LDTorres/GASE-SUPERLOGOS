@@ -29,6 +29,20 @@ func (t *Sectors) TableName() string {
 	return "sectors"
 }
 
+func (t *Sectors) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Activities"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 // AddSectors insert a new Sectors into database and returns last inserted Id on success.
 func AddSectors(m *Sectors) (id int64, err error) {
 	o := orm.NewOrm()
@@ -41,13 +55,17 @@ func AddSectors(m *Sectors) (id int64, err error) {
 
 //GetSectorsByID retrieves Sectors by Id. Returns error if Id doesn't exist
 func GetSectorsByID(id int) (v *Sectors, err error) {
-	o := orm.NewOrm()
 	v = &Sectors{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Activities")
-		return v, nil
+
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 //GetAllSectors retrieves all Sectors matches certain condition. Returns empty list if no records exist
@@ -106,10 +124,10 @@ func GetAllSectors(query map[string]string, fields []string, sortby []string, or
 
 	var l []Sectors
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Activities")
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -120,7 +138,7 @@ func GetAllSectors(query map[string]string, fields []string, sortby []string, or
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Activities")
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}

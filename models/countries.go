@@ -33,6 +33,20 @@ func (t *Countries) TableName() string {
 	return "countries"
 }
 
+func (t *Countries) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Locations"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 // AddCountries insert a new Countries into database and returns
 // last inserted Id on success.
 func AddCountries(m *Countries) (id int64, err error) {
@@ -47,13 +61,17 @@ func AddCountries(m *Countries) (id int64, err error) {
 // GetCountriesByID retrieves Countries by Id. Returns error if
 // Id doesn't exist
 func GetCountriesByID(id int) (v *Countries, err error) {
-	o := orm.NewOrm()
 	v = &Countries{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Locations")
-		return v, nil
+
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 // GetAllCountries retrieves all Countries matches certain condition. Returns empty list if
@@ -113,10 +131,10 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 
 	var l []Countries
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Locations")
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -127,7 +145,7 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Locations")
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}

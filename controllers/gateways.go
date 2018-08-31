@@ -4,6 +4,7 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -18,10 +19,12 @@ type GatewaysController struct {
 // URLMapping ...
 func (c *GatewaysController) URLMapping() {
 	c.Mapping("Post", c.Post)
+	c.Mapping("Post", c.AddNewsCurrencies)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("Delete", c.DeleteCurrencies)
 }
 
 // Post ...
@@ -54,21 +57,10 @@ func (c *GatewaysController) Post() {
 		return
 	}
 
-	for _, currency := range v.Currencies {
-		var v models.Currencies
+	// Validate currencies exists
+	for _, el := range v.Currencies {
 
-		// Validate context body
-
-		validM2M := validation.Validation{}
-
-		b, err = validM2M.Valid(&v)
-
-		if !b {
-			c.BadRequestErrors(validM2M.Errors, v.TableName())
-			return
-		}
-
-		exists := models.ValidateExists("currencies", currency.ID)
+		exists := models.ValidateExists("currencies", el.ID)
 
 		if !exists {
 			c.BadRequestDontExists("currenccy")
@@ -79,6 +71,17 @@ func (c *GatewaysController) Post() {
 	_, err = models.AddGateways(&v)
 
 	if err != nil {
+		fmt.Println(v)
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	fmt.Println(v)
+
+	_, err = models.AddRelationGatewaysCurrencies(&v)
+
+	if err != nil {
+		fmt.Println(err.Error())
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -247,6 +250,118 @@ func (c *GatewaysController) Delete() {
 	c.Data["json"] = MessageResponse{
 		Message:       "Deleted element",
 		PrettyMessage: "Elemento Eliminado",
+	}
+
+	c.ServeJSON()
+}
+
+// AddNewsCurrencies ...
+// @Title AddNewsCurrencies to Gateway
+// @Description create Gateways
+// @Param	body		body 	models.Gateways	true		"body for Gateways content"
+// @Success 201 {int} models.Gateways
+// @Failure 400 body is empty
+// @router /:id/currencies [post]
+func (c *GatewaysController) AddNewsCurrencies() {
+	idStr := c.Ctx.Input.Param(":id")
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
+	}
+
+	v := models.Gateways{ID: id}
+
+	// Validate context body
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+
+		fmt.Println(err.Error())
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	// Validate currencies exists
+	for _, el := range v.Currencies {
+
+		exists := models.ValidateExists("currencies", el.ID)
+
+		if !exists {
+			c.BadRequestDontExists("currenccy")
+			return
+		}
+	}
+
+	rows, err := models.AddRelationGatewaysCurrencies(&v)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = MessageResponse{
+		Message:       "Added relations: 0" + strconv.Itoa(int(rows)),
+		PrettyMessage: "Relaciones Agregadas: 0" + strconv.Itoa(int(rows)),
+	}
+
+	c.ServeJSON()
+}
+
+// DeleteCurrencies ...
+// @Title DeleteCurrencies to Gateway
+// @Description Delete Gateways relations M2M
+// @Param	body		body 	models.Gateways	true		"body for Gateways content"
+// @Success 201 {int} models.Gateways
+// @Failure 400 body is empty
+// @router /:id/currencies [delete]
+func (c *GatewaysController) DeleteCurrencies() {
+	idStr := c.Ctx.Input.Param(":id")
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest()
+		return
+	}
+
+	v := models.Gateways{ID: id}
+
+	// Validate context body
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+
+		fmt.Println(err.Error())
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	// Validate currencies exists
+	for _, el := range v.Currencies {
+
+		exists := models.ValidateExists("currencies", el.ID)
+
+		if !exists {
+			c.BadRequestDontExists("currenccy")
+			return
+		}
+	}
+
+	rows, err := models.DeleteRelationGatewaysCurrencies(&v)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = MessageResponse{
+		Message:       "Deleted relations: " + strconv.Itoa(int(rows)),
+		PrettyMessage: "Relaciones Eliminadas: " + strconv.Itoa(int(rows)),
 	}
 
 	c.ServeJSON()

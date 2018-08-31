@@ -53,18 +53,8 @@ func (c *CartsController) Post() {
 		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
-
+	//TODO:
 	for _, price := range v.Prices {
-		// Validate context body
-		var v models.Prices
-		validM2M := validation.Validation{}
-
-		b, err = validM2M.Valid(&v)
-
-		if !b {
-			c.BadRequestErrors(validM2M.Errors, "Price")
-			return
-		}
 
 		exists := models.ValidateExists("Prices", price.ID)
 

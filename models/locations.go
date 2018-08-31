@@ -27,6 +27,20 @@ func (t *Locations) TableName() string {
 	return "locations"
 }
 
+func (t *Locations) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Portfolios"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 // AddLocations insert a new Locations into database and returns
 // last inserted Id on success.
 func AddLocations(m *Locations) (id int64, err error) {
@@ -40,13 +54,17 @@ func AddLocations(m *Locations) (id int64, err error) {
 
 //GetLocationsByID retrieves Locations by Id. Returns error if Id doesn't exist
 func GetLocationsByID(id int) (v *Locations, err error) {
-	o := orm.NewOrm()
 	v = &Locations{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Portfolios")
-		return v, nil
+
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 //GetAllLocations retrieves all Locations matches certain condition. Returns empty list if no records exist
@@ -105,10 +123,10 @@ func GetAllLocations(query map[string]string, fields []string, sortby []string, 
 
 	var l []Locations
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Portfolios")
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -119,7 +137,7 @@ func GetAllLocations(query map[string]string, fields []string, sortby []string, 
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Portfolios")
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}

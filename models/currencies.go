@@ -28,6 +28,20 @@ func (t *Currencies) TableName() string {
 	return "currencies"
 }
 
+func (t *Currencies) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Gateways", "Countries"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 // AddCurrencies insert a new Currencies into database and returns
 // last inserted Id on success.
 func AddCurrencies(m *Currencies) (id int64, err error) {
@@ -39,14 +53,16 @@ func AddCurrencies(m *Currencies) (id int64, err error) {
 // GetCurrenciesByID retrieves Currencies by Id. Returns error if
 // Id doesn't exist
 func GetCurrenciesByID(id int) (v *Currencies, err error) {
-	o := orm.NewOrm()
 	v = &Currencies{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Countries")
-		o.LoadRelated(&v, "Gateways")
-		return v, nil
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 // GetAllCurrencies retrieves all Currencies matches certain condition. Returns empty list if
@@ -106,11 +122,10 @@ func GetAllCurrencies(query map[string]string, fields []string, sortby []string,
 
 	var l []Currencies
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Countries")
-				o.LoadRelated(&v, "Gateways")
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -121,8 +136,7 @@ func GetAllCurrencies(query map[string]string, fields []string, sortby []string,
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Countries")
-				o.LoadRelated(&v, "Gateways")
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}

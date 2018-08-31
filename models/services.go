@@ -30,6 +30,20 @@ func (t *Services) TableName() string {
 	return "services"
 }
 
+func (t *Services) loadRelations() {
+
+	o := orm.NewOrm()
+
+	relations := []string{"Portfolios"}
+
+	for _, relation := range relations {
+		o.LoadRelated(t, relation)
+	}
+
+	return
+
+}
+
 //AddServices insert a new Services into database and returns last inserted Id on success.
 func AddServices(m *Services) (id int64, err error) {
 	o := orm.NewOrm()
@@ -42,13 +56,17 @@ func AddServices(m *Services) (id int64, err error) {
 
 //GetServicesByID retrieves Services by Id. Returns error if Id doesn't exist
 func GetServicesByID(id int) (v *Services, err error) {
-	o := orm.NewOrm()
 	v = &Services{ID: id}
-	if err = o.Read(v); err == nil {
-		o.LoadRelated(&v, "Portfolios")
-		return v, nil
+
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	v.loadRelations()
+
+	return
 }
 
 //GetAllServices retrieves all Services matches certain condition. Returns empty list if no records exist
@@ -107,10 +125,10 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 
 	var l []Services
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				o.LoadRelated(&v, "Portfolios")
+				v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -121,7 +139,7 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				o.LoadRelated(&v, "Portfolios")
+				v.loadRelations()
 				ml = append(ml, m)
 			}
 		}

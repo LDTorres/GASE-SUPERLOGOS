@@ -287,6 +287,22 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+		beego.ControllerComments{
+			Method: "AddNewsCurrencies",
+			Router: `/:id/currencies`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+		beego.ControllerComments{
+			Method: "DeleteCurrencies",
+			Router: `/:id/currencies`,
+			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "Post",
