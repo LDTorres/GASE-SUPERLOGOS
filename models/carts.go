@@ -12,12 +12,15 @@ import (
 
 //Carts Model
 type Carts struct {
-	ID        int       `orm:"column(id);auto" json:"id"`
-	Cookie    string    `orm:"column(cookie);size(255)" json:"cookie,omitempty"`
-	Prices    []*Prices `orm:"rel(m2m)" json:"prices,omitempty"`
-	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID           int         `orm:"column(id);auto" json:"id"`
+	Cookie       string      `orm:"column(cookie);size(255)" json:"cookie,omitempty"`
+	Services     []*Services `orm:"rel(m2m)" json:"services,omitempty"`
+	InitialValue float32     `orm:"-" json:"initial_value,omitempty"`
+	FinalValue   float32     `orm:"-" json:"final_value,omitempty"`
+	Currency     *Currencies `orm:"-" json:"currency,omitempty"`
+	CreatedAt    time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt    time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt    time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName define Name
@@ -29,7 +32,7 @@ func (t *Carts) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"Prices"}
+	relations := []string{"Services"}
 
 	for _, relation := range relations {
 		o.LoadRelated(t, relation)
@@ -56,6 +59,49 @@ func GetCartsByID(id int) (v *Carts, err error) {
 	}
 
 	v.loadRelations()
+
+	return
+}
+
+// GetCartsByCookie retrieves Carts by Cookie. Returns error if Id doesn't exist
+func GetCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
+	o := orm.NewOrm()
+
+	v = &Carts{Cookie: Cookie}
+	err = o.Read(v, "cookie")
+
+	if err != nil {
+		return nil, err
+	}
+
+	v.loadRelations()
+
+	country, err := GetCountriesByIso(Iso)
+
+	if err != nil {
+		return nil, err
+	}
+
+	v.Currency = country.Currency
+
+	for i, service := range v.Services {
+
+		price := &Prices{Currency: country.Currency, Service: service}
+
+		err = o.Read(price, "Currency", "Service")
+
+		if err != nil {
+			return nil, err
+		}
+
+		v.InitialValue += (price.Value * price.Service.Percertage) / 100
+		v.FinalValue += price.Value
+
+		price.Service = nil
+		price.Currency = nil
+
+		v.Services[i].Price = price
+	}
 
 	return
 }

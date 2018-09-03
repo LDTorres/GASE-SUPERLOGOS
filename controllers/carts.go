@@ -19,10 +19,13 @@ type CartsController struct {
 // URLMapping ...
 func (c *CartsController) URLMapping() {
 	c.Mapping("Post", c.Post)
+	c.Mapping("AddServices", c.AddServices)
 	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetOneByCookie", c.GetOneByCookie)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("DeleteServices", c.DeleteServices)
 }
 
 // Post ...
@@ -55,18 +58,18 @@ func (c *CartsController) Post() {
 	}
 
 	// Validate Prices exists
-	var pricesRelationsIDs []int
+	var servicesRelationsIDs []int
 
-	for _, el := range v.Prices {
+	for _, el := range v.Services {
 
-		exists := models.ValidateExists("Prices", el.ID)
+		exists := models.ValidateExists("Services", el.ID)
 
 		if !exists {
-			c.BadRequestDontExists("Price")
+			c.BadRequestDontExists("Service")
 			return
 		}
 
-		pricesRelationsIDs = append(pricesRelationsIDs, el.ID)
+		servicesRelationsIDs = append(servicesRelationsIDs, el.ID)
 	}
 
 	_, err = models.AddCarts(&v)
@@ -78,7 +81,7 @@ func (c *CartsController) Post() {
 
 	// Add Prices relations
 
-	_, err = models.RelationsM2M("INSERT", "carts", v.ID, "prices", pricesRelationsIDs)
+	_, err = models.RelationsM2M("INSERT", "carts", v.ID, "services", servicesRelationsIDs)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -254,14 +257,47 @@ func (c *CartsController) Delete() {
 	c.ServeJSON()
 }
 
-// AddNewsPrices ...
-// @Title AddNewsPrices to Carts
-// @Description AddNewsPrices to Cart
-// @Param	body		body 	models.Carts	true		"body for Carts content"
+// GetOneByCookie ...
+// @Title Get One
+// @Description get Carts by Cookie
+// @Param	Cookie		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Carts
+// @Failure 403 :cookie is empty
+// @router /cookie/:cookie [get]
+func (c *CartsController) GetOneByCookie() {
+	cookie := c.Ctx.Input.Param(":cookie")
+
+	if cookie == "" {
+		err := errors.New("No se ha recibido la cookie")
+		c.BadRequest(err)
+		return
+	}
+
+	header := c.Ctx.Input.Header("Country-Iso")
+
+	if header == "" {
+		header = "US"
+	}
+
+	v, err := models.GetCartsByCookie(cookie, header)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+}
+
+// AddServices ...
+// @Title AddServices to Carts
+// @Description AddServices to Cart
+// @Param	body		body 	models.Services	true		"body for Services content"
 // @Success 201 {int} models.Carts
 // @Failure 400 body is empty
-// @router /prices [post]
-func (c *CartsController) AddNewsPrices() {
+// @router /services [post]
+func (c *CartsController) AddServices() {
 	var v models.Carts
 
 	// Validate empty body
@@ -284,22 +320,22 @@ func (c *CartsController) AddNewsPrices() {
 	}
 
 	// Validate Prices exists
-	var pricesRelationsIDs []int
+	var servicesRelationsIDs []int
 
-	for _, el := range v.Prices {
+	for _, el := range v.Services {
 
-		exists := models.ValidateExists("Prices", el.ID)
+		exists := models.ValidateExists("Services", el.ID)
 
 		if !exists {
-			c.BadRequestDontExists("Price")
+			c.BadRequestDontExists("Service")
 			return
 		}
 
-		pricesRelationsIDs = append(pricesRelationsIDs, el.ID)
+		servicesRelationsIDs = append(servicesRelationsIDs, el.ID)
 	}
 
-	// Add Prices relations
-	_, err = models.RelationsM2M("INSERT", "carts", v.ID, "prices", pricesRelationsIDs)
+	// Add Services relations
+	_, err = models.RelationsM2M("INSERT", "carts", v.ID, "services", servicesRelationsIDs)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -313,14 +349,14 @@ func (c *CartsController) AddNewsPrices() {
 
 }
 
-// DeleteCurrencies ...
-// @Title DeleteCurrencies to Gateway
-// @Description Delete Gateways relations M2M
-// @Param	body		body 	models.Gateways	true		"body for Gateways content"
-// @Success 201 {int} models.Gateways
+// DeleteServices ...
+// @Title DeleteServices of Cart
+// @Description Delete Prices relations M2M
+// @Param	body		body 	models.Services	true		"body for Services content"
+// @Success 200 {int} models.Services
 // @Failure 400 body is empty
-// @router /:id/currencies [delete]
-func (c *GatewaysController) DeleteCurrencies() {
+// @router /:id/services [delete]
+func (c *CartsController) DeleteServices() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -329,7 +365,7 @@ func (c *GatewaysController) DeleteCurrencies() {
 		return
 	}
 
-	v := models.Gateways{ID: id}
+	v := models.Carts{ID: id}
 
 	// Validate context body
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
@@ -341,22 +377,22 @@ func (c *GatewaysController) DeleteCurrencies() {
 		return
 	}
 
-	// Validate currencies exists
+	// Validate Service exists
 	var relationsIDs []int
 
-	for _, el := range v.Currencies {
+	for _, el := range v.Services {
 
-		exists := models.ValidateExists("currencies", el.ID)
+		exists := models.ValidateExists("Services", el.ID)
 
 		if !exists {
-			c.BadRequestDontExists("currenccy")
+			c.BadRequestDontExists("Service")
 			return
 		}
 
 		relationsIDs = append(relationsIDs, el.ID)
 	}
 
-	count, err := models.RelationsM2M("DELETE", "gateways", v.ID, "currencies", relationsIDs)
+	count, err := models.RelationsM2M("DELETE", "carts", v.ID, "services", relationsIDs)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -364,7 +400,7 @@ func (c *GatewaysController) DeleteCurrencies() {
 		return
 	}
 
-	c.Ctx.Output.SetStatus(201)
+	c.Ctx.Output.SetStatus(200)
 	c.Data["json"] = MessageResponse{
 		Message:       "Deleted relations: " + strconv.Itoa(count),
 		PrettyMessage: "Relaciones Eliminadas: " + strconv.Itoa(count),

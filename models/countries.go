@@ -74,6 +74,24 @@ func GetCountriesByID(id int) (v *Countries, err error) {
 	return
 }
 
+// GetCountriesByIso retrieves Countries by Iso. Returns error if Id doesn't exist
+func GetCountriesByIso(iso string) (v *Countries, err error) {
+	o := orm.NewOrm()
+
+	v = &Countries{Iso: iso}
+	err = o.Read(v, "iso")
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = searchFK(v.TableName(), v.ID).One(v)
+
+	v.loadRelations()
+
+	return
+}
+
 // GetAllCountries retrieves all Countries matches certain condition. Returns empty list if
 // no records exist
 func GetAllCountries(query map[string]string, fields []string, sortby []string, order []string,

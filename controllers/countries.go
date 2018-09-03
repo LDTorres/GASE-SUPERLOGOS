@@ -19,6 +19,7 @@ type CountriesController struct {
 func (c *CountriesController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetOneByIso", c.GetOneByIso)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
@@ -253,5 +254,30 @@ func (c *CountriesController) Delete() {
 		PrettyMessage: "Elemento Eliminado",
 	}
 
+	c.ServeJSON()
+}
+
+// GetOneByIso ...
+// @Title Get One By Iso
+// @Description get Carts by Iso
+// @Param	Iso		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Countries
+// @Failure 403 :iso is empty
+// @router /iso [get]
+func (c *CountriesController) GetOneByIso() {
+
+	header := c.Ctx.Input.Header("Country-Iso")
+
+	if header == "" {
+		header = "US"
+	}
+
+	v, err := models.GetCountriesByIso(header)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }

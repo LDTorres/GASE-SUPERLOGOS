@@ -87,6 +87,30 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+		beego.ControllerComments{
+			Method: "DeleteServices",
+			Router: `/:id/services`,
+			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+		beego.ControllerComments{
+			Method: "GetOneByCookie",
+			Router: `/cookie/:cookie`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+		beego.ControllerComments{
+			Method: "AddServices",
+			Router: `/services`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "Post",
@@ -167,6 +191,14 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+		beego.ControllerComments{
+			Method: "GetOneByIso",
+			Router: `/iso`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "Post",
@@ -204,6 +236,14 @@ func init() {
 			Method: "Delete",
 			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+		beego.ControllerComments{
+			Method: "GetOneByCode",
+			Router: `/value/:code`,
+			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
 

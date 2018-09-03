@@ -64,6 +64,22 @@ func GetCouponsByID(id int) (v *Coupons, err error) {
 	return
 }
 
+// GetCouponByCode retrieves Coupon by Code. Returns error if Id doesn't exist
+func GetCouponByCode(Code string) (v *Coupons, err error) {
+	o := orm.NewOrm()
+
+	v = &Coupons{Code: Code}
+	err = o.Read(v, "code")
+
+	if err != nil {
+		return nil, err
+	}
+
+	v.loadRelations()
+
+	return
+}
+
 // GetAllCoupons retrieves all Coupons matches certain condition. Returns empty list if
 // no records exist
 func GetAllCoupons(query map[string]string, fields []string, sortby []string, order []string,

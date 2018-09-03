@@ -19,6 +19,7 @@ type CouponsController struct {
 func (c *CouponsController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetOneByCode", c.GetOneByCode)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
@@ -227,5 +228,31 @@ func (c *CouponsController) Delete() {
 		PrettyMessage: "Elemento Eliminado",
 	}
 
+	c.ServeJSON()
+}
+
+// GetOneByCode ...
+// @Title Get One
+// @Description get Carts by Code
+// @Param	Code		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Carts
+// @Failure 403 :code is empty
+// @router /value/:code [get]
+func (c *CouponsController) GetOneByCode() {
+	code := c.Ctx.Input.Param(":code")
+
+	if code == "" {
+		err := errors.New("No se ha recibido la cookie")
+		c.BadRequest(err)
+		return
+	}
+
+	v, err := models.GetCouponByCode(code)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }
