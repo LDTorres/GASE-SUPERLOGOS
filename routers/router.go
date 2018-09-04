@@ -28,6 +28,7 @@ func init() {
 			),
 		),
 
+		beego.NSCond(controllers.Auth),
 		beego.NSNamespace("/clients",
 			beego.NSInclude(
 				&controllers.ClientsController{},

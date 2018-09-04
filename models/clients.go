@@ -18,6 +18,7 @@ type Clients struct {
 	Password  string    `orm:"column(password);size(255)" json:"password,omitempty" valid:"Required; MinSize(8); MaxSize(20); AlphaDash"`
 	Phone     string    `orm:"column(phone);size(255)" json:"phone,omitempty" valid:"Required"`
 	Orders    []*Orders `orm:"reverse(many)" json:"orders,omitempty"`
+	Token     string    `orm:"-" json:"token,omitempty"`
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
@@ -46,8 +47,32 @@ func (t *Clients) loadRelations() {
 // last inserted Id on success.
 func AddClients(m *Clients) (id int64, err error) {
 	o := orm.NewOrm()
+	m.Password = GetMD5Hash(m.Password)
 	id, err = o.Insert(m)
+	m.Password = ""
 	return
+}
+
+// LoginClients login a Clients, returns
+// if Exists.
+func LoginClients(m *Clients) (id int, err error) {
+	o := orm.NewOrm()
+
+	v := &Clients{}
+
+	m.Password = GetMD5Hash(m.Password)
+
+	fmt.Println(m.Password)
+
+	err = o.QueryTable(m.TableName()).Filter("email", m.Email).Filter("password", m.Password).One(v)
+
+	if err != nil {
+		return 0, err
+	}
+
+	m.Password = ""
+
+	return v.ID, err
 }
 
 // GetClientsByID retrieves Clients by Id. Returns error if
@@ -126,6 +151,7 @@ func GetAllClients(query map[string]string, fields []string, sortby []string, or
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
+				v.Password = ""
 				ml = append(ml, v)
 			}
 		} else {
@@ -137,6 +163,7 @@ func GetAllClients(query map[string]string, fields []string, sortby []string, or
 					m[fname] = val.FieldByName(fname).Interface()
 				}
 				v.loadRelations()
+				v.Password = ""
 				ml = append(ml, m)
 			}
 		}

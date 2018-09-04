@@ -18,6 +18,7 @@ type ClientsController struct {
 // URLMapping ...
 func (c *ClientsController) URLMapping() {
 	c.Mapping("Post", c.Post)
+	c.Mapping("Login", c.Login)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
@@ -47,19 +48,21 @@ func (c *ClientsController) Post() {
 
 	valid := validation.Validation{}
 
-	b, err := valid.Valid(&v)
+	_, err = valid.Valid(&v)
 
-	if !b {
+	if valid.HasErrors() {
 		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
 
-	_, err = models.AddClients(&v)
+	id, err := models.AddClients(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	v.Token = c.GenerateToken("Client", id)
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v
@@ -229,4 +232,51 @@ func (c *ClientsController) Delete() {
 	}
 
 	c.ServeJSON()
+}
+
+// Login ...
+// @Title Post
+// @Description Login for Clients
+// @Param	body		body 	models.Clients	true		"body for Clients content"
+// @Success 201 {int} models.Clients
+// @Failure 400 body is empty
+// @router /login [post]
+func (c *ClientsController) Login() {
+	var v models.Clients
+
+	// Validate empty body
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	// Validate context body
+
+	valid := validation.Validation{}
+
+	valid.Required(v.Email, "email")
+	valid.Required(v.Password, "password")
+
+	if valid.HasErrors() {
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
+	}
+
+	id, err := models.LoginClients(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	v.Token = c.GenerateToken("Client", int64(id))
+
+	c.Ctx.Output.SetStatus(200)
+	c.Data["json"] = v
+
+	c.ServeJSON()
+
 }
