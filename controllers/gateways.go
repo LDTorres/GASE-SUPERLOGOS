@@ -4,7 +4,6 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -71,17 +70,14 @@ func (c *GatewaysController) Post() {
 	_, err = models.AddGateways(&v)
 
 	if err != nil {
-		fmt.Println(v)
 		c.ServeErrorJSON(err)
 		return
 	}
 
-	fmt.Println(v)
-
 	_, err = models.AddRelationGatewaysCurrencies(&v)
 
 	if err != nil {
-		fmt.Println(err.Error())
+
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -278,7 +274,6 @@ func (c *GatewaysController) AddNewsCurrencies() {
 
 	if err != nil {
 
-		fmt.Println(err.Error())
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -297,7 +292,7 @@ func (c *GatewaysController) AddNewsCurrencies() {
 	rows, err := models.AddRelationGatewaysCurrencies(&v)
 
 	if err != nil {
-		fmt.Println(err.Error())
+
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -334,7 +329,6 @@ func (c *GatewaysController) DeleteCurrencies() {
 
 	if err != nil {
 
-		fmt.Println(err.Error())
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -353,7 +347,7 @@ func (c *GatewaysController) DeleteCurrencies() {
 	rows, err := models.DeleteRelationGatewaysCurrencies(&v)
 
 	if err != nil {
-		fmt.Println(err.Error())
+
 		c.ServeErrorJSON(err)
 		return
 	}

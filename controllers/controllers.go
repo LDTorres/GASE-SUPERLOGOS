@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego/orm"
@@ -25,7 +28,12 @@ type MessageResponse struct {
 	Errors        []map[string]string `json:"errors,omitempty"`
 }
 
+var rootDir string
+
 func init() {
+
+	rootDir, _ = filepath.Abs("./")
+
 	validation.SetDefaultMessage(map[string]string{
 		"Required":     "This field is required",
 		"Min":          "The min length requred is %d",
@@ -146,6 +154,38 @@ func (c *BaseController) doForeignModelsValidation(foreignModels map[string]int)
 	}
 
 	resume = true
+
+	return
+
+}
+
+func stringIsValidInt(stringIDs *map[string]string) (IDs map[string]int, err error) {
+
+	intIDs := make(map[string]int)
+
+	for key, id := range *stringIDs {
+
+		intID, err := strconv.Atoi(id)
+
+		if err != nil {
+			return nil, err
+		}
+
+		intIDs[key] = intID
+
+	}
+
+	IDs = intIDs
+
+	return
+}
+
+func checkOrCreateImagesFolder(rootDir string, imagesFolderPath string) (err error) {
+
+	if _, err := os.Stat(rootDir); os.IsNotExist(err) {
+		//os.MkdirAll(folderPath, os.ModePerm);
+
+	}
 
 	return
 

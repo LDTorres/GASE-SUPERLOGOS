@@ -3,6 +3,8 @@ package models
 import (
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"reflect"
 	"strings"
 	"time"
@@ -30,12 +32,53 @@ func (t *Images) TableName() string {
 }
 
 //AddImages insert a new Images into database and returns last inserted Id on success.
-func AddImages(m *Images) (id int64, err error) {
+func AddImages(m *Images, f *io.Reader, folderPath string) (id int64, err error) {
 	o := orm.NewOrm()
 
 	m.Slug = GenerateSlug(m.TableName(), m.Name)
 
-	id, err = o.Insert(m)
+	err = o.Begin()
+
+	if err != nil {
+		return 0, err
+	}
+
+	_, err = o.Insert(m)
+
+	if err != nil {
+
+		errRoll := o.Rollback()
+
+		if errRoll != nil {
+			return 0, errRoll
+		}
+
+		return 0, err
+	}
+
+	fileBytes, err := ioutil.ReadAll(*f)
+
+	if err != nil {
+		return 0, err
+	}
+	//
+
+	fmt.Println(fileBytes)
+
+	fmt.Println(folderPath)
+
+	///
+
+	//ioutil.WriteFile("")
+
+	err = o.Commit()
+
+	if err != nil {
+		return 0, err
+	}
+
+	//r := bufio.NewReader(*f)
+
 	return
 }
 

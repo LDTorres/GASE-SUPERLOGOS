@@ -4,6 +4,8 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -32,13 +34,39 @@ func (c *PortfoliosController) URLMapping() {
 // @Failure 400 body is empty
 // @router / [post]
 func (c *PortfoliosController) Post() {
-	var v models.Portfolios
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
+
+	if err != nil {
+		c.Ctx.Output.SetStatus(413)
+		c.ServeJSON()
+		return
+	}
+
+	var r = c.Ctx.Request
+
+	stringsInts := &map[string]string{
+		"location": r.FormValue("location[id]"),
+		"service":  r.FormValue("service[id]"),
+		"activity": r.FormValue("activity[id]"),
+		"priority": r.FormValue("priority"),
+	}
+
+	intValues, err := stringIsValidInt(stringsInts)
 
 	if err != nil {
 		c.BadRequest()
 		return
+	}
+
+	v := models.Portfolios{
+		Name:        r.FormValue("name"),
+		Description: r.FormValue("description"),
+		Client:      r.FormValue("client"),
+		Priority:    int8(intValues["priority"]),
+		Service:     &models.Services{ID: intValues["service"]},
+		Location:    &models.Locations{ID: intValues["location"]},
+		Activity:    &models.Activities{ID: intValues["activity"]},
 	}
 
 	valid := validation.Validation{}
@@ -60,6 +88,95 @@ func (c *PortfoliosController) Post() {
 
 	if !resume {
 		return
+	}
+
+	fmt.Println(filepath.Abs("./"))
+
+	if c.Ctx.Input.IsUpload() {
+
+		images, err := c.GetFiles("images[]")
+
+		if err != nil {
+			fmt.Println("Error aquí:")
+			fmt.Println(err)
+		}
+
+		for _, image := range images {
+
+			//fmt.Println(image.Filename)
+			fileType := image.Header["Content-Type"][0]
+
+			if fileType != "image/jpeg" && fileType != "image/png" {
+
+				//TODO: c.BadRequest()
+				c.Data["json"] = MessageResponse{
+					Message: "Incorrect file type, expected 'image/jpeg' or 'image/png', '" + fileType + "' type was given",
+				}
+				c.Ctx.Output.SetStatus(409)
+				return
+			}
+
+			/*
+				file, err := image.Open()
+
+				if err != nil {
+
+					//TODO: c.BadRequest()
+
+					c.Data["json"] = MessageResponse{
+						Message: "File opening error",
+					}
+					c.Ctx.Output.SetStatus(409)
+					return
+				}
+
+				defer file.Close()
+
+
+				// write the whole body at once
+				err = ioutil.WriteFile("output.txt", b, 0644)
+
+			*/
+
+		}
+
+		//r := c.Ctx.Request
+
+		//err = r.ParseMultipartForm(128 << 20)
+		/*
+			if err != nil {
+				c.Ctx.Output.SetStatus(413)
+				c.ServeJSON()
+				return
+			}
+
+			fileHeaders := r.MultipartForm.File["images"]
+
+			for _, fileHeader := range fileHeaders {
+				_, err := fileHeader.Open()
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+			}
+		*/
+		/*reader, err := r.MultipartReader()
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		for {
+			part, err := reader.NextPart()
+			if err != nil {
+				fmt.Println(err)
+				break
+			}
+			fmt.Println(part)
+			break
+		}
+		*/
 	}
 
 	_, err = models.AddPortfolios(&v)

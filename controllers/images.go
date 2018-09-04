@@ -60,12 +60,13 @@ func (c *ImagesController) Post() {
 		return
 	}
 
-	_, err = models.AddImages(&v)
+	/*
+		_, err = models.AddImages(&v)
 
-	if err != nil {
-		c.ServeErrorJSON(err)
-		return
-	}
+		if err != nil {
+			c.ServeErrorJSON(err)
+			return
+		}*/
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v
