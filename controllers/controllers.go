@@ -26,6 +26,7 @@ type MessageResponse struct {
 	Code          uint16              `json:"code,omitempty"`
 	PrettyMessage string              `json:"pretty_message,omitempty"`
 	Errors        []map[string]string `json:"errors,omitempty"`
+	Error         string              `json:"error,omitempty"`
 }
 
 var rootDir string
@@ -59,11 +60,12 @@ func init() {
 }
 
 //BadRequest =
-func (c *BaseController) BadRequest() {
+func (c *BaseController) BadRequest(err error) {
 	c.Ctx.Output.SetStatus(400)
 	c.Data["json"] = MessageResponse{
 		Message:       "Bad request body",
 		PrettyMessage: "Peticion mal formada",
+		Error:         err.Error(),
 	}
 	c.ServeJSON()
 }
@@ -101,6 +103,13 @@ func (c *BaseController) ServeErrorJSON(err error) {
 				Message:       "The element already exists",
 				Code:          driverErr.Number,
 				PrettyMessage: "El elemento de la base de datos ya existe",
+			}
+		case 1054:
+			c.Ctx.Output.SetStatus(409)
+			c.Data["json"] = MessageResponse{
+				Message:       "Unknown column in 'Field List'",
+				Code:          driverErr.Number,
+				PrettyMessage: "Columna desconocida",
 			}
 		default:
 			c.Ctx.Output.SetStatus(500)

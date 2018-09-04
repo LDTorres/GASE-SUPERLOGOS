@@ -17,6 +17,7 @@ type Services struct {
 	ID         int           `orm:"column(id);auto" json:"id"`
 	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Percertage float32       `orm:"column(percertage)" json:"percentage,omitempty" valid:"Required"`
+	Price      *Prices       `orm:"-" json:"price,omitempty"`
 	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"Required; AlphaDash"`
 	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
 	Portfolios []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`

@@ -55,7 +55,7 @@ func (c *PortfoliosController) Post() {
 	intValues, err := stringIsValidInt(stringsInts)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -204,7 +204,7 @@ func (c *PortfoliosController) GetOne() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -296,7 +296,7 @@ func (c *PortfoliosController) Put() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -356,7 +356,7 @@ func (c *PortfoliosController) Delete() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 

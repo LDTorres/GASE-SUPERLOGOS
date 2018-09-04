@@ -32,46 +32,110 @@ func (c *OrdersController) URLMapping() {
 // @Failure 400 body is empty
 // @router / [post]
 func (c *OrdersController) Post() {
-	var v models.Orders
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	//Validate Cookie
+	cookie := c.Ctx.Input.Param(":cookie")
 
-	if err != nil {
-		c.BadRequest()
+	if cookie == "" {
+		err := errors.New("No se ha recibido la cookie")
+		c.BadRequest(err)
 		return
 	}
 
-	valid := validation.Validation{}
+	//Validate Iso Country
+	header := c.Ctx.Input.Header("Country-Iso")
 
-	b, err := valid.Valid(&v)
-
-	if !b {
-		c.BadRequestErrors(valid.Errors, v.TableName())
-		return
+	if header == "" {
+		header = "US"
 	}
 
-	foreignsModels := map[string]int{
-		"Clients": v.Client.ID,
-	}
-
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
-		return
-	}
-
-	//TODO: VERIFICAR CON TOKEN QUE SEA LA MISMA PERSONA
-	//TODO: VERITICAR DATOS DE TARJETA DE CREDITO
-
-	_, err = models.AddOrders(&v)
+	//Get cart
+	_, err := models.GetCartsByCookie(cookie, header)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
 	}
 
+	// Validate Gateway
+	var gateway models.Gateways
+
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &gateway)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	// Validate Format Types
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&gateway)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, gateway.TableName())
+		return
+	}
+
+	// Validate if the Client Exists
+	/* 	exists := models.ValidateExists("Clients", v.Client.ID)
+
+	   	if !exists {
+	   		c.BadRequestDontExists("Client")
+	   		return
+	   	} */
+
+	// Validate Coupons exists
+	/* 	var couponsRelationsIDs []int
+	   	for _, el := range v.Coupons {
+
+	   		exists := models.ValidateExists("Coupons", el.ID)
+
+	   		if !exists {
+	   			c.BadRequestDontExists("Coupons")
+	   			return
+	   		}
+
+	   		couponsRelationsIDs = append(couponsRelationsIDs, el.ID)
+
+	   		// Getting the discount
+	   		discount := v.FinalValue * el.Percentage
+	   		v.Discount = discount / 100
+	   	}
+	*/
+	//TODO: VERIFICAR CON TOKEN QUE SEA LA MISMA PERSONA
+	//TODO: VERITICAR DATOS DE TARJETA DE CREDITO
+
+	// Create the new order
+	var order models.Orders
+
+	_, err = models.AddOrders(&order)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	// Add Prices relations
+	/*
+				_, err = models.RelationsM2M("INSERT", "orders", v.ID, "prices", pricesRelationsIDs)
+
+			if err != nil {
+				c.ServeErrorJSON(err)
+				return
+			}
+
+		// Add Coupons relations
+
+		_, err = models.RelationsM2M("INSERT", "orders", v.ID, "coupons", pricesRelationsIDs)
+
+		if err != nil {
+			c.ServeErrorJSON(err)
+			return
+		}*/
+
 	c.Ctx.Output.SetStatus(201)
-	c.Data["json"] = v
+	c.Data["json"] = order
 
 	c.ServeJSON()
 }
@@ -88,7 +152,7 @@ func (c *OrdersController) GetOne() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -180,7 +244,7 @@ func (c *OrdersController) Put() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
@@ -241,7 +305,7 @@ func (c *OrdersController) Delete() {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		c.BadRequest()
+		c.BadRequest(err)
 		return
 	}
 
