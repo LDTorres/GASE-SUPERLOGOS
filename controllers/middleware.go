@@ -1,7 +1,9 @@
 package controllers
 
 import (
-	"fmt"
+	"encoding/json"
+	"errors"
+	"strings"
 	"time"
 
 	"github.com/astaxie/beego/context"
@@ -13,42 +15,43 @@ type MiddlewareController struct {
 	BaseController
 }
 
-type loginToken struct {
+// LoginToken =
+type LoginToken struct {
 	Type string `json:"tipo"`
 	ID   int64  `json:"id"`
 	jwt.StandardClaims
 }
 
-//Auth =
-func Auth(c *context.Context) bool {
-	success := VerifyToken(c.Input.Header("Authorization"))
-
-	return success
-}
-
 //VerifyToken =
-func VerifyToken(tokenString string) bool {
+func VerifyToken(tokenString string, userType string) (decodedToken *LoginToken, err error) {
+
+	if tokenString == "" {
+		return nil, errors.New("Token Vacio")
+	}
 
 	hmacSampleSecret := []byte("bazam")
 
-	token, err := jwt.ParseWithClaims(tokenString, &loginToken{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &LoginToken{}, func(token *jwt.Token) (interface{}, error) {
 		return hmacSampleSecret, nil
 	})
 
 	if err != nil {
-		fmt.Println(err)
-		return false
+		return nil, err
 	}
 
-	claims, ok := token.Claims.(*loginToken)
+	claims, ok := token.Claims.(*LoginToken)
 
 	if !ok && !token.Valid {
-		fmt.Println(err)
-		return false
+		return nil, err
 	}
 
-	fmt.Printf("%v %v", claims.Type, claims.StandardClaims.ExpiresAt)
-	return true
+	//fmt.Printf("%v %v", claims.Type, claims.StandardClaims.ExpiresAt)
+
+	if claims.Type != userType {
+		return nil, errors.New("Invalid User")
+	}
+
+	return claims, nil
 }
 
 // GenerateToken =
@@ -59,7 +62,7 @@ func (c *BaseController) GenerateToken(userType string, id int64) (token string)
 	now := time.Now()
 
 	// Create the Claims
-	claims := loginToken{
+	claims := LoginToken{
 		userType,
 		id,
 		jwt.StandardClaims{
@@ -72,13 +75,55 @@ func (c *BaseController) GenerateToken(userType string, id int64) (token string)
 	newToken = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := newToken.SignedString(hmacSampleSecret)
 
-	//fmt.Println("Token Generado")
-
 	if err != nil {
 		c.BadRequest(err)
 	}
 
-	//fmt.Printf("%v", ss)
-	//fmt.Println(token)
 	return token
+}
+
+//GlobalMiddleware =
+var GlobalMiddleware = func(ctx *context.Context) {
+
+	ValidateUrls := map[string][]string{
+		// Clients
+		"/clients": {"GET", "Admin"},
+		// Activities
+		"/activities": {"GET", "Admin"},
+		//
+	}
+
+	for url, options := range ValidateUrls {
+
+		userType := options[1]
+
+		if strings.HasSuffix(ctx.Input.URL(), url) && ctx.Input.Method() == options[0] {
+			_, err := VerifyToken(ctx.Input.Header("Authorization"), userType)
+
+			if err != nil {
+				DenyPermision(ctx, err)
+			}
+
+			break
+		}
+	}
+
+}
+
+//DenyPermision =
+func DenyPermision(ctx *context.Context, err error) {
+
+	ctx.Output.SetStatus(401)
+	ctx.Output.Header("Content-Type", "application/json")
+
+	message := MessageResponse{
+		Message:       "Permission Deny",
+		PrettyMessage: "Permiso Denegado",
+		Error:         err.Error(),
+	}
+
+	res, _ := json.Marshal(message)
+
+	ctx.Output.Body([]byte(string(res)))
+	return
 }

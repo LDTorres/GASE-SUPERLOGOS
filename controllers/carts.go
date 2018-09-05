@@ -279,7 +279,7 @@ func (c *CartsController) GetOneByCookie() {
 		header = "US"
 	}
 
-	v, err := models.GetCartsByCookie(cookie, header)
+	v, err := models.GetOrCreateCartsByCookie(cookie, header)
 
 	if err != nil {
 		c.ServeErrorJSON(err)

@@ -49,6 +49,49 @@ func AddCarts(m *Carts) (id int64, err error) {
 	return
 }
 
+// GetOrCreateCartsByCookie retrieves Carts by Cookie. Returns error if Id doesn't exist
+func GetOrCreateCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
+	o := orm.NewOrm()
+
+	v = &Carts{Cookie: Cookie}
+	_, _, err = o.ReadOrCreate(v, "cookie")
+
+	if err != nil {
+		return nil, err
+	}
+
+	v.loadRelations()
+
+	country, err := GetCountriesByIso(Iso)
+
+	if err != nil {
+		return nil, err
+	}
+
+	v.Currency = country.Currency
+
+	for i, service := range v.Services {
+
+		price := &Prices{Currency: country.Currency, Service: service}
+
+		err = o.Read(price, "Currency", "Service")
+
+		if err != nil {
+			return nil, err
+		}
+
+		v.InitialValue += (price.Value * service.Percertage) / 100
+		v.FinalValue += price.Value
+
+		price.Service = nil
+		price.Currency = nil
+
+		v.Services[i].Price = price
+	}
+
+	return
+}
+
 // GetCartsByID retrieves Carts by Id. Returns error if Id doesn't exist
 func GetCartsByID(id int) (v *Carts, err error) {
 	v = &Carts{ID: id}
@@ -94,7 +137,7 @@ func GetCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
 			return nil, err
 		}
 
-		v.InitialValue += (price.Value * price.Service.Percertage) / 100
+		v.InitialValue += (price.Value * service.Percertage) / 100
 		v.FinalValue += price.Value
 
 		price.Service = nil

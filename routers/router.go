@@ -14,6 +14,8 @@ import (
 )
 
 func init() {
+	beego.InsertFilter("/*", beego.BeforeRouter, controllers.GlobalMiddleware)
+
 	ns := beego.NewNamespace("/v1",
 
 		beego.NSNamespace("/activities",
@@ -28,7 +30,6 @@ func init() {
 			),
 		),
 
-		beego.NSCond(controllers.Auth),
 		beego.NSNamespace("/clients",
 			beego.NSInclude(
 				&controllers.ClientsController{},

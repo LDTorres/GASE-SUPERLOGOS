@@ -242,7 +242,7 @@ func (c *CouponsController) GetOneByCode() {
 	code := c.Ctx.Input.Param(":code")
 
 	if code == "" {
-		err := errors.New("No se ha recibido la cookie")
+		err := errors.New("No se ha recibido el codigo")
 		c.BadRequest(err)
 		return
 	}

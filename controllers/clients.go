@@ -20,10 +20,30 @@ func (c *ClientsController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("Login", c.Login)
 	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetOneByEmail", c.GetOneByEmail)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 }
+
+/* //Prepare Controller
+func (c *ClientsController) Prepare() {
+
+	URL := c.Ctx.Input.URL()
+
+	fmt.Println(URL)
+
+	if strings.HasPrefix(c.Ctx.Input.URL(), "/email") {
+		valid := VerifyToken(c.Ctx.Input.Header("Authorization"))
+
+		if !valid {
+			c.DenyPermision()
+			return
+		}
+	}
+
+	return
+} */
 
 // Post ...
 // @Title Post
@@ -279,4 +299,30 @@ func (c *ClientsController) Login() {
 
 	c.ServeJSON()
 
+}
+
+// GetOneByEmail ...
+// @Title Get One
+// @Description get Carts by Code
+// @Param	Code		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Carts
+// @Failure 403 :email is empty
+// @router /email/:email [get]
+func (c *ClientsController) GetOneByEmail() {
+	email := c.Ctx.Input.Param(":email")
+
+	if email == "" {
+		err := errors.New("No se ha recibido el email")
+		c.BadRequest(err)
+		return
+	}
+
+	v, err := models.GetClientsByEmail(email)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
 }

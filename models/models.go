@@ -11,6 +11,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql" //
 	"github.com/gosimple/slug"
+	mgo "gopkg.in/mgo.v2"
 )
 
 type mysqlConnData struct {
@@ -18,6 +19,14 @@ type mysqlConnData struct {
 	pass   string
 	ip     string
 	dbName string
+}
+
+//Mongo
+var session *mgo.Session
+
+// Conn return mongodb session.
+func Conn() *mgo.Session {
+	return session.Copy()
 }
 
 func init() {
@@ -28,6 +37,18 @@ func init() {
 		orm.Debug = true
 	}
 
+	//MONGO
+	url := beego.AppConfig.String("mongodb::url")
+
+	sess, err := mgo.Dial(url)
+	if err != nil {
+		panic(err)
+	}
+
+	session = sess
+	session.SetMode(mgo.Monotonic, true)
+
+	//MYSQL
 	var mysqlConnData mysqlConnData
 
 	mysqlConnData.user = beego.AppConfig.String(RunMode + "::mysqluser")
@@ -37,7 +58,7 @@ func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	orm.RegisterDataBase("default", "mysql", mysqlConnData.user+":"+mysqlConnData.pass+"@/"+mysqlConnData.dbName+"?charset=utf8")
 
-	orm.RegisterModel(new(Activities), new(Carts), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services))
+	orm.RegisterModel(new(Activities), new(Carts), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services), new(Briefs))
 
 	// Add defaults to database
 	count, _ := AddDefaultDataCurrencies()

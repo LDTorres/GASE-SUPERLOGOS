@@ -103,6 +103,14 @@ func (c *BaseController) ServeErrorJSON(err error) {
 				Code:          driverErr.Number,
 				PrettyMessage: "Columna desconocida",
 			}
+		case 1046:
+			c.Ctx.Output.SetStatus(409)
+			c.Data["json"] = MessageResponse{
+				Message:       "Not Found Database",
+				Code:          driverErr.Number,
+				PrettyMessage: "Base de datos no encontrada",
+			}
+
 		default:
 			c.Ctx.Output.SetStatus(500)
 			c.Data["json"] = MessageResponse{

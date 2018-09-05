@@ -53,6 +53,23 @@ func AddClients(m *Clients) (id int64, err error) {
 	return
 }
 
+// GetClientsByEmail retrieves Clients by Email. Returns error if Id doesn't exist
+func GetClientsByEmail(Email string) (v *Clients, err error) {
+	o := orm.NewOrm()
+
+	v = &Clients{Email: Email}
+
+	err = o.Read(v, "email")
+
+	if err != nil {
+		return nil, err
+	}
+
+	v.loadRelations()
+
+	return
+}
+
 // LoginClients login a Clients, returns
 // if Exists.
 func LoginClients(m *Clients) (id int, err error) {

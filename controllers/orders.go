@@ -33,11 +33,22 @@ func (c *OrdersController) URLMapping() {
 // @router / [post]
 func (c *OrdersController) Post() {
 
+	var Order models.Orders
+
+	// Validate empty body
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &Order)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
 	//Validate Cookie
-	cookie := c.Ctx.Input.Param(":cookie")
+	cookie := c.Ctx.Input.Header("Cart-Id")
 
 	if cookie == "" {
-		err := errors.New("No se ha recibido la cookie")
+		err := errors.New("No se ha recibido el id del Carrito")
 		c.BadRequest(err)
 		return
 	}
@@ -49,67 +60,64 @@ func (c *OrdersController) Post() {
 		header = "US"
 	}
 
-	//Get cart
-	_, err := models.GetCartsByCookie(cookie, header)
-
-	if err != nil {
-		c.ServeErrorJSON(err)
-		return
-	}
-
-	// Validate Gateway
-	var gateway models.Gateways
-
-	err = json.Unmarshal(c.Ctx.Input.RequestBody, &gateway)
+	//Validate Client
+	decodedToken, err := VerifyToken(c.Ctx.Input.Header("Authorization"), "Client")
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
-	// Validate Format Types
+	client := models.Clients{ID: int(decodedToken.ID)}
+	Order.Client = &client
+
+	// Validate Gateway
 	valid := validation.Validation{}
 
-	b, err := valid.Valid(&gateway)
+	b, err := valid.Valid(Order.Gateway)
+
+	if err != nil {
+		c.BadRequest(err)
+	}
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, gateway.TableName())
+		c.BadRequestErrors(valid.Errors, Order.Gateway.TableName())
 		return
 	}
 
-	// Validate if the Client Exists
-	/* 	exists := models.ValidateExists("Clients", v.Client.ID)
+	//Get cart
+	cart, err := models.GetOrCreateCartsByCookie(cookie, header)
 
-	   	if !exists {
-	   		c.BadRequestDontExists("Client")
-	   		return
-	   	} */
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	Order.InitialValue = cart.InitialValue
+	Order.FinalValue = cart.FinalValue
 
 	// Validate Coupons exists
-	/* 	var couponsRelationsIDs []int
-	   	for _, el := range v.Coupons {
+	var couponsRelationsIDs []int
+	for _, el := range Order.Coupons {
 
-	   		exists := models.ValidateExists("Coupons", el.ID)
+		exists := models.ValidateExists("Coupons", el.ID)
 
-	   		if !exists {
-	   			c.BadRequestDontExists("Coupons")
-	   			return
-	   		}
+		if !exists {
+			c.BadRequestDontExists("Coupons")
+			return
+		}
 
-	   		couponsRelationsIDs = append(couponsRelationsIDs, el.ID)
+		couponsRelationsIDs = append(couponsRelationsIDs, el.ID)
 
-	   		// Getting the discount
-	   		discount := v.FinalValue * el.Percentage
-	   		v.Discount = discount / 100
-	   	}
-	*/
-	//TODO: VERIFICAR CON TOKEN QUE SEA LA MISMA PERSONA
-	//TODO: VERITICAR DATOS DE TARJETA DE CREDITO
+		// Getting the discount
+		Order.Discount = (Order.FinalValue * el.Percentage) / 100
+	}
+
+	//TODO: VERFICAR DATOS DE TARJETA DE CREDITO
 
 	// Create the new order
-	var order models.Orders
 
-	_, err = models.AddOrders(&order)
+	_, err = models.AddOrders(&Order)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -117,25 +125,29 @@ func (c *OrdersController) Post() {
 	}
 
 	// Add Prices relations
-	/*
-				_, err = models.RelationsM2M("INSERT", "orders", v.ID, "prices", pricesRelationsIDs)
+	var pricesRelationsIDs []int
+	for _, service := range cart.Services {
+		pricesRelationsIDs = append(pricesRelationsIDs, service.Price.ID)
+	}
 
-			if err != nil {
-				c.ServeErrorJSON(err)
-				return
-			}
+	_, err = models.RelationsM2M("INSERT", "orders", Order.ID, "prices", pricesRelationsIDs)
 
-		// Add Coupons relations
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
 
-		_, err = models.RelationsM2M("INSERT", "orders", v.ID, "coupons", pricesRelationsIDs)
+	// Add Coupons relations
 
-		if err != nil {
-			c.ServeErrorJSON(err)
-			return
-		}*/
+	_, err = models.RelationsM2M("INSERT", "orders", Order.ID, "coupons", couponsRelationsIDs)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
 
 	c.Ctx.Output.SetStatus(201)
-	c.Data["json"] = order
+	c.Data["json"] = Order
 
 	c.ServeJSON()
 }
