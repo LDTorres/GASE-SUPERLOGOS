@@ -32,13 +32,39 @@ func (c *PortfoliosController) URLMapping() {
 // @Failure 400 body is empty
 // @router / [post]
 func (c *PortfoliosController) Post() {
-	var v models.Portfolios
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
+
+	if err != nil {
+		c.Ctx.Output.SetStatus(413)
+		c.ServeJSON()
+		return
+	}
+
+	var r = c.Ctx.Request
+
+	stringsInts := &map[string]string{
+		"location": r.FormValue("location[id]"),
+		"service":  r.FormValue("service[id]"),
+		"activity": r.FormValue("activity[id]"),
+		"priority": r.FormValue("priority"),
+	}
+
+	intValues, err := stringIsValidInt(stringsInts)
 
 	if err != nil {
 		c.BadRequest(err)
 		return
+	}
+
+	v := models.Portfolios{
+		Name:        r.FormValue("name"),
+		Description: r.FormValue("description"),
+		Client:      r.FormValue("client"),
+		Priority:    int8(intValues["priority"]),
+		Service:     &models.Services{ID: intValues["service"]},
+		Location:    &models.Locations{ID: intValues["location"]},
+		Activity:    &models.Activities{ID: intValues["activity"]},
 	}
 
 	valid := validation.Validation{}
@@ -67,6 +93,23 @@ func (c *PortfoliosController) Post() {
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
+	}
+
+	if c.Ctx.Input.IsUpload() {
+
+		images, err := c.GetFiles("images[]")
+
+		if err != nil {
+			c.BadRequest(err)
+			return
+		}
+
+		for _, fileHeader := range images {
+
+			go addNewImage(fileHeader, &v)
+
+		}
+
 	}
 
 	c.Ctx.Output.SetStatus(201)
@@ -160,6 +203,26 @@ func (c *PortfoliosController) GetAll() {
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
+	}
+
+	for portfolioKey, portfolio := range l {
+
+		p := portfolio.(models.Portfolios)
+
+		images := p.Images
+
+		for imageKey, image := range images {
+
+			err := generateImageURL(image)
+
+			if err != nil {
+				c.BadRequest(err)
+				return
+			}
+
+			l[portfolioKey].(models.Portfolios).Images[imageKey] = image
+		}
+
 	}
 
 	c.Data["json"] = l

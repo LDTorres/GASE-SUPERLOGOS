@@ -4,7 +4,6 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -279,7 +278,6 @@ func (c *GatewaysController) AddNewsCurrencies() {
 
 	if err != nil {
 
-		fmt.Println(err.Error())
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -300,6 +298,8 @@ func (c *GatewaysController) AddNewsCurrencies() {
 	}
 
 	count, err := models.RelationsM2M("INSERT", "gateways", v.ID, "currencies", relationsIDs)
+
+	//TODO:
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = MessageResponse{
@@ -333,7 +333,6 @@ func (c *GatewaysController) DeleteCurrencies() {
 
 	if err != nil {
 
-		fmt.Println(err.Error())
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -356,7 +355,7 @@ func (c *GatewaysController) DeleteCurrencies() {
 	count, err := models.RelationsM2M("DELETE", "gateways", v.ID, "currencies", relationsIDs)
 
 	if err != nil {
-		fmt.Println(err.Error())
+
 		c.ServeErrorJSON(err)
 		return
 	}

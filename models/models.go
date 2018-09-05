@@ -34,7 +34,7 @@ func init() {
 	RunMode := beego.BConfig.RunMode
 
 	if RunMode == "dev" {
-		orm.Debug = true
+		orm.Debug = false
 	}
 
 	//MONGO
@@ -127,15 +127,74 @@ func GenerateSlug(modelName string, name string) (generatedSlug string) {
 	generatedSlug = slug.Make(name)
 	var slugInt int
 
+	modelName = strings.ToLower(modelName)
+
+	queryO := o.QueryTable(modelName).Filter("slug__startswith", generatedSlug)
+
 	switch modelName {
-	case "Countries":
+	case "countries":
 
 		var countries []*Countries
-		o.QueryTable("countries").Filter("slug__startswith", generatedSlug).All(&countries)
+		queryO.All(&countries)
 
 		for _, val := range countries {
 			formatSlug(val.Slug, generatedSlug, &slugInt)
 		}
+
+	case "activities":
+
+		var activities []*Activities
+		queryO.All(&activities)
+
+		for _, val := range activities {
+			formatSlug(val.Slug, generatedSlug, &slugInt)
+		}
+
+	case "locations":
+
+		var locations []*Locations
+		queryO.All(&locations)
+
+		for _, val := range locations {
+			formatSlug(val.Slug, generatedSlug, &slugInt)
+		}
+
+	case "images":
+
+		var images []*Images
+		queryO.All(&images)
+
+		for _, val := range images {
+			formatSlug(val.Slug, generatedSlug, &slugInt)
+		}
+
+	case "portfolios":
+
+		var portfolio []*Portfolios
+		queryO.All(&portfolio)
+
+		for _, val := range portfolio {
+			formatSlug(val.Slug, generatedSlug, &slugInt)
+		}
+
+	case "sectors":
+
+		var sector []*Sectors
+		queryO.All(&sector)
+
+		for _, val := range sector {
+			formatSlug(val.Slug, generatedSlug, &slugInt)
+		}
+
+	case "services":
+
+		var service []*Services
+		queryO.All(&service)
+
+		for _, val := range service {
+			formatSlug(val.Slug, generatedSlug, &slugInt)
+		}
+
 	}
 
 	if slugInt > 0 {

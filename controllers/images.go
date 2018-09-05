@@ -4,6 +4,7 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"strconv"
 	"strings"
 
@@ -22,6 +23,7 @@ func (c *ImagesController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("ServeImageBySlug", c.ServeImageBySlug)
 }
 
 // Post ...
@@ -32,26 +34,49 @@ func (c *ImagesController) URLMapping() {
 // @Failure 400 body is empty
 // @router / [post]
 func (c *ImagesController) Post() {
-	var v models.Images
+	//var v models.Images
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	//err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	/*
+		if err != nil {
+			c.BadRequest(err)
+			return
+		}
+
+		valid := validation.Validation{}
+
+		b, err := valid.Valid(&v)
+
+		if !b {
+			c.BadRequestErrors(valid.Errors, v.TableName())
+			return
+		}
+	*/
+
+	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
+
+	if err != nil {
+		c.Ctx.Output.SetStatus(413)
+		c.ServeJSON()
+		return
+	}
+
+	var r = c.Ctx.Request
+
+	stringsInts := &map[string]string{
+		"portfolio": r.FormValue("portfolio[id]"),
+		"priority":  r.FormValue("priority"),
+	}
+
+	intValues, err := stringIsValidInt(stringsInts)
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
-	valid := validation.Validation{}
-
-	b, err := valid.Valid(&v)
-
-	if !b {
-		c.BadRequestErrors(valid.Errors, v.TableName())
-		return
-	}
-
 	foreignsModels := map[string]int{
-		"Portfolios": v.Portfolio.ID,
+		"Portfolios": intValues["portfolio"],
 	}
 
 	resume := c.doForeignModelsValidation(foreignsModels)
@@ -60,10 +85,44 @@ func (c *ImagesController) Post() {
 		return
 	}
 
-	_, err = models.AddImages(&v)
+	v := &models.Images{
+		Priority:  int8(intValues["priority"]),
+		Portfolio: &models.Portfolios{ID: intValues["portfolio"]},
+	}
+
+	portfolio, err := models.GetPortfoliosByID(v.Portfolio.ID)
+
+	if err != nil {
+		c.BadRequestDontExists("Portfolio dont exists")
+		return
+	}
+
+	portfolio.Images = []*models.Images{}
+
+	if !c.Ctx.Input.IsUpload() {
+		err := errors.New("Not image file found on request")
+		c.BadRequest(err)
+		return
+	}
+
+	_, fileHeader, err := c.GetFile("images")
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v, err = addNewImage(fileHeader, v.Portfolio)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
+		return
+	}
+
+	err = generateImageURL(v)
+
+	if err != nil {
+		c.BadRequest(err)
 		return
 	}
 
@@ -92,6 +151,13 @@ func (c *ImagesController) GetOne() {
 	v, err := models.GetImagesByID(id)
 	if err != nil {
 		c.ServeErrorJSON(err)
+		return
+	}
+
+	err = generateImageURL(v)
+
+	if err != nil {
+		c.BadRequest(err)
 		return
 	}
 
@@ -159,6 +225,21 @@ func (c *ImagesController) GetAll() {
 		return
 	}
 
+	for key, image := range l {
+
+		i := image.(models.Images)
+
+		err = generateImageURL(&i)
+
+		if err != nil {
+			c.BadRequest(err)
+			return
+		}
+
+		l[key] = &i
+
+	}
+
 	c.Data["json"] = l
 	c.ServeJSON()
 }
@@ -214,6 +295,13 @@ func (c *ImagesController) Put() {
 		return
 	}
 
+	err = generateImageURL(&v)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
 	c.Data["json"] = MessageResponse{
 		Message:       "Updated element",
 		PrettyMessage: "Elemento Actualizado",
@@ -251,4 +339,51 @@ func (c *ImagesController) Delete() {
 	}
 
 	c.ServeJSON()
+}
+
+// ServeImageBySlug ...
+// @Title Serve Image By Slug
+// @Description Serve Images by Slug
+// @router /slug/:slug [get]
+func (c *ImagesController) ServeImageBySlug() {
+
+	slug := c.Ctx.Input.Param(":slug")
+
+	if slug == "" {
+		c.Ctx.Output.SetStatus(404)
+		c.Ctx.Output.Body([]byte{})
+		return
+	}
+
+	valid := validation.Validation{}
+
+	result := valid.AlphaDash(slug, "slug")
+
+	if !result.Ok {
+		c.Ctx.Output.SetStatus(404)
+		c.Ctx.Output.Body([]byte{})
+		return
+	}
+	v, err := models.GetImagesBySlug(slug)
+
+	if err != nil {
+		c.Ctx.Output.SetStatus(404)
+		c.Ctx.Output.Body([]byte{})
+		return
+	}
+
+	imageURL := imageFolderDir + "/" + v.UUID
+
+	imageBytes, err := ioutil.ReadFile(imageURL)
+
+	if err != nil {
+
+		c.Ctx.Output.SetStatus(404)
+		c.Ctx.Output.Body([]byte{})
+		return
+	}
+
+	c.Ctx.Output.Header("Content-Type", v.Mimetype)
+	c.Ctx.Output.Body(imageBytes)
+
 }

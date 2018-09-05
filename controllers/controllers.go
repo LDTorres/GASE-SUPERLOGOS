@@ -1,6 +1,11 @@
 package controllers
 
 import (
+	"errors"
+	"mime/multipart"
+	"os"
+	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego/orm"
@@ -26,7 +31,16 @@ type MessageResponse struct {
 	Error         string              `json:"error,omitempty"`
 }
 
+var (
+	rootDir, _      = filepath.Abs("./")
+	imageFolderPath = "assets/images"
+	imageFolderDir  = rootDir + "/" + imageFolderPath
+)
+
 func init() {
+
+	checkOrCreateImagesFolder(imageFolderDir)
+
 	validation.SetDefaultMessage(map[string]string{
 		"Required":     "This field is required",
 		"Min":          "The min length requred is %d",
@@ -163,6 +177,77 @@ func (c *BaseController) doForeignModelsValidation(foreignModels map[string]int)
 	}
 
 	resume = true
+
+	return
+
+}
+
+func stringIsValidInt(stringIDs *map[string]string) (IDs map[string]int, err error) {
+
+	intIDs := make(map[string]int)
+
+	for key, id := range *stringIDs {
+
+		intID, err := strconv.Atoi(id)
+
+		if err != nil {
+			return nil, err
+		}
+
+		intIDs[key] = intID
+
+	}
+
+	IDs = intIDs
+
+	return
+}
+
+func checkOrCreateImagesFolder(imageFolderDir string) (err error) {
+
+	if _, err := os.Stat(imageFolderDir); os.IsNotExist(err) {
+
+		os.MkdirAll(imageFolderDir, 644)
+
+	}
+
+	return
+
+}
+
+func addNewImage(fh *multipart.FileHeader, v *models.Portfolios) (i *models.Images, err error) {
+
+	if v.ID == 0 || v.Name == "" {
+		err = errors.New("Parent Portfolio ID or Name is empty")
+		return
+	}
+
+	fileType := fh.Header["Content-Type"][0]
+
+	if fileType != "image/jpeg" && fileType != "image/png" {
+
+		err = errors.New("Incorrect file type, expected 'image/jpeg' or 'image/png', '" + fileType + "' type was given")
+		return
+	}
+
+	i = &models.Images{Name: v.Name, Mimetype: fileType, Portfolio: v}
+
+	_, err = models.AddImages(i, fh, imageFolderDir)
+
+	return
+
+}
+
+func generateImageURL(v *models.Images) (err error) {
+
+	if v.Slug == "" {
+		err = errors.New("Parent Portfolio ID or Slug is empty")
+		return
+	}
+
+	c := new(ImagesController)
+
+	v.URL = c.URLFor("ImagesController.ServeImageBySlug", ":slug", v.Slug)
 
 	return
 

@@ -14,7 +14,7 @@ import (
 type Portfolios struct {
 	ID          int         `orm:"column(id);auto" json:"id"`
 	Name        string      `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
-	Slug        string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"Required; AlphaDash"`
+	Slug        string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	Description string      `orm:"column(description)" json:"description,omitempty" valid:"Required"`
 	Client      string      `orm:"column(client);size(255)" json:"client,omitempty" valid:"Required"`
 	Priority    int8        `orm:"column(priority)" json:"priority,omitempty"`
