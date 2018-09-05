@@ -3,13 +3,14 @@ package models
 import (
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"reflect"
 	"strings"
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/gofrs/uuid"
 )
 
 //Images Model
@@ -17,9 +18,10 @@ type Images struct {
 	ID        int         `orm:"column(id);pk" json:"id"`
 	Priority  int8        `orm:"column(priority)" json:"priority,omitempty"`
 	Name      string      `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
-	Slug      string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"Required; AlphaDash"`
+	Slug      string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	UUID      string      `orm:"column(uuid);size(255)" json:"uuid,omitempty" valid:"Required"`
 	Mimetype  string      `orm:"column(mimetype)" json:"mime_type,omitempty" valid:"Required"`
+	URL       string      `orm:"-" json:"url,omitempty"`
 	Portfolio *Portfolios `orm:"column(portfolios_id);rel(fk)" json:"portfolio,omitempty"`
 	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
@@ -32,10 +34,18 @@ func (t *Images) TableName() string {
 }
 
 //AddImages insert a new Images into database and returns last inserted Id on success.
-func AddImages(m *Images, f *io.Reader, folderPath string) (id int64, err error) {
+func AddImages(m *Images, fh *multipart.FileHeader, folderPath string) (id int64, err error) {
 	o := orm.NewOrm()
 
 	m.Slug = GenerateSlug(m.TableName(), m.Name)
+
+	UUID, err := uuid.NewV4()
+
+	if err != nil {
+		return 0, err
+	}
+
+	m.UUID = UUID.String()
 
 	err = o.Begin()
 
@@ -56,20 +66,48 @@ func AddImages(m *Images, f *io.Reader, folderPath string) (id int64, err error)
 		return 0, err
 	}
 
-	fileBytes, err := ioutil.ReadAll(*f)
+	f, err := fh.Open()
 
 	if err != nil {
+
+		errRoll := o.Rollback()
+
+		if errRoll != nil {
+			return 0, errRoll
+		}
+
 		return 0, err
 	}
-	//
 
-	fmt.Println(fileBytes)
+	defer f.Close()
 
-	fmt.Println(folderPath)
+	fileBytes, err := ioutil.ReadAll(f)
 
-	///
+	if err != nil {
 
-	//ioutil.WriteFile("")
+		errRoll := o.Rollback()
+
+		if errRoll != nil {
+			return 0, errRoll
+		}
+
+		return 0, err
+	}
+
+	newImagePath := folderPath + "/" + m.UUID
+
+	err = ioutil.WriteFile(newImagePath, fileBytes, 644)
+
+	if err != nil {
+
+		errRoll := o.Rollback()
+
+		if errRoll != nil {
+			return 0, errRoll
+		}
+
+		return 0, err
+	}
 
 	err = o.Commit()
 
@@ -84,7 +122,9 @@ func AddImages(m *Images, f *io.Reader, folderPath string) (id int64, err error)
 
 //GetImagesByID retrieves Images by Id. Returns error if Id doesn't exist
 func GetImagesByID(id int) (v *Images, err error) {
+
 	v = &Images{ID: id}
+
 	err = searchFK(v.TableName(), v.ID).One(v)
 
 	if err != nil {
@@ -197,5 +237,20 @@ func DeleteImages(id int) (err error) {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
+	return
+}
+
+func GetImagesBySlug(slug string) (v *Images, err error) {
+
+	o := orm.NewOrm()
+
+	v = &Images{}
+
+	err = o.QueryTable(v.TableName()).Filter("slug", slug).One(v)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return
 }

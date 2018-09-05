@@ -14,7 +14,7 @@ import (
 type Locations struct {
 	ID         int           `orm:"column(id);auto" json:"id"`
 	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
-	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"Required; AlphaDash"`
+	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	Country    *Countries    `orm:"column(countries_id);rel(fk)" json:"country,omitempty"`
 	Portfolios []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`

@@ -4,8 +4,6 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -90,100 +88,28 @@ func (c *PortfoliosController) Post() {
 		return
 	}
 
-	fmt.Println(filepath.Abs("./"))
+	_, err = models.AddPortfolios(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
 
 	if c.Ctx.Input.IsUpload() {
 
 		images, err := c.GetFiles("images[]")
 
 		if err != nil {
-			fmt.Println("Error aquí:")
-			fmt.Println(err)
-		}
-
-		for _, image := range images {
-
-			//fmt.Println(image.Filename)
-			fileType := image.Header["Content-Type"][0]
-
-			if fileType != "image/jpeg" && fileType != "image/png" {
-
-				//TODO: c.BadRequest()
-				c.Data["json"] = MessageResponse{
-					Message: "Incorrect file type, expected 'image/jpeg' or 'image/png', '" + fileType + "' type was given",
-				}
-				c.Ctx.Output.SetStatus(409)
-				return
-			}
-
-			/*
-				file, err := image.Open()
-
-				if err != nil {
-
-					//TODO: c.BadRequest()
-
-					c.Data["json"] = MessageResponse{
-						Message: "File opening error",
-					}
-					c.Ctx.Output.SetStatus(409)
-					return
-				}
-
-				defer file.Close()
-
-
-				// write the whole body at once
-				err = ioutil.WriteFile("output.txt", b, 0644)
-
-			*/
-
-		}
-
-		//r := c.Ctx.Request
-
-		//err = r.ParseMultipartForm(128 << 20)
-		/*
-			if err != nil {
-				c.Ctx.Output.SetStatus(413)
-				c.ServeJSON()
-				return
-			}
-
-			fileHeaders := r.MultipartForm.File["images"]
-
-			for _, fileHeader := range fileHeaders {
-				_, err := fileHeader.Open()
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-			}
-		*/
-		/*reader, err := r.MultipartReader()
-
-		if err != nil {
-			fmt.Println(err)
+			c.BadRequest(err)
 			return
 		}
 
-		for {
-			part, err := reader.NextPart()
-			if err != nil {
-				fmt.Println(err)
-				break
-			}
-			fmt.Println(part)
-			break
+		for _, fileHeader := range images {
+
+			go addNewImage(fileHeader, &v)
+
 		}
-		*/
-	}
 
-	_, err = models.AddPortfolios(&v)
-
-	if err != nil {
-		c.ServeErrorJSON(err)
-		return
 	}
 
 	c.Ctx.Output.SetStatus(201)
@@ -277,6 +203,26 @@ func (c *PortfoliosController) GetAll() {
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
+	}
+
+	for portfolioKey, portfolio := range l {
+
+		p := portfolio.(models.Portfolios)
+
+		images := p.Images
+
+		for imageKey, image := range images {
+
+			err := generateImageURL(image)
+
+			if err != nil {
+				c.BadRequest(err)
+				return
+			}
+
+			l[portfolioKey].(models.Portfolios).Images[imageKey] = image
+		}
+
 	}
 
 	c.Data["json"] = l
