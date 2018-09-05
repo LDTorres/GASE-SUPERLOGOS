@@ -9,9 +9,9 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	mgo "github.com/globalsign/mgo"
 	_ "github.com/go-sql-driver/mysql" //
 	"github.com/gosimple/slug"
-	mgo "gopkg.in/mgo.v2"
 )
 
 type mysqlConnData struct {
@@ -58,7 +58,7 @@ func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	orm.RegisterDataBase("default", "mysql", mysqlConnData.user+":"+mysqlConnData.pass+"@/"+mysqlConnData.dbName+"?charset=utf8")
 
-	orm.RegisterModel(new(Activities), new(Carts), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services), new(Briefs))
+	orm.RegisterModel(new(Activities), new(Carts), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services))
 
 	// Add defaults to database
 	count, _ := AddDefaultDataCurrencies()
@@ -280,4 +280,30 @@ func GetMD5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+//MONGO
+
+// Predefined model error codes.
+const (
+	ErrDatabase = -1
+	ErrSystem   = -2
+	ErrDupRows  = -3
+	ErrNotFound = -4
+)
+
+// CodeInfo definiton.
+type CodeInfo struct {
+	Code int    `json:"code"`
+	Info string `json:"info"`
+}
+
+// NewErrorInfo return a CodeInfo represents error.
+func NewErrorInfo(info string) *CodeInfo {
+	return &CodeInfo{-1, info}
+}
+
+// NewNormalInfo return a CodeInfo represents OK.
+func NewNormalInfo(info string) *CodeInfo {
+	return &CodeInfo{0, info}
 }

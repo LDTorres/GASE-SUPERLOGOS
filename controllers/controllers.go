@@ -32,8 +32,8 @@ type MessageResponse struct {
 }
 
 var (
-	rootDir, _      = filepath.Abs("./")
-	imageFolderPath = "assets/images"
+	rootDir, _      = filepath.Abs(beego.AppConfig.String("assets::saltos"))
+	imageFolderPath = beego.AppConfig.String("assets::imageFolderPath")
 	imageFolderDir  = rootDir + "/" + imageFolderPath
 )
 
@@ -251,4 +251,22 @@ func generateImageURL(v *models.Images) (err error) {
 
 	return
 
+}
+
+// VerifyForm use validation to verify input parameters.
+func (c *BaseController) VerifyForm(obj interface{}) (err error) {
+	valid := validation.Validation{}
+	ok, err := valid.Valid(obj)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		str := ""
+		for _, err := range valid.Errors {
+			str += err.Key + ":" + err.Message + ";"
+		}
+		return errors.New(str)
+	}
+
+	return nil
 }

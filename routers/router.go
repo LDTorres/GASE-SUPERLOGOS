@@ -101,6 +101,16 @@ func init() {
 				&controllers.ServicesController{},
 			),
 		),
+
+		/* 		beego.NSNamespace("/users",
+			beego.NSInclude(
+				&controllers.UsersController{},
+			),
+		), */
+
+		beego.NSNamespace("/users",
+			beego.NSRouter("/", &controllers.UsersController{}, "post:Post"),
+		),
 	)
 	beego.AddNamespace(ns)
 }
