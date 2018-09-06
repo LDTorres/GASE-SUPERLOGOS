@@ -102,14 +102,12 @@ func init() {
 			),
 		),
 
-		/* 		beego.NSNamespace("/users",
-			beego.NSInclude(
-				&controllers.UsersController{},
-			),
-		), */
-
 		beego.NSNamespace("/users",
 			beego.NSRouter("/", &controllers.UsersController{}, "post:Post"),
+			beego.NSRouter("/", &controllers.UsersController{}, "get:GetAll"),
+			beego.NSRouter("/:id", &controllers.UsersController{}, "get:Get"),
+			beego.NSRouter("/:id", &controllers.UsersController{}, "put:Put"),
+			beego.NSRouter("/:id", &controllers.UsersController{}, "delete:Delete"),
 		),
 	)
 	beego.AddNamespace(ns)

@@ -3,9 +3,11 @@ package controllers
 import (
 	"GASE/models"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/astaxie/beego/validation"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // UsersController definiton.
@@ -16,16 +18,16 @@ type UsersController struct {
 // URLMapping ...
 func (c *UsersController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	/* 	c.Mapping("GetOne", c.GetOne)
-	   	c.Mapping("GetAll", c.GetAll)
-	   	c.Mapping("Put", c.Put)
-	   	c.Mapping("Delete", c.Delete) */
+	c.Mapping("Put", c.Put)
+	c.Mapping("Delete", c.Delete)
+	c.Mapping("Get", c.GetOne)
+	c.Mapping("GetAll", c.GetAll)
 }
 
 // Post ...
 // @Title Post
 // @Description create User
-// @Param	body		body 	models.User	true		"body for Portfolios content"
+// @Param	body		body 	models.User	true		"body for User content"
 // @Success 201 {int} models.User
 // @Failure 400 body is empty
 // @router / [post]
@@ -52,11 +54,9 @@ func (c *UsersController) Post() {
 
 	user.RegDate = time.Now()
 
-	_, err = user.InsertOrUpdate()
+	user.ID = bson.NewObjectId()
 
-	//user.ID = id
-
-	/* user.ID = id */
+	err = user.Insert()
 
 	if err != nil {
 		c.BadRequest(err)
@@ -64,5 +64,144 @@ func (c *UsersController) Post() {
 	}
 
 	c.Data["json"] = user
+	c.ServeJSON()
+}
+
+// GetOne ...
+// @Title Get One
+// @Description get Users by id
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Users
+// @Failure 403 :id is empty
+// @router /:id [get]
+func (c *UsersController) GetOne() {
+	user := models.User{}
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	if idStr == "" {
+		c.BadRequest(errors.New("El campo id no púede ser vacio"))
+		return
+	}
+
+	validID := bson.IsObjectIdHex(idStr)
+
+	if !validID {
+		c.BadRequest(errors.New("El Id no es valido"))
+		return
+	}
+
+	err := user.GetUsersByID(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	c.Data["json"] = user
+	c.ServeJSON()
+}
+
+// GetAll ...
+// @Title Get All
+// @Description get all Users
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Users
+// @Failure 403 :id is empty
+// @router /:id [get]
+func (c *UsersController) GetAll() {
+	var user models.User
+
+	users, err := user.GetAllUsers()
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = users
+	c.ServeJSON()
+}
+
+// Put ...
+// @Title Put
+// @Description Put User
+// @Param	body		body 	models.User	true		"body for User content"
+// @Success 201 {ObjectId} models.User
+// @Failure 400 body is empty
+// @router /:id [put]
+func (c *UsersController) Put() {
+	var user models.User
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	if idStr == "" {
+		c.BadRequest(errors.New("El campo id no púede ser vacio"))
+		return
+	}
+
+	validID := bson.IsObjectIdHex(idStr)
+
+	if !validID {
+		c.BadRequest(errors.New("El Id no es valido"))
+		return
+	}
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &user)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	err = user.Update(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Updated element",
+		PrettyMessage: "Elemento Actualizado",
+	}
+	c.ServeJSON()
+}
+
+// Delete ...
+// @Title Delete
+// @Description Delete User
+// @Param	body		body 	models.User	true		"body for User content"
+// @Success 201 {ObjectId} models.User
+// @Failure 400 body is empty
+// @router /:id [delete]
+func (c *UsersController) Delete() {
+	var user models.User
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	if idStr == "" {
+		c.BadRequest(errors.New("El campo id no púede ser vacio"))
+		return
+	}
+
+	validID := bson.IsObjectIdHex(idStr)
+
+	if !validID {
+		c.BadRequest(errors.New("El Id no es valido"))
+		return
+	}
+
+	err := user.Delete(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Deleted element",
+		PrettyMessage: "Elemento Eliminado",
+	}
 	c.ServeJSON()
 }
