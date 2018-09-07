@@ -4,10 +4,9 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
-	"time"
 
 	"github.com/astaxie/beego/validation"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/globalsign/mgo/bson"
 )
 
 // UsersController definiton.
@@ -22,6 +21,8 @@ func (c *UsersController) URLMapping() {
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("Get", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("Login", c.Login)
+	c.Mapping("ChangePassword", c.ChangePassword)
 }
 
 // Post ...
@@ -51,8 +52,6 @@ func (c *UsersController) Post() {
 		c.BadRequestErrors(valid.Errors, "User")
 		return
 	}
-
-	user.RegDate = time.Now()
 
 	user.ID = bson.NewObjectId()
 
@@ -115,7 +114,7 @@ func (c *UsersController) GetAll() {
 	users, err := user.GetAllUsers()
 
 	if err != nil {
-		c.ServeErrorJSON(err)
+		c.BadRequest(err)
 		return
 	}
 
@@ -204,4 +203,97 @@ func (c *UsersController) Delete() {
 		PrettyMessage: "Elemento Eliminado",
 	}
 	c.ServeJSON()
+}
+
+// Login ...
+// @Title Post
+// @Description Login for Users
+// @Param	body		body 	models.Users	true		"body for Users content"
+// @Success 200 {Object} models.Users
+// @Failure 400 body is empty
+// @router /login [post]
+func (c *UsersController) Login() {
+	var user models.User
+
+	// Validate empty body
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &user)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	// Validate context body
+
+	valid := validation.Validation{}
+
+	valid.Required(user.Email, "email")
+	valid.Required(user.Password, "password")
+
+	if valid.HasErrors() {
+		c.BadRequestErrors(valid.Errors, "User")
+		return
+	}
+
+	err = user.LoginUsers()
+
+	if err != nil {
+		c.BadRequest(errors.New("No hubo resultados"))
+		return
+	}
+
+	user.Token = c.GenerateToken("Admin", user.Token)
+
+	c.Ctx.Output.SetStatus(200)
+	c.Data["json"] = user
+
+	c.ServeJSON()
+
+}
+
+// ChangePassword ...
+// @Title Post
+// @Description ChangePassword for Users
+// @Param	body		body 	models.Users	true		"body for Users content"
+// @Success 200 {Object} models.Users
+// @Failure 400 body is empty
+// @router /login [post]
+func (c *UsersController) ChangePassword() {
+	var user models.User
+
+	// Validate empty body
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &user)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	// Validate context body
+	valid := validation.Validation{}
+
+	valid.Required(user.Email, "email")
+	valid.Required(user.Password, "password")
+
+	if valid.HasErrors() {
+		c.BadRequestErrors(valid.Errors, "User")
+		return
+	}
+
+	err = user.ChangePassword()
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	user.Token = c.GenerateToken("Admin", user.Token)
+
+	c.Ctx.Output.SetStatus(200)
+	c.Data["json"] = user
+
+	c.ServeJSON()
+
 }

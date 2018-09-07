@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -18,7 +19,7 @@ type MiddlewareController struct {
 // LoginToken =
 type LoginToken struct {
 	Type string `json:"tipo"`
-	ID   int64  `json:"id"`
+	ID   string `json:"id"`
 	jwt.StandardClaims
 }
 
@@ -45,6 +46,9 @@ func VerifyToken(tokenString string, userType string) (decodedToken *LoginToken,
 		return nil, err
 	}
 
+	fmt.Println(tokenString, userType)
+	fmt.Println(claims)
+
 	//fmt.Printf("%v %v", claims.Type, claims.StandardClaims.ExpiresAt)
 
 	if claims.Type != userType {
@@ -55,7 +59,7 @@ func VerifyToken(tokenString string, userType string) (decodedToken *LoginToken,
 }
 
 // GenerateToken =
-func (c *BaseController) GenerateToken(userType string, id int64) (token string) {
+func (c *BaseController) GenerateToken(userType string, id string) (token string) {
 
 	hmacSampleSecret := []byte("bazam")
 
@@ -82,32 +86,60 @@ func (c *BaseController) GenerateToken(userType string, id int64) (token string)
 	return token
 }
 
-//GlobalMiddleware =
-var GlobalMiddleware = func(ctx *context.Context) {
+//GetValidation =
+func GetValidation(route string) (validation map[string]map[string][]string) {
 
-	ValidateUrls := map[string][]string{
-		// Clients
-		"/clients": {"GET", "Admin"},
-		// Activities
-		"/activities": {"GET", "Admin"},
-		//
+	portfolios := map[string]map[string][]string{
+		"POST":   {"/": {"Admin"}},
+		"GET":    {"portfolios/:id": {"Admin", "Client"}},
+		"PUT":    {"/:id": {"Admin"}},
+		"DELETE": {"/:id": {"Admin"}},
 	}
 
-	for url, options := range ValidateUrls {
+	validations := map[string]map[string]map[string][]string{
+		"portfolios": portfolios,
+	}
 
-		userType := options[1]
+	return validations[route]
+}
 
-		if strings.HasSuffix(ctx.Input.URL(), url) && ctx.Input.Method() == options[0] {
-			_, err := VerifyToken(ctx.Input.Header("Authorization"), userType)
+//Middleware =
+func Middleware(route string) func(ctx *context.Context) bool {
 
-			if err != nil {
-				DenyPermision(ctx, err)
+	validation := GetValidation(route)
+
+	return func(ctx *context.Context) bool {
+
+		token := ctx.Input.Header("Authorization")
+		method := validation[ctx.Input.Method()]
+
+		//beego.Debug("Token: ", token)
+		//beego.Debug("Method: ", method)
+
+		for url, usersTypes := range method {
+
+			//beego.Debug("Url: ", ctx.Input.URL(), "Match: ", url)
+
+			urlFound := strings.HasSuffix(ctx.Input.URL(), url)
+
+			//beego.Debug("Tiene El sufijo: ", urlFound)
+
+			if !urlFound {
+				return false
 			}
 
-			break
-		}
-	}
+			for _, userType := range usersTypes {
 
+				_, err := VerifyToken(token, userType)
+
+				if err != nil {
+					DenyPermision(ctx, err)
+				}
+			}
+		}
+
+		return false
+	}
 }
 
 //DenyPermision =

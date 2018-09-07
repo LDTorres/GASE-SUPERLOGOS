@@ -98,6 +98,8 @@ func init() {
 
 	AddDefaultDataPrices()
 
+	AddDefaultDataUsers()
+
 }
 
 //LoadRelations of the model

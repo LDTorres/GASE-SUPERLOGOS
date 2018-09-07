@@ -68,7 +68,14 @@ func (c *OrdersController) Post() {
 		return
 	}
 
-	client := models.Clients{ID: int(decodedToken.ID)}
+	Token, err := strconv.Atoi(decodedToken.ID)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	client := models.Clients{ID: Token}
 	Order.Client = &client
 
 	// Validate Gateway
