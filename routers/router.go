@@ -15,6 +15,8 @@ import (
 
 func init() {
 
+	controllers.LoadFilters()
+
 	ns := beego.NewNamespace("/v1",
 
 		beego.NSNamespace("/activities",
@@ -78,7 +80,6 @@ func init() {
 		),
 
 		beego.NSNamespace("/portfolios",
-			beego.NSCond(controllers.Middleware("portfolios")),
 			beego.NSInclude(
 				&controllers.PortfoliosController{},
 			),

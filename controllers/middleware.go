@@ -3,9 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
 
 	"github.com/astaxie/beego/context"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -46,10 +47,8 @@ func VerifyToken(tokenString string, userType string) (decodedToken *LoginToken,
 		return nil, err
 	}
 
-	fmt.Println(tokenString, userType)
-	fmt.Println(claims)
-
-	//fmt.Printf("%v %v", claims.Type, claims.StandardClaims.ExpiresAt)
+	//fmt.Println(tokenString, userType)
+	//fmt.Println(claims)
 
 	if claims.Type != userType {
 		return nil, errors.New("Invalid User")
@@ -86,59 +85,101 @@ func (c *BaseController) GenerateToken(userType string, id string) (token string
 	return token
 }
 
-//GetValidation =
-func GetValidation(route string) (validation map[string]map[string][]string) {
+var (
+	//ControllersNames ...
+	ControllersNames = []string{
+		"portfolios", "activities", "carts", "clients", "countries", "coupons", "currencies", "gateways", "images", "locations", "orders", "prices", "sectors", "services", "email", "briefs", "users",
+	}
+)
 
-	portfolios := map[string]map[string][]string{
-		"POST":   {"/": {"Admin"}},
-		"GET":    {"portfolios/:id": {"Admin", "Client"}},
-		"PUT":    {"/:id": {"Admin"}},
-		"DELETE": {"/:id": {"Admin"}},
+//GetURLMapping =
+func GetURLMapping(route string) (validation map[string][]string) {
+
+	portfolios := map[string][]string{
+		";POST,PUT":       {"Admin"},
+		"/:id;PUT,DELETE": {"Admin"},
 	}
 
-	validations := map[string]map[string]map[string][]string{
+	activities := map[string][]string{
+		"/:id;GET": {"Admin"},
+	}
+
+	validations := map[string]map[string][]string{
 		"portfolios": portfolios,
+		"activities": activities,
 	}
 
 	return validations[route]
 }
 
+//LoadFilters ...
+func LoadFilters() {
+	for _, ctrlName := range ControllersNames {
+		for url, users := range GetURLMapping(ctrlName) {
+			if strings.Contains(url, ";") {
+				urlWithMethod := strings.Split(url, ";")
+				beego.InsertFilter("/*/"+ctrlName+urlWithMethod[0], beego.BeforeRouter, Middleware(ctrlName, url, users))
+			} else {
+				beego.InsertFilter("/*/"+ctrlName+url, beego.BeforeRouter, Middleware(ctrlName, url, users))
+			}
+		}
+	}
+}
+
 //Middleware =
-func Middleware(route string) func(ctx *context.Context) bool {
+func Middleware(controller string, pattern string, userTypes []string) func(ctx *context.Context) {
 
-	validation := GetValidation(route)
+	return func(ctx *context.Context) {
 
-	return func(ctx *context.Context) bool {
+		if userTypes[0] == "Guest" {
+			return
+		}
+
+		urlMapping := GetURLMapping(controller)
 
 		token := ctx.Input.Header("Authorization")
-		method := validation[ctx.Input.Method()]
 
-		//beego.Debug("Token: ", token)
-		//beego.Debug("Method: ", method)
+		if token == "" {
+			err := errors.New("Token Invalido")
+			DenyPermision(ctx, err)
+			return
+		}
 
-		for url, usersTypes := range method {
+		beego.Debug("Url: ", controller, "| Match: ", pattern)
+		beego.Debug("Allowed users: ", userTypes)
+		beego.Debug("Method: ", ctx.Input.Method())
 
-			//beego.Debug("Url: ", ctx.Input.URL(), "Match: ", url)
+		valid := false
 
-			urlFound := strings.HasSuffix(ctx.Input.URL(), url)
+		// if has methods
+		if strings.Contains(pattern, ";") {
+			splitted := strings.Split(pattern, ";")
+			methods := splitted[1]
 
-			//beego.Debug("Tiene El sufijo: ", urlFound)
+			if strings.Contains(methods, ctx.Input.Method()) {
 
-			if !urlFound {
-				return false
-			}
+				userTypes = urlMapping[pattern]
 
-			for _, userType := range usersTypes {
-
-				_, err := VerifyToken(token, userType)
-
-				if err != nil {
-					DenyPermision(ctx, err)
-				}
+				beego.Debug("Allowed users in method: ", userTypes)
 			}
 		}
 
-		return false
+		for _, userType := range userTypes {
+
+			_, err := VerifyToken(token, userType)
+
+			if err != nil {
+				continue
+			}
+
+			valid = true
+			break
+		}
+
+		if !valid {
+			err := errors.New("Usuario Invalido")
+			DenyPermision(ctx, err)
+		}
 	}
 }
 
