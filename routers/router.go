@@ -14,7 +14,6 @@ import (
 )
 
 func init() {
-	beego.InsertFilter("/*", beego.BeforeRouter, controllers.GlobalMiddleware)
 
 	ns := beego.NewNamespace("/v1",
 
@@ -79,6 +78,7 @@ func init() {
 		),
 
 		beego.NSNamespace("/portfolios",
+			beego.NSCond(controllers.Middleware("portfolios")),
 			beego.NSInclude(
 				&controllers.PortfoliosController{},
 			),
@@ -102,14 +102,28 @@ func init() {
 			),
 		),
 
-		/* 		beego.NSNamespace("/users",
+		beego.NSNamespace("/email",
 			beego.NSInclude(
-				&controllers.UsersController{},
+				&controllers.EmailController{},
 			),
-		), */
+		),
+
+		beego.NSNamespace("/briefs",
+			beego.NSRouter("/", &controllers.BriefsController{}, "post:Post"),
+			beego.NSRouter("/", &controllers.BriefsController{}, "get:GetAll"),
+			beego.NSRouter("/:id", &controllers.BriefsController{}, "get:Get"),
+			beego.NSRouter("/:id", &controllers.BriefsController{}, "put:Put"),
+			beego.NSRouter("/:id", &controllers.BriefsController{}, "delete:Delete"),
+		),
 
 		beego.NSNamespace("/users",
 			beego.NSRouter("/", &controllers.UsersController{}, "post:Post"),
+			beego.NSRouter("/", &controllers.UsersController{}, "get:GetAll"),
+			beego.NSRouter("/:id", &controllers.UsersController{}, "get:Get"),
+			beego.NSRouter("/:id", &controllers.UsersController{}, "put:Put"),
+			beego.NSRouter("/:id", &controllers.UsersController{}, "delete:Delete"),
+			beego.NSRouter("/login", &controllers.UsersController{}, "post:Login"),
+			beego.NSRouter("/change-password", &controllers.UsersController{}, "post:ChangePassword"),
 		),
 	)
 	beego.AddNamespace(ns)

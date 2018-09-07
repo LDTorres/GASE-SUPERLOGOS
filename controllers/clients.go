@@ -82,7 +82,7 @@ func (c *ClientsController) Post() {
 		return
 	}
 
-	v.Token = c.GenerateToken("Client", id)
+	v.Token = c.GenerateToken("Client", string(id))
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v
@@ -292,7 +292,7 @@ func (c *ClientsController) Login() {
 		return
 	}
 
-	v.Token = c.GenerateToken("Client", int64(id))
+	v.Token = c.GenerateToken("Client", string(id))
 
 	c.Ctx.Output.SetStatus(200)
 	c.Data["json"] = v

@@ -108,6 +108,8 @@ func (c *ServicesController) GetAll() {
 	var limit int64 = 10
 	var offset int64
 
+	//TODO: QUERY FILTER POR PAIS Y MONEDAS
+
 	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {
 		fields = strings.Split(v, ",")
