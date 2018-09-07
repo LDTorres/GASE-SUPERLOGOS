@@ -295,13 +295,6 @@ func (c *ImagesController) Put() {
 		return
 	}
 
-	err = generateImageURL(&v)
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
 	c.Data["json"] = MessageResponse{
 		Message:       "Updated element",
 		PrettyMessage: "Elemento Actualizado",

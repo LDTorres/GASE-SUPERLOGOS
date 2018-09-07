@@ -240,6 +240,7 @@ func DeleteImages(id int) (err error) {
 	return
 }
 
+//GetImagesBySlug xxx
 func GetImagesBySlug(slug string) (v *Images, err error) {
 
 	o := orm.NewOrm()

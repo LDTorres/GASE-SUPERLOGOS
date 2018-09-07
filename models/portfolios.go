@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
@@ -181,5 +182,152 @@ func DeletePortfolios(id int) (err error) {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
+	return
+}
+
+// GetPortfoliosByCustomSearch retrieves Portfolios by Id. Returns error if Id doesn't exist
+func GetPortfoliosByCustomSearch(filters map[string]int, limit int, offset int) (portfolios []*Portfolios, err error) {
+
+	qb, err := orm.NewQueryBuilder("mysql")
+
+	if err != nil {
+		return nil, err
+	}
+
+	qb = qb.Select("portfolios.*")
+
+	var (
+		//internalFilters map[string]int
+
+		externalKeys []string
+		internalKeys []string
+	)
+
+	externalFilters := make(map[string]int)
+
+	if countryID, ok := filters["countries"]; ok {
+
+		delete(filters, "countries")
+
+		if _, ok = filters["locations"]; !ok {
+			externalFilters["countries"] = countryID
+			externalKeys = append(externalKeys, "countries")
+		}
+
+	}
+
+	if sectorID, ok := filters["sectors"]; ok {
+
+		delete(filters, "sectors")
+
+		if _, ok = filters["activities"]; !ok {
+			externalFilters["sectors"] = sectorID
+			externalKeys = append(externalKeys, "sectors")
+		}
+
+	}
+
+	for filterKey := range filters {
+		internalKeys = append(internalKeys, filterKey)
+	}
+	/*
+		extraTables := ""
+
+		if len(internalKeys) > 0 {
+			extraTables = ", " + strings.Join(internalKeys, ",")
+		} */
+
+	qb = qb.From("portfolios" /*  + extraTables */)
+
+	////
+
+	for _, externalKey := range externalKeys {
+
+		var interTable string
+
+		if externalKey == "countries" {
+
+			interTable = "locations"
+
+		} else if externalKey == "sectors" {
+
+			interTable = "activities"
+
+		}
+
+		qb = qb.InnerJoin(interTable).On("portfolios." + interTable + "_id = " + interTable + ".id")
+
+		qb = qb.InnerJoin(externalKey).On(interTable + "." + externalKey + "_id = " + externalKey + ".id")
+	}
+
+	for _, internalKey := range internalKeys {
+
+		qb = qb.InnerJoin(internalKey).On("portfolios." + internalKey + "_id = " + internalKey + ".id")
+
+	}
+
+	////
+
+	var whereString string
+
+	for _, internalKey := range internalKeys {
+
+		id := strconv.Itoa(filters[internalKey])
+
+		whereString += internalKey + ".id = " + id
+
+		if internalKey != internalKeys[len(internalKeys)-1] {
+			whereString += " AND "
+		}
+	}
+
+	for _, externalKey := range externalKeys {
+
+		if whereString != "" {
+			whereString += " AND "
+		}
+
+		id := strconv.Itoa(externalFilters[externalKey])
+
+		whereString += externalKey + ".id = " + id
+
+	}
+
+	if whereString != "" {
+		qb.Where(whereString)
+	}
+
+	qb = qb.OrderBy("portfolios.priority").Asc()
+
+	if limit != 0 {
+		qb = qb.Limit(limit)
+	}
+
+	if offset != 0 {
+		qb = qb.Offset(offset)
+	}
+
+	sql := qb.String()
+
+	fmt.Println(sql)
+
+	o := orm.NewOrm()
+
+	_, err = o.Raw(sql).QueryRows(&portfolios)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if portfolios == nil {
+		return nil, orm.ErrNoRows
+	}
+
+	for key := range portfolios {
+
+		searchFK(portfolios[key].TableName(), portfolios[key].ID).One(portfolios[key])
+		portfolios[key].loadRelations()
+	}
+
 	return
 }

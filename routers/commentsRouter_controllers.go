@@ -527,6 +527,14 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+		beego.ControllerComments{
+			Method: "GetByCustomSearch",
+			Router: `/custom-search`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["GASE/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE/controllers:PricesController"],
 		beego.ControllerComments{
 			Method: "Post",

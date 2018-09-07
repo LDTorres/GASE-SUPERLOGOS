@@ -14,7 +14,7 @@ import (
 //Activities Model
 type Activities struct {
 	ID          int           `orm:"column(id);auto" json:"id"`
-	Name        string        `orm:"column(name)" json:"name,omitempty" valid:"Required"`
+	Name        string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Description string        `orm:"column(description)" json:"description,omitempty" valid:"Required"`
 	Sector      *Sectors      `orm:"column(sectors_id);rel(fk)" json:"sector,omitempty"`
 	Portfolios  []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`
@@ -160,6 +160,8 @@ func UpdateActivitiesByID(m *Activities) (err error) {
 			fmt.Println("Number of records updated in database:", num)
 		}
 	}
+
+	v.loadRelations()
 	return
 }
 

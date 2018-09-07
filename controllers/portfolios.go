@@ -22,6 +22,7 @@ func (c *PortfoliosController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("GetByCustomSearch", c.GetByCustomSearch)
 }
 
 // Post ...
@@ -319,4 +320,87 @@ func (c *PortfoliosController) Delete() {
 	}
 
 	c.ServeJSON()
+}
+
+//location, country, sector, activities, service
+//order by priority in two collections
+
+// GetByCustomSearch ...
+// @Title GetByCustomSearch
+// @Description Get By Custom Search
+// @Failure 400 Bad Body
+// @router /custom-search [get]
+func (c *PortfoliosController) GetByCustomSearch() {
+
+	//queryKeys in hierarchy order
+	queryKeys := []string{"services", "sectors", "countries", "activities", "locations"}
+
+	queryMap := make(map[string]int)
+
+	for _, queryKey := range queryKeys {
+
+		queryVal := c.Ctx.Input.Query(queryKey)
+
+		if queryVal == "" {
+			continue
+		}
+
+		queryValInt, err := strconv.Atoi(queryVal)
+
+		if err != nil {
+			err = errors.New(queryKey + "value is not a valid int")
+			c.ServeErrorJSON(err)
+			return
+		}
+
+		queryMap[queryKey] = queryValInt
+
+	}
+
+	var (
+		offset, limit int
+	)
+
+	queryOffset := c.Ctx.Input.Query("offset")
+
+	if queryOffset != "" {
+
+		offsetInt, err := strconv.Atoi(queryOffset)
+
+		if err != nil {
+			err = errors.New("offset value is not a valid int")
+			c.ServeErrorJSON(err)
+			return
+		}
+
+		offset = offsetInt
+
+	}
+
+	queryLimit := c.Ctx.Input.Query("limit")
+
+	if queryLimit != "" {
+
+		limitInt, err := strconv.Atoi(queryLimit)
+
+		if err != nil {
+			err = errors.New("limit value is not a valid int")
+			c.ServeErrorJSON(err)
+			return
+		}
+
+		limit = limitInt
+	}
+
+	v, err := models.GetPortfoliosByCustomSearch(queryMap, limit, offset)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+
+	c.ServeJSON()
+
 }
