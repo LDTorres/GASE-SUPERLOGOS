@@ -124,7 +124,13 @@ func (c *BaseController) ServeErrorJSON(err error) {
 				Code:          driverErr.Number,
 				PrettyMessage: "Base de datos no encontrada",
 			}
-
+		case 1451:
+			c.Ctx.Output.SetStatus(409)
+			c.Data["json"] = MessageResponse{
+				Message:       "Cannot delete or update a parent row a foreign key constraint fails",
+				Code:          driverErr.Number,
+				PrettyMessage: "Error en llaves foraneas",
+			}
 		default:
 			c.Ctx.Output.SetStatus(500)
 			c.Data["json"] = MessageResponse{
@@ -157,7 +163,10 @@ func (c *BaseController) BadRequestErrors(errors []*validation.Error, entity str
 
 	c.Ctx.Output.SetStatus(400)
 	c.Data["json"] = MessageResponse{
-		Errors: errorsMessages,
+		Message:       "Bad sent data",
+		PrettyMessage: "Error en los datos mandados",
+		Code:          001,
+		Errors:        errorsMessages,
 	}
 
 	c.ServeJSON()

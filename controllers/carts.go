@@ -355,7 +355,7 @@ func (c *CartsController) AddServices() {
 // @Param	body		body 	models.Services	true		"body for Services content"
 // @Success 200 {int} models.Services
 // @Failure 400 body is empty
-// @router /:id/services [delete]
+// @router /services/:id [delete]
 func (c *CartsController) DeleteServices() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)

@@ -9,13 +9,14 @@ package routers
 
 import (
 	"GASE/controllers"
+	"GASE/middlewares"
 
 	"github.com/astaxie/beego"
 )
 
 func init() {
 
-	controllers.LoadFilters()
+	middlewares.LoadFilters()
 
 	ns := beego.NewNamespace("/v1",
 
@@ -100,12 +101,6 @@ func init() {
 		beego.NSNamespace("/services",
 			beego.NSInclude(
 				&controllers.ServicesController{},
-			),
-		),
-
-		beego.NSNamespace("/email",
-			beego.NSInclude(
-				&controllers.EmailController{},
 			),
 		),
 

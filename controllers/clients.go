@@ -37,7 +37,7 @@ func (c *ClientsController) Prepare() {
 		valid := VerifyToken(c.Ctx.Input.Header("Authorization"))
 
 		if !valid {
-			c.DenyPermision()
+			c.DenyAccess()
 			return
 		}
 	}

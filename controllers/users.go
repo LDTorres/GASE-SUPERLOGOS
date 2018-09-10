@@ -258,7 +258,7 @@ func (c *UsersController) Login() {
 // @Param	body		body 	models.Users	true		"body for Users content"
 // @Success 200 {Object} models.Users
 // @Failure 400 body is empty
-// @router /login [post]
+// @router /change-password [post]
 func (c *UsersController) ChangePassword() {
 	var user models.User
 
