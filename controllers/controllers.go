@@ -70,6 +70,7 @@ func (c *BaseController) BadRequest(err error) {
 	c.Ctx.Output.SetStatus(400)
 	c.Data["json"] = MessageResponse{
 		Message:       "Bad request body",
+		Code:          006,
 		PrettyMessage: "Peticion mal formada",
 		Error:         err.Error(),
 	}
@@ -81,6 +82,7 @@ func (c *BaseController) BadRequestDontExists(message string) {
 	c.Ctx.Output.SetStatus(404)
 	c.Data["json"] = MessageResponse{
 		Message:       "Dont exist the element " + message,
+		Code:          007,
 		PrettyMessage: "No existe el elemento a relacionar " + message,
 	}
 	c.ServeJSON()
@@ -93,6 +95,7 @@ func (c *BaseController) ServeErrorJSON(err error) {
 		c.Ctx.Output.SetStatus(404)
 		c.Data["json"] = MessageResponse{
 			Message:       "No results",
+			Code:          8,
 			PrettyMessage: "No se encontraron resultados",
 		}
 		c.ServeJSON()

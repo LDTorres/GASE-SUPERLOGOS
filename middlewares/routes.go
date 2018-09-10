@@ -86,7 +86,7 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 		}
 
 		excludeUrls := []string{
-			"login", "carts",
+			"login", "carts", "change-password",
 		}
 
 		verifyToken := true

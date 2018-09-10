@@ -52,8 +52,8 @@ func GetURLMapping(route string) (validation map[string][]string) {
 	}
 
 	coupons := map[string][]string{
-		";GET":            {"Admin"},
-		"/:id;PUT,DELETE": {"Admin"},
+		";GET":                {"Admin"},
+		"/:id;GET,PUT,DELETE": {"Admin"},
 	}
 
 	currencies := map[string][]string{
@@ -100,6 +100,10 @@ func GetURLMapping(route string) (validation map[string][]string) {
 		"/:id;GET,PUT,DELETE": {"Admin"},
 	}
 
+	portfolios := map[string][]string{
+		"/:id;PUT,DELETE": {"Admin"},
+	}
+
 	validations := map[string]map[string][]string{
 		"carts":      carts,
 		"clients":    clients,
@@ -115,6 +119,7 @@ func GetURLMapping(route string) (validation map[string][]string) {
 		"services":   services,
 		"briefs":     briefs,
 		"users":      users,
+		"portfolios": portfolios,
 	}
 
 	return validations[route]
