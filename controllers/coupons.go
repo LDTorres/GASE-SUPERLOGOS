@@ -181,7 +181,7 @@ func (c *CouponsController) Put() {
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
-		c.ServeErrorJSON(err)
+		c.BadRequest(err)
 		return
 	}
 

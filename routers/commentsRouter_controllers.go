@@ -129,14 +129,6 @@ func init() {
 
 	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
 		beego.ControllerComments{
-			Method: "DeleteServices",
-			Router: `/:id/services`,
-			AllowHTTPMethods: []string{"delete"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
-		beego.ControllerComments{
 			Method: "GetOneByCookie",
 			Router: `/cookie/:cookie`,
 			AllowHTTPMethods: []string{"get"},
@@ -148,6 +140,14 @@ func init() {
 			Method: "AddServices",
 			Router: `/services`,
 			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+		beego.ControllerComments{
+			Method: "DeleteServices",
+			Router: `/services/:id`,
+			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
 
@@ -745,15 +745,15 @@ func init() {
 
 	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
 		beego.ControllerComments{
-			Method: "Login",
-			Router: `/login`,
+			Method: "ChangePassword",
+			Router: `/change-password`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
 		beego.ControllerComments{
-			Method: "ChangePassword",
+			Method: "Login",
 			Router: `/login`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),

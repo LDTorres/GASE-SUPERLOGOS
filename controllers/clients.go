@@ -37,7 +37,7 @@ func (c *ClientsController) Prepare() {
 		valid := VerifyToken(c.Ctx.Input.Header("Authorization"))
 
 		if !valid {
-			c.DenyPermision()
+			c.DenyAccess()
 			return
 		}
 	}
@@ -204,7 +204,7 @@ func (c *ClientsController) Put() {
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
-		c.ServeErrorJSON(err)
+		c.BadRequest(err)
 		return
 	}
 
