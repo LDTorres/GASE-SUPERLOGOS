@@ -20,6 +20,7 @@ func (c *BriefsController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("Get", c.GetOne)
+	c.Mapping("GetOneByService", c.GetOneByService)
 	c.Mapping("GetAll", c.GetAll)
 }
 
@@ -125,6 +126,11 @@ func (c *BriefsController) GetAll() {
 		return
 	}
 
+	if len(Briefs) == 0 {
+		c.ServeErrorJSON(errors.New("No hubo resultados"))
+		return
+	}
+
 	c.Data["json"] = Briefs
 	c.ServeJSON()
 }
@@ -209,5 +215,33 @@ func (c *BriefsController) Delete() {
 		Message:       "Deleted element",
 		PrettyMessage: "Elemento Eliminado",
 	}
+	c.ServeJSON()
+}
+
+// GetOneByService ...
+// @Title Get One
+// @Description get Briefs by slug
+// @Param	slug		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Briefs
+// @Failure 403 :slug is empty
+// @router /service/:slug [get]
+func (c *BriefsController) GetOneByService() {
+	v := models.Briefs{}
+
+	slug := c.Ctx.Input.Param(":slug")
+
+	if slug == "" {
+		c.BadRequest(errors.New("El campo slug no púede ser vacio"))
+		return
+	}
+
+	err := v.GetBriefsByServiceSlug(slug)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }

@@ -118,6 +118,11 @@ func (c *UsersController) GetAll() {
 		return
 	}
 
+	if len(users) == 0 {
+		c.ServeErrorJSON(errors.New("No hubo resultados"))
+		return
+	}
+
 	c.Data["json"] = users
 	c.ServeJSON()
 }

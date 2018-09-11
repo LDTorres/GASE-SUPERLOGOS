@@ -1,11 +1,14 @@
 package models
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/globalsign/mgo/bson"
 )
 
 //Sections ...
-type Sections []map[string]string
+type Sections []map[string]interface{}
 
 // Briefs model definiton.
 type Briefs struct {
@@ -29,6 +32,14 @@ func (m *Briefs) Insert() (err error) {
 
 	c := mConn.DB("").C(m.TableName())
 
+	fmt.Println(m.Service.Slug)
+
+	err = m.GetBriefsByServiceSlug(m.Service.Slug)
+
+	if err == nil {
+		return errors.New("El elemento ya existe")
+	}
+
 	err = c.Insert(m)
 
 	if err != nil {
@@ -46,6 +57,22 @@ func (m *Briefs) GetBriefsByID(id string) (err error) {
 	c := mConn.DB("").C(m.TableName())
 
 	err = c.FindId(bson.ObjectIdHex(id)).One(m)
+
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+// GetBriefsByServiceSlug =
+func (m *Briefs) GetBriefsByServiceSlug(slug string) (err error) {
+	mConn := Conn()
+	defer mConn.Close()
+
+	c := mConn.DB("").C(m.TableName())
+
+	err = c.Find(bson.M{"service.slug": slug}).One(m)
 
 	if err != nil {
 		return
@@ -93,7 +120,7 @@ func (m *Briefs) Delete(id string) (err error) {
 
 	c := mConn.DB("").C(m.TableName())
 
-	err = c.RemoveId(bson.M{"_id": id})
+	err = c.RemoveId(bson.ObjectIdHex(id))
 
 	if err != nil {
 		return err

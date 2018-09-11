@@ -108,6 +108,7 @@ func init() {
 			beego.NSRouter("/", &controllers.BriefsController{}, "post:Post"),
 			beego.NSRouter("/", &controllers.BriefsController{}, "get:GetAll"),
 			beego.NSRouter("/:id", &controllers.BriefsController{}, "get:Get"),
+			beego.NSRouter("/service/:slug", &controllers.BriefsController{}, "get:GetOneByService"),
 			beego.NSRouter("/:id", &controllers.BriefsController{}, "put:Put"),
 			beego.NSRouter("/:id", &controllers.BriefsController{}, "delete:Delete"),
 		),

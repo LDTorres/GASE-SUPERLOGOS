@@ -151,7 +151,7 @@ func (u *User) Delete(id string) (err error) {
 
 	u.Password = GetMD5Hash(u.Password)
 
-	err = c.RemoveId(bson.M{"_id": id})
+	err = c.RemoveId(bson.ObjectIdHex(id))
 
 	if err != nil {
 		return err
