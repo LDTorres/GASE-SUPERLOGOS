@@ -21,6 +21,8 @@ type Orders struct {
 	Gateway      *Gateways  `orm:"column(gateways_id);rel(fk)" json:"gateways,omitempty" valid:"Required;"`
 	Prices       []*Prices  `orm:"rel(m2m)" json:"prices,omitempty"`
 	Coupons      []*Coupons `orm:"rel(m2m)" json:"coupons,omitempty"`
+	Country      *Countries `orm:"rel(fk)" json:"countries,omitempty"`
+	PaymentID    string     `orm:"column(payment_id)" json:"payment_id,omitempty"`
 	CreatedAt    time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt    time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt    time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`

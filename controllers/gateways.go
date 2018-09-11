@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GASE/controllers/services"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -367,4 +368,62 @@ func (c *GatewaysController) DeleteCurrencies() {
 	}
 
 	c.ServeJSON()
+}
+
+///////////////////////////////////
+/////////PAYMENT HANDLER///////////
+///////////////////////////////////
+
+func paymentsHandler(orderID int, gateway *models.Gateways, price float32, countries *models.Countries, paymentData map[string]interface{}) (redirect string, paymentID string, err error) {
+
+	switch gateway.Code {
+
+	case "01": //paypal [paypal checkout with button]
+
+		if value, ok := paymentData["id"]; !ok || value.(string) == "" {
+
+			err = errors.New("payment id is missing")
+
+			return
+		}
+
+		paypalID := paymentData["id"].(string)
+
+		payment := &services.WebCheckoutPayment{}
+
+		payment.ID = paypalID
+
+		err = payment.ButtonCheckoutPaypal()
+
+		if err != nil {
+			return
+		}
+
+		paymentID = payment.ID
+
+	case "02": //stripe [credit card with element.js]
+
+		if value, ok := paymentData["token"]; !ok || value.(string) == "" {
+
+			err = errors.New("token is missing")
+
+			return
+		}
+
+		tokenStripe := paymentData["token"].(string)
+
+		payment := &services.CreditCardPayment{}
+		payment.Token = tokenStripe
+
+		err = payment.CreditCardStripe()
+
+		if err != nil {
+			return
+		}
+
+		paymentID = payment.ID
+
+	}
+
+	return
 }

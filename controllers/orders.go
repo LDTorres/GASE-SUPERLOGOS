@@ -33,16 +33,19 @@ func (c *OrdersController) URLMapping() {
 // @router / [post]
 func (c *OrdersController) Post() {
 
-	var Order models.Orders
+	var orderPayment struct {
+		Payment map[string]interface{}
+		Order   *models.Orders
+	}
 
-	// Validate empty body
-
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &Order)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &orderPayment)
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
+
+	Order := orderPayment.Order
 
 	//Validate Cookie
 	cookie := c.Ctx.Input.Header("Cart-Id")
@@ -54,10 +57,17 @@ func (c *OrdersController) Post() {
 	}
 
 	//Validate Iso Country
-	header := c.Ctx.Input.Header("Country-Iso")
+	countryIso := c.Ctx.Input.Header("Country-Iso")
 
-	if header == "" {
-		header = "US"
+	if countryIso == "" {
+		countryIso = "US"
+	}
+
+	country, err := models.GetCountriesByIso(countryIso)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
 	}
 
 	//Validate Client
@@ -93,7 +103,7 @@ func (c *OrdersController) Post() {
 	}
 
 	//Get cart
-	cart, err := models.GetOrCreateCartsByCookie(cookie, header)
+	cart, err := models.GetOrCreateCartsByCookie(cookie, country.Iso)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -117,14 +127,13 @@ func (c *OrdersController) Post() {
 		couponsRelationsIDs = append(couponsRelationsIDs, el.ID)
 
 		// Getting the discount
-		Order.Discount = (Order.FinalValue * el.Percentage) / 100
+		Order.Discount = (Order.InitialValue * el.Percentage) / 100
 	}
 
-	//TODO: VERFICAR DATOS DE TARJETA DE CREDITO
+	Order.State = "PENDING"
 
 	// Create the new order
-
-	_, err = models.AddOrders(&Order)
+	_, err = models.AddOrders(Order)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -152,6 +161,19 @@ func (c *OrdersController) Post() {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	paymentAmount := Order.InitialValue - Order.Discount
+
+	_, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	Order.PaymentID = paymentID
+
+	models.UpdateOrdersByID(Order)
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = Order
