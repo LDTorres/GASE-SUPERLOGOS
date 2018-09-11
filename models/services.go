@@ -17,6 +17,7 @@ type Services struct {
 	ID         int           `orm:"column(id);auto" json:"id"`
 	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Percertage float32       `orm:"column(percertage)" json:"percentage,omitempty" valid:"Required"`
+	Prices     []*Prices     `orm:"reverse(many)" json:"prices,omitempty"`
 	Price      *Prices       `orm:"-" json:"price,omitempty"`
 	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
@@ -27,18 +28,18 @@ type Services struct {
 }
 
 //TableName define Name
-func (t *Services) TableName() string {
+func (m *Services) TableName() string {
 	return "services"
 }
 
-func (t *Services) loadRelations() {
+func (m *Services) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"Portfolios"}
+	relations := []string{"Portfolios", "Prices"}
 
 	for _, relation := range relations {
-		o.LoadRelated(t, relation)
+		o.LoadRelated(m, relation)
 	}
 
 	return
@@ -196,6 +197,39 @@ func AddDefaultDataServices() (result int64, err error) {
 	}
 
 	result, err = o.InsertMulti(100, dummyData)
+
+	return
+}
+
+//GetPricesServicesByID retrieves Services by Id. Returns error if Id doesn't exist
+func (m *Services) GetPricesServicesByID(iso string) (err error) {
+	o := orm.NewOrm()
+
+	err = o.Read(m)
+
+	if err != nil {
+		return
+	}
+
+	//Get countries by Iso
+	country, err := GetCountriesByIso(iso)
+
+	if err != nil {
+		return
+	}
+
+	price := &Prices{Currency: country.Currency, Service: m}
+
+	err = o.Read(price, "Currency", "Service")
+
+	if err != nil {
+		return
+	}
+
+	err = searchFK(price.TableName(), price.ID).One(price)
+
+	price.Service = nil
+	m.Price = price
 
 	return
 }

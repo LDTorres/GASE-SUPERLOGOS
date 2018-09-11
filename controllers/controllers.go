@@ -142,6 +142,13 @@ func (c *BaseController) ServeErrorJSON(err error) {
 				PrettyMessage: "Un error ha ocurrido",
 			}
 		}
+	} else {
+		c.Ctx.Output.SetStatus(404)
+		c.Data["json"] = MessageResponse{
+			Message:       "No results",
+			Code:          8,
+			PrettyMessage: "No se encontraron resultados",
+		}
 	}
 
 	c.ServeJSON()

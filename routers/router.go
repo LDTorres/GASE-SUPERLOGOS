@@ -112,6 +112,15 @@ func init() {
 			beego.NSRouter("/:id", &controllers.BriefsController{}, "delete:Delete"),
 		),
 
+		beego.NSNamespace("/payments-methods",
+			beego.NSRouter("/", &controllers.PaymentsMethodsController{}, "post:Post"),
+			beego.NSRouter("/", &controllers.PaymentsMethodsController{}, "get:GetAll"),
+			beego.NSRouter("/:id", &controllers.PaymentsMethodsController{}, "get:Get"),
+			beego.NSRouter("/:iso/:gateway", &controllers.PaymentsMethodsController{}, "get:GetOneByIsoAndGateway"),
+			beego.NSRouter("/:id", &controllers.PaymentsMethodsController{}, "put:Put"),
+			beego.NSRouter("/:id", &controllers.PaymentsMethodsController{}, "delete:Delete"),
+		),
+
 		beego.NSNamespace("/users",
 			beego.NSRouter("/", &controllers.UsersController{}, "post:Post"),
 			beego.NSRouter("/", &controllers.UsersController{}, "get:GetAll"),

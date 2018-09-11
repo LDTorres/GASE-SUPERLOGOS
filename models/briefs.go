@@ -4,10 +4,17 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
+//Sections ...
+type Sections []map[string]string
+
 // Briefs model definiton.
 type Briefs struct {
-	ID   bson.ObjectId `orm:"-" bson:"_id,omitempty"      json:"id,omitempty"`
-	Body string        `orm:"-" bson:"body"     json:"body,omitempty" valid:"Required"`
+	ID          bson.ObjectId `orm:"-" bson:"_id,omitempty"      json:"id,omitempty"`
+	Title       string        `orm:"-" bson:"title"     json:"title,omitempty" valid:"Required"`
+	Subtitle    string        `orm:"-" bson:"subtitle"     json:"subtitle,omitempty" valid:"Required"`
+	Description string        `orm:"-" bson:"description"     json:"description,omitempty" valid:"Required"`
+	Service     *Services     `orm:"-" bson:"service"     json:"service,omitempty" valid:"Required"`
+	Sections    *Sections     `orm:"-" bson:"sections"     json:"sections,omitempty" valid:"Required"`
 }
 
 //TableName define Name
