@@ -93,13 +93,13 @@ func (m *PaymentsMethods) GetAllPaymentsMethods() (PaymentsMethods []*PaymentsMe
 }
 
 // Update =
-func (m *PaymentsMethods) Update(id string) (err error) {
+func (m *PaymentsMethods) Update() (err error) {
 	mConn := Conn()
 	defer mConn.Close()
 
 	c := mConn.DB("").C(m.TableName())
 
-	_, err = c.UpsertId(bson.M{"_id": id}, m)
+	err = c.Update(bson.M{"_id": m.ID}, m)
 
 	if err != nil {
 		return err

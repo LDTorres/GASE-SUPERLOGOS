@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 
+	"github.com/astaxie/beego"
+
 	"github.com/astaxie/beego/validation"
 	"github.com/globalsign/mgo/bson"
 )
@@ -20,7 +22,7 @@ func (c *BriefsController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("Get", c.GetOne)
-	c.Mapping("GetOneByService", c.GetOneByService)
+	c.Mapping("GetOneByCookie", c.GetOneByCookie)
 	c.Mapping("GetAll", c.GetAll)
 }
 
@@ -51,17 +53,6 @@ func (c *BriefsController) Post() {
 		c.BadRequestErrors(valid.Errors, "Briefs")
 		return
 	}
-
-	// Validate Service
-
-	exists := models.ValidateExists("Services", v.Service.ID)
-
-	if !exists {
-		c.BadRequestDontExists("Service")
-		return
-	}
-
-	v.ID = bson.NewObjectId()
 
 	err = v.Insert()
 
@@ -166,7 +157,7 @@ func (c *BriefsController) Put() {
 		return
 	}
 
-	err = v.Update(idStr)
+	err = v.Update()
 
 	if err != nil {
 		c.BadRequest(err)
@@ -218,28 +209,59 @@ func (c *BriefsController) Delete() {
 	c.ServeJSON()
 }
 
-// GetOneByService ...
+// GetOneByCookie ...
 // @Title Get One
-// @Description get Briefs by slug
-// @Param	slug		path 	string	true		"The key for staticblock"
+// @Description get Briefs by cookie
+// @Param	cookie		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Briefs
-// @Failure 403 :slug is empty
-// @router /service/:slug [get]
-func (c *BriefsController) GetOneByService() {
+// @Failure 403 :cookie, :form, :service  is empty
+// @router /:service/:cookie [get]
+func (c *BriefsController) GetOneByCookie() {
 	v := models.Briefs{}
 
-	slug := c.Ctx.Input.Param(":slug")
+	cookie := c.Ctx.Input.Param(":cookie")
 
-	if slug == "" {
-		c.BadRequest(errors.New("El campo slug no púede ser vacio"))
+	if cookie == "" {
+		c.BadRequest(errors.New("El campo cookie no púede ser vacio"))
 		return
 	}
 
-	err := v.GetBriefsByServiceSlug(slug)
+	service := c.Ctx.Input.Param(":service")
+
+	if service == "" {
+		c.BadRequest(errors.New("El campo service no púede ser vacio"))
+		return
+	}
+
+	err := v.GetBriefsByCookie(cookie, service)
 
 	if err != nil {
-		c.BadRequest(err)
-		return
+
+		if err.Error() == "not found" {
+			// Verify if exists a form
+			form := models.ServiceForms{}
+
+			err = form.GetServiceFormsByServiceSlug(service)
+
+			if err != nil {
+				c.BadRequest(err)
+				return
+			}
+
+			v.ServiceForm = &form
+
+			v.Cookie = ""
+
+			err = v.Insert()
+
+			beego.Debug(err)
+
+			if err != nil {
+				c.BadRequest(err)
+				return
+			}
+		}
+
 	}
 
 	c.Data["json"] = v

@@ -2,22 +2,17 @@ package models
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/globalsign/mgo/bson"
+	"github.com/gofrs/uuid"
 )
-
-//Sections ...
-type Sections []map[string]interface{}
 
 // Briefs model definiton.
 type Briefs struct {
 	ID          bson.ObjectId `orm:"-" bson:"_id,omitempty"      json:"id,omitempty"`
-	Title       string        `orm:"-" bson:"title"     json:"title,omitempty" valid:"Required"`
-	Subtitle    string        `orm:"-" bson:"subtitle"     json:"subtitle,omitempty" valid:"Required"`
-	Description string        `orm:"-" bson:"description"     json:"description,omitempty" valid:"Required"`
-	Service     *Services     `orm:"-" bson:"service"     json:"service,omitempty" valid:"Required"`
-	Sections    *Sections     `orm:"-" bson:"sections"     json:"sections,omitempty" valid:"Required"`
+	Cookie      string        `orm:"-" bson:"cookie"     json:"cookie,omitempty"`
+	ServiceForm *ServiceForms `orm:"-" bson:"service_form"     json:"service_form,omitempty" valid:"Required"`
+	Client      *Clients      `orm:"-" bson:"client"     json:"client,omitempty"`
 }
 
 //TableName define Name
@@ -32,13 +27,21 @@ func (m *Briefs) Insert() (err error) {
 
 	c := mConn.DB("").C(m.TableName())
 
-	fmt.Println(m.Service.Slug)
+	if m.Cookie != "" {
+		err = m.GetBriefsByCookie(m.Cookie, m.ServiceForm.Service.Slug)
 
-	err = m.GetBriefsByServiceSlug(m.Service.Slug)
-
-	if err == nil {
-		return errors.New("El elemento ya existe")
+		if err == nil {
+			return errors.New("El elemento ya existe")
+		}
 	}
+
+	UUID, err := uuid.NewV4()
+
+	if err != nil {
+		return err
+	}
+
+	m.Cookie = UUID.String()
 
 	err = c.Insert(m)
 
@@ -65,14 +68,14 @@ func (m *Briefs) GetBriefsByID(id string) (err error) {
 	return
 }
 
-// GetBriefsByServiceSlug =
-func (m *Briefs) GetBriefsByServiceSlug(slug string) (err error) {
+// GetBriefsByCookie =
+func (m *Briefs) GetBriefsByCookie(cookie string, service string) (err error) {
 	mConn := Conn()
 	defer mConn.Close()
 
 	c := mConn.DB("").C(m.TableName())
 
-	err = c.Find(bson.M{"service.slug": slug}).One(m)
+	err = c.Find(bson.M{"cookie": cookie}).One(m)
 
 	if err != nil {
 		return
@@ -98,13 +101,13 @@ func (m *Briefs) GetAllBriefs() (Briefs []*Briefs, err error) {
 }
 
 // Update =
-func (m *Briefs) Update(id string) (err error) {
+func (m *Briefs) Update() (err error) {
 	mConn := Conn()
 	defer mConn.Close()
 
 	c := mConn.DB("").C(m.TableName())
 
-	_, err = c.UpsertId(bson.M{"_id": id}, m)
+	err = c.Update(bson.M{"_id": m.ID}, m)
 
 	if err != nil {
 		return err

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/gofrs/uuid"
 )
 
 //Carts Model
@@ -45,6 +46,15 @@ func (t *Carts) loadRelations() {
 // AddCarts insert a new Carts into database and returns last inserted Id on success.
 func AddCarts(m *Carts) (id int64, err error) {
 	o := orm.NewOrm()
+
+	UUID, err := uuid.NewV4()
+
+	if err != nil {
+		return 0, err
+	}
+
+	m.Cookie = UUID.String()
+
 	id, err = o.Insert(m)
 	return
 }
@@ -54,10 +64,25 @@ func GetOrCreateCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
 	o := orm.NewOrm()
 
 	v = &Carts{Cookie: Cookie}
-	_, _, err = o.ReadOrCreate(v, "cookie")
+	result, id, err := o.ReadOrCreate(v, "cookie")
 
 	if err != nil {
 		return nil, err
+	}
+
+	//beego.Debug(result, id, err)
+
+	if result {
+		UUID, err := uuid.NewV4()
+
+		if err != nil {
+			return nil, err
+		}
+
+		v.Cookie = UUID.String()
+		v.ID = int(id)
+
+		UpdateCartsByID(v)
 	}
 
 	v.loadRelations()

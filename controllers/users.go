@@ -158,7 +158,7 @@ func (c *UsersController) Put() {
 		return
 	}
 
-	err = user.Update(idStr)
+	err = user.Update()
 
 	if err != nil {
 		c.BadRequest(err)

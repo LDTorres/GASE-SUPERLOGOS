@@ -125,7 +125,7 @@ func (u *User) GetAllUsers() (users []*User, err error) {
 }
 
 // Update =
-func (u *User) Update(id string) (err error) {
+func (u *User) Update() (err error) {
 	mConn := Conn()
 	defer mConn.Close()
 
@@ -133,7 +133,7 @@ func (u *User) Update(id string) (err error) {
 
 	u.Password = GetMD5Hash(u.Password)
 
-	_, err = c.UpsertId(bson.M{"_id": id}, u)
+	err = c.Update(bson.M{"_id": u.ID}, u)
 
 	if err != nil {
 		return err

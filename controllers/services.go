@@ -165,16 +165,15 @@ func (c *ServicesController) GetAll() {
 
 		for i, service := range l {
 
-			el := l[i].(models.Services)
 			s := service.(models.Services)
 			prices := s.Prices
 
-			//TODO : Error pointer
-
 			for _, price := range prices {
 				if country.Currency.ID == price.Currency.ID {
-					el.Prices = nil
-					el.Price = price
+
+					s.Price = price
+					l[i] = s
+					break
 				}
 			}
 
@@ -276,6 +275,12 @@ func (c *ServicesController) GetPricesServiceByCountry() {
 
 	if CountryIso == "" {
 		CountryIso = "US"
+	}
+
+	_, err = models.GetCountriesByIso(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
 	}
 
 	v := &models.Services{ID: id}

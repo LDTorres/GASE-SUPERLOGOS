@@ -142,6 +142,12 @@ func (c *PortfoliosController) GetOne() {
 		CountryIso = "US"
 	}
 
+	_, err = models.GetCountriesByIso(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
 	v, err := models.GetPortfoliosByID(id)
 
 	if err != nil {
@@ -213,7 +219,7 @@ func (c *PortfoliosController) GetAll() {
 		return
 	}
 
-	for portfolioKey, portfolio := range l {
+	for i, portfolio := range l {
 
 		p := portfolio.(models.Portfolios)
 
@@ -228,7 +234,7 @@ func (c *PortfoliosController) GetAll() {
 				return
 			}
 
-			l[portfolioKey].(models.Portfolios).Images[imageKey] = image
+			l[i].(models.Portfolios).Images[imageKey] = image
 		}
 
 	}
@@ -426,6 +432,12 @@ func (c *PortfoliosController) GetPortfoliosByCountry() {
 
 	if CountryIso == "" {
 		CountryIso = "US"
+	}
+
+	_, err := models.GetCountriesByIso(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
 	}
 
 	var (
