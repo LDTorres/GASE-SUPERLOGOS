@@ -165,15 +165,26 @@ func UpdateOrdersByID(m *Orders) (err error) {
 
 // DeleteOrders deletes Orders by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteOrders(id int) (err error) {
+func DeleteOrders(id int, trash bool) (err error) {
 	o := orm.NewOrm()
 	v := Orders{ID: id}
 	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Delete(&Orders{ID: id}); err == nil {
-			fmt.Println("Number of records deleted in database:", num)
-		}
+	err = o.Read(&v)
+
+	if err != nil {
+		return
 	}
+
+	if trash {
+		_, err = o.Delete(&v)
+	} else {
+		v.DeletedAt = time.Now()
+		_, err = o.Update(&v)
+	}
+
+	if err != nil {
+		return
+	}
+
 	return
 }

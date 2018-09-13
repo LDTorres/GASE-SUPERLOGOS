@@ -228,7 +228,7 @@ func (c *LocationsController) Put() {
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *LocationsController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
@@ -238,7 +238,13 @@ func (c *LocationsController) Delete() {
 		return
 	}
 
-	err = models.DeleteLocations(id)
+	trash := false
+
+	if c.Ctx.Input.Query("trash") != "" {
+		trash = true
+	}
+
+	err = models.DeleteLocations(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)

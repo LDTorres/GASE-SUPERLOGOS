@@ -197,7 +197,7 @@ func (c *PaymentsMethodsController) Put() {
 // @Param	body		body 	models.PaymentsMethods	true		"body for PaymentsMethods content"
 // @Success 201 {ObjectId} models.PaymentsMethods
 // @Failure 400 body is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *PaymentsMethodsController) Delete() {
 	var v models.PaymentsMethods
 

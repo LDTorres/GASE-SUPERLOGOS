@@ -186,7 +186,7 @@ func (c *ServiceFormsController) Put() {
 // @Param	body		body 	models.ServiceForms	true		"body for ServiceForms content"
 // @Success 201 {ObjectId} models.ServiceForms
 // @Failure 400 body is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *ServiceFormsController) Delete() {
 	var v models.ServiceForms
 

@@ -321,7 +321,13 @@ func (c *PortfoliosController) Delete() {
 		return
 	}
 
-	err = models.DeletePortfolios(id)
+	trash := false
+
+	if c.Ctx.Input.Query("trash") != "" {
+		trash = true
+	}
+
+	err = models.DeletePortfolios(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)

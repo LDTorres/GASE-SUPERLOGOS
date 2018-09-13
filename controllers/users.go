@@ -178,7 +178,7 @@ func (c *UsersController) Put() {
 // @Param	body		body 	models.User	true		"body for User content"
 // @Success 201 {ObjectId} models.User
 // @Failure 400 body is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *UsersController) Delete() {
 	var user models.User
 

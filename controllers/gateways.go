@@ -231,7 +231,7 @@ func (c *GatewaysController) Put() {
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *GatewaysController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
@@ -241,7 +241,13 @@ func (c *GatewaysController) Delete() {
 		return
 	}
 
-	err = models.DeleteGateways(id)
+	trash := false
+
+	if c.Ctx.Input.Query("trash") != "" {
+		trash = true
+	}
+
+	err = models.DeleteGateways(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)

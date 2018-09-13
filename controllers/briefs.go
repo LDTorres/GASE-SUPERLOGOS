@@ -177,7 +177,7 @@ func (c *BriefsController) Put() {
 // @Param	body		body 	models.Briefs	true		"body for Briefs content"
 // @Success 201 {ObjectId} models.Briefs
 // @Failure 400 body is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *BriefsController) Delete() {
 	var v models.Briefs
 

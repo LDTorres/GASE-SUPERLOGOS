@@ -177,15 +177,26 @@ func UpdateCouponsByID(m *Coupons) (err error) {
 
 // DeleteCoupons deletes Coupons by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteCoupons(id int) (err error) {
+func DeleteCoupons(id int, trash bool) (err error) {
 	o := orm.NewOrm()
 	v := Coupons{ID: id}
 	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Delete(&Coupons{ID: id}); err == nil {
-			fmt.Println("Number of records deleted in database:", num)
-		}
+	err = o.Read(&v)
+
+	if err != nil {
+		return
 	}
+
+	if trash {
+		_, err = o.Delete(&v)
+	} else {
+		v.DeletedAt = time.Now()
+		_, err = o.Update(&v)
+	}
+
+	if err != nil {
+		return
+	}
+
 	return
 }

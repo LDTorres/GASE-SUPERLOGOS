@@ -244,7 +244,7 @@ func (c *ActivitiesController) Put() {
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 400 id is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *ActivitiesController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
@@ -254,7 +254,13 @@ func (c *ActivitiesController) Delete() {
 		return
 	}
 
-	err = models.DeleteActivities(id)
+	trash := false
+
+	if c.Ctx.Input.Query("trash") != "" {
+		trash = true
+	}
+
+	err = models.DeleteActivities(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
