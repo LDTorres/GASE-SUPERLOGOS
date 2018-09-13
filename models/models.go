@@ -107,7 +107,7 @@ func searchFK(tableName string, id int) (query orm.QuerySeter) {
 
 	o := orm.NewOrm()
 
-	query = o.QueryTable(tableName).Filter("id", id).RelatedSel()
+	query = o.QueryTable(tableName).Filter("id", id).Filter("deleted_at__isnull", true).RelatedSel()
 
 	return
 }
@@ -283,3 +283,42 @@ func GetMD5Hash(text string) string {
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
+
+/* func filterDeleted(model interface{}) {
+
+	var timeNil time.Time
+
+	switch m := model.(type) {
+	case *Portfolios:
+
+		if m.Activity != nil && m.Activity.DeletedAt != timeNil {
+			m.Activity = nil
+		} else if m.Activity != nil {
+			//filterDeleted(m.Activity)
+		}
+
+		if m.Location != nil && m.Location.DeletedAt != timeNil {
+			m.Location = nil
+		} else if m.Location != nil {
+			//filterDeleted(m.Location)
+		}
+
+		if m.Service != nil && m.Service.DeletedAt != timeNil {
+			m.Service = nil
+		} else if m.Service != nil {
+			//filterDeleted(m.Service)
+		}
+
+		if m.Images != nil {
+			for i, image := range m.Images {
+				if image != nil && image.DeletedAt != timeNil {
+					m.Images[i] = nil
+				} else if m.Service != nil {
+					//filterDeleted(image)
+				}
+
+			}
+		}
+
+	}
+} */

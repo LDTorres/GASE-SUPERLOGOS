@@ -149,7 +149,7 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 
 	var l []Countries
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).Filter("deleted_at__isnull", true).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
