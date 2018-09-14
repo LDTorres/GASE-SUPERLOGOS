@@ -3,6 +3,8 @@ package main
 import (
 	_ "GASE/routers"
 
+	_ "GASE/tasks"
+
 	"github.com/astaxie/beego"
 )
 

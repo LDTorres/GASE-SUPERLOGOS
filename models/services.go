@@ -22,6 +22,7 @@ type Services struct {
 	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
 	Portfolios []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`
+	Quantity   int           `orm:"-" bson:"quantity"     json:"quantity,omitempty" valid:"Required"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null" json:"-"`

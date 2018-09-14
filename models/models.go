@@ -277,6 +277,48 @@ func RelationsM2M(operation string, entityFieldName string, entityID int, relati
 	return
 }
 
+// AddRelationsM2MQuantity insert M2M Relations on database
+func AddRelationsM2MQuantity(entityFieldName string, entityID int, relationFieldName string, relations []map[string]int) (count int, err error) {
+
+	tableName := entityFieldName + "_" + relationFieldName + "s"
+	entityFieldName = entityFieldName + "_id"
+	relationFieldName = relationFieldName + "_id"
+
+	o := orm.NewOrm()
+	err = o.Begin()
+
+	if err != nil {
+		return 0, err
+	}
+
+	QueryRaw := "INSERT INTO " + tableName + " (" + entityFieldName + "," + relationFieldName + ", quantity) VALUES (?,?,?)"
+
+	for _, relation := range relations {
+
+		Args := []int{entityID, relation["id"], relation["quantity"]}
+
+		_, err := o.Raw(QueryRaw, Args).Exec()
+
+		if err != nil {
+			errRoll := o.Rollback()
+			if errRoll != nil {
+				return 0, errRoll
+			}
+			return 0, err
+		}
+
+		count++
+	}
+
+	err = o.Commit()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return
+}
+
 // GetMD5Hash =
 func GetMD5Hash(text string) string {
 	hasher := md5.New()

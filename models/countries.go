@@ -28,6 +28,8 @@ type Countries struct {
 	DeletedAt time.Time    `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
+// TODO: Error al traer las ordenes
+
 //TableName =
 func (t *Countries) TableName() string {
 	return "countries"

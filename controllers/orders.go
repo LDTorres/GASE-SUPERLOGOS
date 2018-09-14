@@ -141,12 +141,15 @@ func (c *OrdersController) Post() {
 	}
 
 	// Add Prices relations
-	var pricesRelationsIDs []int
+	var pricesRelations []map[string]int
 	for _, service := range cart.Services {
-		pricesRelationsIDs = append(pricesRelationsIDs, service.Price.ID)
+
+		relation := map[string]int{"id": service.Price.ID, "quantity": service.Quantity}
+
+		pricesRelations = append(pricesRelations, relation)
 	}
 
-	_, err = models.RelationsM2M("INSERT", "orders", Order.ID, "prices", pricesRelationsIDs)
+	_, err = models.AddRelationsM2MQuantity("orders", Order.ID, "prices", pricesRelations)
 
 	if err != nil {
 		c.ServeErrorJSON(err)

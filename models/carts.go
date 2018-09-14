@@ -24,6 +24,13 @@ type Carts struct {
 	DeletedAt    time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
+//CartsServices ...
+type CartsServices struct {
+	CartsID    int `orm:"column(carts_id);auto" json:"carts_id"`
+	ServicesID int `orm:"column(services_id);auto" json:"services_id"`
+	Quantity   int `orm:"column(quantity);auto" json:"quantity"`
+}
+
 //TableName define Name
 func (t *Carts) TableName() string {
 	return "carts"
@@ -97,6 +104,16 @@ func GetOrCreateCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
 
 	for i, service := range v.Services {
 
+		// Get Quantity
+		var result = &CartsServices{}
+
+		err := o.Raw("SELECT * FROM carts_servicess WHERE carts_id = ? AND services_id = ?").SetArgs(v.ID, service.ID).QueryRow(result)
+
+		if err != nil {
+			return nil, err
+		}
+
+		//Get the price
 		price := &Prices{Currency: country.Currency, Service: service}
 
 		err = o.Read(price, "Currency", "Service")
@@ -105,13 +122,16 @@ func GetOrCreateCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
 			return nil, err
 		}
 
-		v.InitialValue += (price.Value * service.Percertage) / 100
-		v.FinalValue += price.Value
+		serviceQuantity := float32(result.Quantity)
+		priceWithQuantity := (price.Value * serviceQuantity)
+		v.InitialValue += (priceWithQuantity * service.Percertage) / 100
+		v.FinalValue += priceWithQuantity
 
 		price.Service = nil
 		price.Currency = nil
 
 		v.Services[i].Price = price
+		v.Services[i].Quantity = result.Quantity
 	}
 
 	return
@@ -127,49 +147,6 @@ func GetCartsByID(id int) (v *Carts, err error) {
 	}
 
 	v.loadRelations()
-
-	return
-}
-
-// GetCartsByCookie retrieves Carts by Cookie. Returns error if Id doesn't exist
-func GetCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
-	o := orm.NewOrm()
-
-	v = &Carts{Cookie: Cookie}
-	err = o.Read(v, "cookie")
-
-	if err != nil {
-		return nil, err
-	}
-
-	v.loadRelations()
-
-	country, err := GetCountriesByIso(Iso)
-
-	if err != nil {
-		return nil, err
-	}
-
-	v.Currency = country.Currency
-
-	for i, service := range v.Services {
-
-		price := &Prices{Currency: country.Currency, Service: service}
-
-		err = o.Read(price, "Currency", "Service")
-
-		if err != nil {
-			return nil, err
-		}
-
-		v.InitialValue += (price.Value * service.Percertage) / 100
-		v.FinalValue += price.Value
-
-		price.Service = nil
-		price.Currency = nil
-
-		v.Services[i].Price = price
-	}
 
 	return
 }

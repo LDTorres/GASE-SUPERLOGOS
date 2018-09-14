@@ -75,7 +75,7 @@ func GetURLMapping(route string) (validation map[string][]string) {
 
 	orders := map[string][]string{
 		";GET":            {"Admin"},
-		"/:id;PUT,DELETE": {"Client"},
+		"/:id;PUT,DELETE": {"Client", "Admin"},
 	}
 
 	prices := map[string][]string{

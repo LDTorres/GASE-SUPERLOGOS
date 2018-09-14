@@ -56,7 +56,7 @@ func (c *CartsController) Post() {
 	}
 
 	// Validate Services exists
-	var servicesRelationsIDs []int
+	var servicesRelations []map[string]int
 
 	for _, el := range v.Services {
 
@@ -67,7 +67,9 @@ func (c *CartsController) Post() {
 			return
 		}
 
-		servicesRelationsIDs = append(servicesRelationsIDs, el.ID)
+		relation := map[string]int{"id": el.ID, "quantity": el.Quantity}
+
+		servicesRelations = append(servicesRelations, relation)
 	}
 
 	_, err = models.AddCarts(&v)
@@ -78,8 +80,7 @@ func (c *CartsController) Post() {
 	}
 
 	// Add Services relations
-
-	_, err = models.RelationsM2M("INSERT", "carts", v.ID, "services", servicesRelationsIDs)
+	_, err = models.AddRelationsM2MQuantity("carts", v.ID, "services", servicesRelations)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -359,7 +360,10 @@ func (c *CartsController) AddOrDeleteServices() {
 		return
 	}
 
+	v.ID = cart.ID
+
 	// Validate Services exists
+	var servicesRelations []map[string]int
 	var servicesRelationsIDs []int
 
 	for _, el := range v.Services {
@@ -371,14 +375,23 @@ func (c *CartsController) AddOrDeleteServices() {
 			return
 		}
 
-		servicesRelationsIDs = append(servicesRelationsIDs, el.ID)
+		if action == "add" {
+
+			relation := map[string]int{"id": el.ID, "quantity": el.Quantity}
+			servicesRelations = append(servicesRelations, relation)
+
+		} else {
+
+			servicesRelationsIDs = append(servicesRelationsIDs, el.ID)
+
+		}
+
 	}
 
-	v.ID = cart.ID
-
 	if action == "add" {
+
 		// Insert Services relations
-		_, err = models.RelationsM2M("INSERT", "carts", v.ID, "services", servicesRelationsIDs)
+		_, err = models.AddRelationsM2MQuantity("carts", v.ID, "services", servicesRelations)
 
 		if err != nil {
 			c.ServeErrorJSON(err)
@@ -389,6 +402,7 @@ func (c *CartsController) AddOrDeleteServices() {
 		c.Data["json"] = v
 
 	} else {
+
 		// Delete Services relations
 		count, err := models.RelationsM2M("DELETE", "carts", v.ID, "services", servicesRelationsIDs)
 
