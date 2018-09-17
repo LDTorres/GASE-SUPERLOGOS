@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/gofrs/uuid"
 )
 
 //Carts Model
@@ -21,6 +22,13 @@ type Carts struct {
 	CreatedAt    time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt    time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt    time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
+}
+
+//CartsServices ...
+type CartsServices struct {
+	CartsID    int `orm:"column(carts_id);auto" json:"carts_id"`
+	ServicesID int `orm:"column(services_id);auto" json:"services_id"`
+	Quantity   int `orm:"column(quantity);auto" json:"quantity"`
 }
 
 //TableName define Name
@@ -45,6 +53,15 @@ func (t *Carts) loadRelations() {
 // AddCarts insert a new Carts into database and returns last inserted Id on success.
 func AddCarts(m *Carts) (id int64, err error) {
 	o := orm.NewOrm()
+
+	UUID, err := uuid.NewV4()
+
+	if err != nil {
+		return 0, err
+	}
+
+	m.Cookie = UUID.String()
+
 	id, err = o.Insert(m)
 	return
 }
@@ -54,10 +71,25 @@ func GetOrCreateCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
 	o := orm.NewOrm()
 
 	v = &Carts{Cookie: Cookie}
-	_, _, err = o.ReadOrCreate(v, "cookie")
+	result, id, err := o.ReadOrCreate(v, "cookie")
 
 	if err != nil {
 		return nil, err
+	}
+
+	//beego.Debug(result, id, err)
+
+	if result {
+		UUID, err := uuid.NewV4()
+
+		if err != nil {
+			return nil, err
+		}
+
+		v.Cookie = UUID.String()
+		v.ID = int(id)
+
+		UpdateCartsByID(v)
 	}
 
 	v.loadRelations()
@@ -72,6 +104,16 @@ func GetOrCreateCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
 
 	for i, service := range v.Services {
 
+		// Get Quantity
+		var result = &CartsServices{}
+
+		err := o.Raw("SELECT * FROM carts_servicess WHERE carts_id = ? AND services_id = ?").SetArgs(v.ID, service.ID).QueryRow(result)
+
+		if err != nil {
+			return nil, err
+		}
+
+		//Get the price
 		price := &Prices{Currency: country.Currency, Service: service}
 
 		err = o.Read(price, "Currency", "Service")
@@ -80,13 +122,16 @@ func GetOrCreateCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
 			return nil, err
 		}
 
-		v.InitialValue += (price.Value * service.Percertage) / 100
-		v.FinalValue += price.Value
+		serviceQuantity := float32(result.Quantity)
+		priceWithQuantity := (price.Value * serviceQuantity)
+		v.InitialValue += (priceWithQuantity * service.Percertage) / 100
+		v.FinalValue += priceWithQuantity
 
 		price.Service = nil
 		price.Currency = nil
 
 		v.Services[i].Price = price
+		v.Services[i].Quantity = result.Quantity
 	}
 
 	return
@@ -102,49 +147,6 @@ func GetCartsByID(id int) (v *Carts, err error) {
 	}
 
 	v.loadRelations()
-
-	return
-}
-
-// GetCartsByCookie retrieves Carts by Cookie. Returns error if Id doesn't exist
-func GetCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
-	o := orm.NewOrm()
-
-	v = &Carts{Cookie: Cookie}
-	err = o.Read(v, "cookie")
-
-	if err != nil {
-		return nil, err
-	}
-
-	v.loadRelations()
-
-	country, err := GetCountriesByIso(Iso)
-
-	if err != nil {
-		return nil, err
-	}
-
-	v.Currency = country.Currency
-
-	for i, service := range v.Services {
-
-		price := &Prices{Currency: country.Currency, Service: service}
-
-		err = o.Read(price, "Currency", "Service")
-
-		if err != nil {
-			return nil, err
-		}
-
-		v.InitialValue += (price.Value * service.Percertage) / 100
-		v.FinalValue += price.Value
-
-		price.Service = nil
-		price.Currency = nil
-
-		v.Services[i].Price = price
-	}
 
 	return
 }
@@ -206,7 +208,7 @@ func GetAllCarts(query map[string]string, fields []string, sortby []string, orde
 
 	var l []Carts
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).Filter("deleted_at__isnull", true).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
@@ -245,15 +247,26 @@ func UpdateCartsByID(m *Carts) (err error) {
 
 // DeleteCarts deletes Carts by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteCarts(id int) (err error) {
+func DeleteCarts(id int, trash bool) (err error) {
 	o := orm.NewOrm()
 	v := Carts{ID: id}
 	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Delete(&Carts{ID: id}); err == nil {
-			fmt.Println("Number of records deleted in database:", num)
-		}
+	err = o.Read(&v)
+
+	if err != nil {
+		return
 	}
+
+	if trash {
+		_, err = o.Delete(&v)
+	} else {
+		v.DeletedAt = time.Now()
+		_, err = o.Update(&v)
+	}
+
+	if err != nil {
+		return
+	}
+
 	return
 }

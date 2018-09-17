@@ -5,36 +5,34 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/astaxie/beego"
-
 	"github.com/astaxie/beego/validation"
 	"github.com/globalsign/mgo/bson"
 )
 
-// BriefsController definiton.
-type BriefsController struct {
+// ServiceFormsController definiton.
+type ServiceFormsController struct {
 	BaseController
 }
 
 // URLMapping ...
-func (c *BriefsController) URLMapping() {
+func (c *ServiceFormsController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("Get", c.GetOne)
-	c.Mapping("GetOneByCookie", c.GetOneByCookie)
+	c.Mapping("GetOneByService", c.GetOneByService)
 	c.Mapping("GetAll", c.GetAll)
 }
 
 // Post ...
 // @Title Post
-// @Description create Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {int} models.Briefs
+// @Description create ServiceForms
+// @Param	body		body 	models.ServiceForms	true		"body for ServiceForms content"
+// @Success 201 {int} models.ServiceForms
 // @Failure 400 body is empty
 // @router / [post]
-func (c *BriefsController) Post() {
-	var v models.Briefs
+func (c *ServiceFormsController) Post() {
+	var v models.ServiceForms
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
@@ -50,9 +48,20 @@ func (c *BriefsController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Briefs")
+		c.BadRequestErrors(valid.Errors, "ServiceForms")
 		return
 	}
+
+	// Validate Service
+
+	exists := models.ValidateExists("Services", v.Service.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Service")
+		return
+	}
+
+	v.ID = bson.NewObjectId()
 
 	err = v.Insert()
 
@@ -67,13 +76,13 @@ func (c *BriefsController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Briefs by id
+// @Description get ServiceForms by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
+// @Success 200 {object} models.ServiceForms
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *BriefsController) GetOne() {
-	v := models.Briefs{}
+func (c *ServiceFormsController) GetOne() {
+	v := models.ServiceForms{}
 
 	idStr := c.Ctx.Input.Param(":id")
 
@@ -89,7 +98,7 @@ func (c *BriefsController) GetOne() {
 		return
 	}
 
-	err := v.GetBriefsByID(idStr)
+	err := v.GetServiceFormsByID(idStr)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -102,39 +111,39 @@ func (c *BriefsController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get all Briefs
+// @Description get all ServiceForms
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
+// @Success 200 {object} models.ServiceForms
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *BriefsController) GetAll() {
-	var v models.Briefs
+func (c *ServiceFormsController) GetAll() {
+	var v models.ServiceForms
 
-	Briefs, err := v.GetAllBriefs()
+	ServiceForms, err := v.GetAllServiceForms()
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
-	if len(Briefs) == 0 {
+	if len(ServiceForms) == 0 {
 		c.ServeErrorJSON(errors.New("No hubo resultados"))
 		return
 	}
 
-	c.Data["json"] = Briefs
+	c.Data["json"] = ServiceForms
 	c.ServeJSON()
 }
 
 // Put ...
 // @Title Put
-// @Description Put Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {ObjectId} models.Briefs
+// @Description Put ServiceForms
+// @Param	body		body 	models.ServiceForms	true		"body for ServiceForms content"
+// @Success 201 {ObjectId} models.ServiceForms
 // @Failure 400 body is empty
 // @router /:id [put]
-func (c *BriefsController) Put() {
-	var v models.Briefs
+func (c *ServiceFormsController) Put() {
+	var v models.ServiceForms
 
 	idStr := c.Ctx.Input.Param(":id")
 
@@ -173,13 +182,13 @@ func (c *BriefsController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description Delete Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {ObjectId} models.Briefs
+// @Description Delete ServiceForms
+// @Param	body		body 	models.ServiceForms	true		"body for ServiceForms content"
+// @Success 201 {ObjectId} models.ServiceForms
 // @Failure 400 body is empty
 // @router /:id/trash [delete]
-func (c *BriefsController) Delete() {
-	var v models.Briefs
+func (c *ServiceFormsController) Delete() {
+	var v models.ServiceForms
 
 	idStr := c.Ctx.Input.Param(":id")
 
@@ -209,59 +218,28 @@ func (c *BriefsController) Delete() {
 	c.ServeJSON()
 }
 
-// GetOneByCookie ...
+// GetOneByService ...
 // @Title Get One
-// @Description get Briefs by cookie
-// @Param	cookie		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
-// @Failure 403 :cookie, :form, :service  is empty
-// @router /:service/:cookie [get]
-func (c *BriefsController) GetOneByCookie() {
-	v := models.Briefs{}
+// @Description get ServiceForms by slug
+// @Param	slug		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.ServiceForms
+// @Failure 403 :slug is empty
+// @router /service/:slug [get]
+func (c *ServiceFormsController) GetOneByService() {
+	v := models.ServiceForms{}
 
-	cookie := c.Ctx.Input.Param(":cookie")
+	slug := c.Ctx.Input.Param(":slug")
 
-	if cookie == "" {
-		c.BadRequest(errors.New("El campo cookie no púede ser vacio"))
+	if slug == "" {
+		c.BadRequest(errors.New("El campo slug no púede ser vacio"))
 		return
 	}
 
-	service := c.Ctx.Input.Param(":service")
-
-	if service == "" {
-		c.BadRequest(errors.New("El campo service no púede ser vacio"))
-		return
-	}
-
-	err := v.GetBriefsByCookie(cookie, service)
+	err := v.GetServiceFormsByServiceSlug(slug)
 
 	if err != nil {
-
-		if err.Error() == "not found" {
-			// Verify if exists a form
-			form := models.ServiceForms{}
-
-			err = form.GetServiceFormsByServiceSlug(service)
-
-			if err != nil {
-				c.BadRequest(err)
-				return
-			}
-
-			v.ServiceForm = &form
-
-			v.Cookie = ""
-
-			err = v.Insert()
-
-			beego.Debug(err)
-
-			if err != nil {
-				c.BadRequest(err)
-				return
-			}
-		}
-
+		c.BadRequest(err)
+		return
 	}
 
 	c.Data["json"] = v

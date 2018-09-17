@@ -16,12 +16,12 @@ type Orders struct {
 	InitialValue float32    `orm:"column(initial_value)" json:"initial_value,omitempty" valid:"Required"`
 	FinalValue   float32    `orm:"column(final_value)" json:"final_value,omitempty" valid:"Required"`
 	Discount     float32    `orm:"column(discount)" json:"discount,omitempty"`
-	State        string     `orm:"column(state)" json:"state,omitempty" valid:"Required; Alpha"`
+	Status       string     `orm:"column(status)" json:"status,omitempty" valid:"Required; Alpha"`
 	Client       *Clients   `orm:"column(clients_id);rel(fk)" json:"clients,omitempty" valid:"Required;"`
 	Gateway      *Gateways  `orm:"column(gateways_id);rel(fk)" json:"gateways,omitempty" valid:"Required;"`
 	Prices       []*Prices  `orm:"rel(m2m)" json:"prices,omitempty"`
 	Coupons      []*Coupons `orm:"rel(m2m)" json:"coupons,omitempty"`
-	Country      *Countries `orm:"rel(fk)" json:"countries,omitempty"`
+	Country      *Countries `orm:"column(countries_id);rel(fk)" json:"countries,omitempty"`
 	PaymentID    string     `orm:"column(payment_id)" json:"payment_id,omitempty"`
 	CreatedAt    time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt    time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
@@ -129,7 +129,7 @@ func GetAllOrders(query map[string]string, fields []string, sortby []string, ord
 	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
-				v.loadRelations()
+				//v.loadRelations()
 				ml = append(ml, v)
 			}
 		} else {
@@ -140,7 +140,7 @@ func GetAllOrders(query map[string]string, fields []string, sortby []string, ord
 				for _, fname := range fields {
 					m[fname] = val.FieldByName(fname).Interface()
 				}
-				v.loadRelations()
+				//v.loadRelations()
 				ml = append(ml, m)
 			}
 		}
@@ -165,15 +165,26 @@ func UpdateOrdersByID(m *Orders) (err error) {
 
 // DeleteOrders deletes Orders by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteOrders(id int) (err error) {
+func DeleteOrders(id int, trash bool) (err error) {
 	o := orm.NewOrm()
 	v := Orders{ID: id}
 	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Delete(&Orders{ID: id}); err == nil {
-			fmt.Println("Number of records deleted in database:", num)
-		}
+	err = o.Read(&v)
+
+	if err != nil {
+		return
 	}
+
+	if trash {
+		_, err = o.Delete(&v)
+	} else {
+		v.DeletedAt = time.Now()
+		_, err = o.Update(&v)
+	}
+
+	if err != nil {
+		return
+	}
+
 	return
 }

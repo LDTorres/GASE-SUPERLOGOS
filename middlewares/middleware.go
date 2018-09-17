@@ -75,7 +75,7 @@ func GetURLMapping(route string) (validation map[string][]string) {
 
 	orders := map[string][]string{
 		";GET":            {"Admin"},
-		"/:id;PUT,DELETE": {"Client"},
+		"/:id;PUT,DELETE": {"Client", "Admin"},
 	}
 
 	prices := map[string][]string{
@@ -92,7 +92,7 @@ func GetURLMapping(route string) (validation map[string][]string) {
 	}
 
 	briefs := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
+		"/:id;PUT,DELETE": {"Client"},
 	}
 
 	users := map[string][]string{
@@ -104,22 +104,34 @@ func GetURLMapping(route string) (validation map[string][]string) {
 		"/:id;PUT,DELETE": {"Admin"},
 	}
 
+	payments := map[string][]string{
+		";GET":                {"Admin"},
+		"/:id;GET,PUT,DELETE": {"Admin"},
+	}
+
+	forms := map[string][]string{
+		";GET":                {"Admin"},
+		"/:id;GET,PUT,DELETE": {"Admin"},
+	}
+
 	validations := map[string]map[string][]string{
-		"carts":      carts,
-		"clients":    clients,
-		"countries":  countries,
-		"coupons":    coupons,
-		"currencies": currencies,
-		"gateways":   gateways,
-		"images":     images,
-		"locations":  locations,
-		"orders":     orders,
-		"prices":     prices,
-		"sectors":    sectors,
-		"services":   services,
-		"briefs":     briefs,
-		"users":      users,
-		"portfolios": portfolios,
+		"carts":            carts,
+		"clients":          clients,
+		"countries":        countries,
+		"coupons":          coupons,
+		"currencies":       currencies,
+		"gateways":         gateways,
+		"images":           images,
+		"locations":        locations,
+		"orders":           orders,
+		"prices":           prices,
+		"sectors":          sectors,
+		"services":         services,
+		"briefs":           briefs,
+		"users":            users,
+		"portfolios":       portfolios,
+		"payments-methods": payments,
+		"forms":            forms,
 	}
 
 	return validations[route]

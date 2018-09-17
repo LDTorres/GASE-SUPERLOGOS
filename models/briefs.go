@@ -1,13 +1,18 @@
 package models
 
 import (
+	"errors"
+
 	"github.com/globalsign/mgo/bson"
+	"github.com/gofrs/uuid"
 )
 
 // Briefs model definiton.
 type Briefs struct {
-	ID   bson.ObjectId `orm:"-" bson:"_id,omitempty"      json:"id,omitempty"`
-	Body string        `orm:"-" bson:"body"     json:"body,omitempty" valid:"Required"`
+	ID          bson.ObjectId `orm:"-" bson:"_id,omitempty"      json:"id,omitempty"`
+	Cookie      string        `orm:"-" bson:"cookie"     json:"cookie,omitempty"`
+	ServiceForm *ServiceForms `orm:"-" bson:"service_form"     json:"service_form,omitempty" valid:"Required"`
+	Client      *Clients      `orm:"-" bson:"client"     json:"client,omitempty"`
 }
 
 //TableName define Name
@@ -21,6 +26,22 @@ func (m *Briefs) Insert() (err error) {
 	defer mConn.Close()
 
 	c := mConn.DB("").C(m.TableName())
+
+	if m.Cookie != "" {
+		err = m.GetBriefsByCookie(m.Cookie, m.ServiceForm.Service.Slug)
+
+		if err == nil {
+			return errors.New("El elemento ya existe")
+		}
+	}
+
+	UUID, err := uuid.NewV4()
+
+	if err != nil {
+		return err
+	}
+
+	m.Cookie = UUID.String()
 
 	err = c.Insert(m)
 
@@ -47,6 +68,22 @@ func (m *Briefs) GetBriefsByID(id string) (err error) {
 	return
 }
 
+// GetBriefsByCookie =
+func (m *Briefs) GetBriefsByCookie(cookie string, service string) (err error) {
+	mConn := Conn()
+	defer mConn.Close()
+
+	c := mConn.DB("").C(m.TableName())
+
+	err = c.Find(bson.M{"cookie": cookie}).One(m)
+
+	if err != nil {
+		return
+	}
+
+	return
+}
+
 // GetAllBriefs =
 func (m *Briefs) GetAllBriefs() (Briefs []*Briefs, err error) {
 	mConn := Conn()
@@ -64,13 +101,13 @@ func (m *Briefs) GetAllBriefs() (Briefs []*Briefs, err error) {
 }
 
 // Update =
-func (m *Briefs) Update(id string) (err error) {
+func (m *Briefs) Update() (err error) {
 	mConn := Conn()
 	defer mConn.Close()
 
 	c := mConn.DB("").C(m.TableName())
 
-	_, err = c.UpsertId(bson.M{"_id": id}, m)
+	err = c.Update(bson.M{"_id": m.ID}, m)
 
 	if err != nil {
 		return err
@@ -86,7 +123,7 @@ func (m *Briefs) Delete(id string) (err error) {
 
 	c := mConn.DB("").C(m.TableName())
 
-	err = c.RemoveId(bson.M{"_id": id})
+	err = c.RemoveId(bson.ObjectIdHex(id))
 
 	if err != nil {
 		return err

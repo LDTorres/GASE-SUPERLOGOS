@@ -17,28 +17,30 @@ type Services struct {
 	ID         int           `orm:"column(id);auto" json:"id"`
 	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Percertage float32       `orm:"column(percertage)" json:"percentage,omitempty" valid:"Required"`
+	Prices     []*Prices     `orm:"reverse(many)" json:"prices,omitempty"`
 	Price      *Prices       `orm:"-" json:"price,omitempty"`
 	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
 	Portfolios []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`
+	Quantity   int           `orm:"-" bson:"quantity"     json:"quantity,omitempty" valid:"Required"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName define Name
-func (t *Services) TableName() string {
+func (m *Services) TableName() string {
 	return "services"
 }
 
-func (t *Services) loadRelations() {
+func (m *Services) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"Portfolios"}
+	relations := []string{"Portfolios", "Prices"}
 
 	for _, relation := range relations {
-		o.LoadRelated(t, relation)
+		o.LoadRelated(m, relation)
 	}
 
 	return
@@ -126,7 +128,7 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 
 	var l []Services
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).Filter("deleted_at__isnull", true).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
@@ -165,16 +167,27 @@ func UpdateServicesByID(m *Services) (err error) {
 
 // DeleteServices deletes Services by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteServices(id int) (err error) {
+func DeleteServices(id int, trash bool) (err error) {
 	o := orm.NewOrm()
 	v := Services{ID: id}
 	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Delete(&Services{ID: id}); err == nil {
-			fmt.Println("Number of records deleted in database:", num)
-		}
+	err = o.Read(&v)
+
+	if err != nil {
+		return
 	}
+
+	if trash {
+		_, err = o.Delete(&v)
+	} else {
+		v.DeletedAt = time.Now()
+		_, err = o.Update(&v)
+	}
+
+	if err != nil {
+		return
+	}
+
 	return
 }
 
@@ -196,6 +209,39 @@ func AddDefaultDataServices() (result int64, err error) {
 	}
 
 	result, err = o.InsertMulti(100, dummyData)
+
+	return
+}
+
+//GetPricesServicesByID retrieves Services by Id. Returns error if Id doesn't exist
+func (m *Services) GetPricesServicesByID(iso string) (err error) {
+	o := orm.NewOrm()
+
+	err = o.Read(m)
+
+	if err != nil {
+		return
+	}
+
+	//Get countries by Iso
+	country, err := GetCountriesByIso(iso)
+
+	if err != nil {
+		return
+	}
+
+	price := &Prices{Currency: country.Currency, Service: m}
+
+	err = o.Read(price, "Currency", "Service")
+
+	if err != nil {
+		return
+	}
+
+	err = searchFK(price.TableName(), price.ID).One(price)
+
+	price.Service = nil
+	m.Price = price
 
 	return
 }

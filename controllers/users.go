@@ -118,6 +118,11 @@ func (c *UsersController) GetAll() {
 		return
 	}
 
+	if len(users) == 0 {
+		c.ServeErrorJSON(errors.New("No hubo resultados"))
+		return
+	}
+
 	c.Data["json"] = users
 	c.ServeJSON()
 }
@@ -153,7 +158,7 @@ func (c *UsersController) Put() {
 		return
 	}
 
-	err = user.Update(idStr)
+	err = user.Update()
 
 	if err != nil {
 		c.BadRequest(err)
@@ -173,7 +178,7 @@ func (c *UsersController) Put() {
 // @Param	body		body 	models.User	true		"body for User content"
 // @Success 201 {ObjectId} models.User
 // @Failure 400 body is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *UsersController) Delete() {
 	var user models.User
 

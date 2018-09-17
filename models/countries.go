@@ -28,6 +28,8 @@ type Countries struct {
 	DeletedAt time.Time    `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
+// TODO: Error al traer las ordenes
+
 //TableName =
 func (t *Countries) TableName() string {
 	return "countries"
@@ -149,7 +151,7 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 
 	var l []Countries
 	qs = qs.OrderBy(sortFields...)
-	if _, err = qs.Limit(limit, offset).RelatedSel().All(&l, fields...); err == nil {
+	if _, err = qs.Limit(limit, offset).Filter("deleted_at__isnull", true).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
@@ -189,16 +191,27 @@ func UpdateCountriesByID(m *Countries) (err error) {
 
 // DeleteCountries deletes Countries by Id and returns error if
 // the record to be deleted doesn't exist
-func DeleteCountries(id int) (err error) {
+func DeleteCountries(id int, trash bool) (err error) {
 	o := orm.NewOrm()
 	v := Countries{ID: id}
 	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Delete(&Countries{ID: id}); err == nil {
-			fmt.Println("Number of records deleted in database:", num)
-		}
+	err = o.Read(&v)
+
+	if err != nil {
+		return
 	}
+
+	if trash {
+		_, err = o.Delete(&v)
+	} else {
+		v.DeletedAt = time.Now()
+		_, err = o.Update(&v)
+	}
+
+	if err != nil {
+		return
+	}
+
 	return
 }
 

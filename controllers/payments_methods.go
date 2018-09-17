@@ -5,36 +5,34 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/astaxie/beego"
-
 	"github.com/astaxie/beego/validation"
 	"github.com/globalsign/mgo/bson"
 )
 
-// BriefsController definiton.
-type BriefsController struct {
+// PaymentsMethodsController definiton.
+type PaymentsMethodsController struct {
 	BaseController
 }
 
 // URLMapping ...
-func (c *BriefsController) URLMapping() {
+func (c *PaymentsMethodsController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("Get", c.GetOne)
-	c.Mapping("GetOneByCookie", c.GetOneByCookie)
+	c.Mapping("GetOneByIsoAndGateway", c.GetOneByIsoAndGateway)
 	c.Mapping("GetAll", c.GetAll)
 }
 
 // Post ...
 // @Title Post
-// @Description create Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {int} models.Briefs
+// @Description create PaymentsMethods
+// @Param	body		body 	models.PaymentsMethods	true		"body for PaymentsMethods content"
+// @Success 201 {int} models.PaymentsMethods
 // @Failure 400 body is empty
 // @router / [post]
-func (c *BriefsController) Post() {
-	var v models.Briefs
+func (c *PaymentsMethodsController) Post() {
+	var v models.PaymentsMethods
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
@@ -50,9 +48,31 @@ func (c *BriefsController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, "Briefs")
+		c.BadRequestErrors(valid.Errors, "PaymentsMethods")
 		return
 	}
+
+	// Validate Exists Country
+
+	exists := models.ValidateExists("Countries", v.Country.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Country")
+		return
+	}
+
+	// Validate Gateway
+
+	exists = models.ValidateExists("Gateways", v.Gateway.ID)
+
+	if !exists {
+		c.BadRequestDontExists("Gateway")
+		return
+	}
+
+	// New Object
+
+	v.ID = bson.NewObjectId()
 
 	err = v.Insert()
 
@@ -67,13 +87,13 @@ func (c *BriefsController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Briefs by id
+// @Description get PaymentsMethods by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
+// @Success 200 {object} models.PaymentsMethods
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *BriefsController) GetOne() {
-	v := models.Briefs{}
+func (c *PaymentsMethodsController) GetOne() {
+	v := models.PaymentsMethods{}
 
 	idStr := c.Ctx.Input.Param(":id")
 
@@ -89,7 +109,7 @@ func (c *BriefsController) GetOne() {
 		return
 	}
 
-	err := v.GetBriefsByID(idStr)
+	err := v.GetPaymentsMethodsByID(idStr)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -102,39 +122,39 @@ func (c *BriefsController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get all Briefs
+// @Description get all PaymentsMethods
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
+// @Success 200 {object} models.PaymentsMethods
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *BriefsController) GetAll() {
-	var v models.Briefs
+func (c *PaymentsMethodsController) GetAll() {
+	var v models.PaymentsMethods
 
-	Briefs, err := v.GetAllBriefs()
+	PaymentsMethods, err := v.GetAllPaymentsMethods()
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
-	if len(Briefs) == 0 {
+	if len(PaymentsMethods) == 0 {
 		c.ServeErrorJSON(errors.New("No hubo resultados"))
 		return
 	}
 
-	c.Data["json"] = Briefs
+	c.Data["json"] = PaymentsMethods
 	c.ServeJSON()
 }
 
 // Put ...
 // @Title Put
-// @Description Put Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {ObjectId} models.Briefs
+// @Description Put PaymentsMethods
+// @Param	body		body 	models.PaymentsMethods	true		"body for PaymentsMethods content"
+// @Success 201 {ObjectId} models.PaymentsMethods
 // @Failure 400 body is empty
 // @router /:id [put]
-func (c *BriefsController) Put() {
-	var v models.Briefs
+func (c *PaymentsMethodsController) Put() {
+	var v models.PaymentsMethods
 
 	idStr := c.Ctx.Input.Param(":id")
 
@@ -173,13 +193,13 @@ func (c *BriefsController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description Delete Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {ObjectId} models.Briefs
+// @Description Delete PaymentsMethods
+// @Param	body		body 	models.PaymentsMethods	true		"body for PaymentsMethods content"
+// @Success 201 {ObjectId} models.PaymentsMethods
 // @Failure 400 body is empty
 // @router /:id/trash [delete]
-func (c *BriefsController) Delete() {
-	var v models.Briefs
+func (c *PaymentsMethodsController) Delete() {
+	var v models.PaymentsMethods
 
 	idStr := c.Ctx.Input.Param(":id")
 
@@ -209,59 +229,35 @@ func (c *BriefsController) Delete() {
 	c.ServeJSON()
 }
 
-// GetOneByCookie ...
-// @Title Get One
-// @Description get Briefs by cookie
-// @Param	cookie		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
-// @Failure 403 :cookie, :form, :service  is empty
-// @router /:service/:cookie [get]
-func (c *BriefsController) GetOneByCookie() {
-	v := models.Briefs{}
+// GetOneByIsoAndGateway ...
+// @Title GetOneByIsoAndGateway
+// @Description get PaymentsMethods by iso and gateway
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.PaymentsMethods
+// @Failure 403 :id is empty
+// @router /:iso/:gateway [get]
+func (c *PaymentsMethodsController) GetOneByIsoAndGateway() {
+	v := models.PaymentsMethods{}
 
-	cookie := c.Ctx.Input.Param(":cookie")
+	iso := c.Ctx.Input.Param(":id")
 
-	if cookie == "" {
-		c.BadRequest(errors.New("El campo cookie no púede ser vacio"))
+	if iso == "" {
+		c.BadRequest(errors.New("El campo iso no púede ser vacio"))
 		return
 	}
 
-	service := c.Ctx.Input.Param(":service")
+	gateway := c.Ctx.Input.Param(":gateway")
 
-	if service == "" {
-		c.BadRequest(errors.New("El campo service no púede ser vacio"))
+	if gateway == "" {
+		c.BadRequest(errors.New("El campo gateway no púede ser vacio"))
 		return
 	}
 
-	err := v.GetBriefsByCookie(cookie, service)
+	err := v.GetByIsoAndGateway(iso, gateway)
 
 	if err != nil {
-
-		if err.Error() == "not found" {
-			// Verify if exists a form
-			form := models.ServiceForms{}
-
-			err = form.GetServiceFormsByServiceSlug(service)
-
-			if err != nil {
-				c.BadRequest(err)
-				return
-			}
-
-			v.ServiceForm = &form
-
-			v.Cookie = ""
-
-			err = v.Insert()
-
-			beego.Debug(err)
-
-			if err != nil {
-				c.BadRequest(err)
-				return
-			}
-		}
-
+		c.BadRequest(err)
+		return
 	}
 
 	c.Data["json"] = v

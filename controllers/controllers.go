@@ -91,6 +91,8 @@ func (c *BaseController) BadRequestDontExists(message string) {
 //ServeErrorJSON : Serve Json error
 func (c *BaseController) ServeErrorJSON(err error) {
 
+	beego.Debug(err)
+
 	if err == orm.ErrNoRows {
 		c.Ctx.Output.SetStatus(404)
 		c.Data["json"] = MessageResponse{
@@ -104,6 +106,8 @@ func (c *BaseController) ServeErrorJSON(err error) {
 	}
 
 	if driverErr, ok := err.(*mysql.MySQLError); ok {
+
+		beego.Debug(driverErr.Number)
 
 		switch driverErr.Number {
 		case 1062:
@@ -142,6 +146,13 @@ func (c *BaseController) ServeErrorJSON(err error) {
 				PrettyMessage: "Un error ha ocurrido",
 			}
 		}
+	} else {
+		c.Ctx.Output.SetStatus(404)
+		c.Data["json"] = MessageResponse{
+			Message:       "No results",
+			Code:          8,
+			PrettyMessage: "No se encontraron resultados",
+		}
 	}
 
 	c.ServeJSON()
@@ -167,7 +178,7 @@ func (c *BaseController) BadRequestErrors(errors []*validation.Error, entity str
 	c.Ctx.Output.SetStatus(400)
 	c.Data["json"] = MessageResponse{
 		Message:       "Bad sent data",
-		PrettyMessage: "Error en los datos mandados",
+		PrettyMessage: "Error en los datos",
 		Code:          001,
 		Errors:        errorsMessages,
 	}

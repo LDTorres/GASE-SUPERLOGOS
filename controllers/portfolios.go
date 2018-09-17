@@ -23,6 +23,7 @@ func (c *PortfoliosController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("GetByCustomSearch", c.GetByCustomSearch)
+	c.Mapping("GetPortfoliosByCountry", c.GetPortfoliosByCountry)
 }
 
 // Post ...
@@ -135,6 +136,18 @@ func (c *PortfoliosController) GetOne() {
 		return
 	}
 
+	CountryIso := c.Ctx.Input.Header("Country-Iso")
+
+	if CountryIso == "" {
+		CountryIso = "US"
+	}
+
+	_, err = models.GetCountriesByIso(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
 	v, err := models.GetPortfoliosByID(id)
 
 	if err != nil {
@@ -206,7 +219,7 @@ func (c *PortfoliosController) GetAll() {
 		return
 	}
 
-	for portfolioKey, portfolio := range l {
+	for i, portfolio := range l {
 
 		p := portfolio.(models.Portfolios)
 
@@ -221,7 +234,7 @@ func (c *PortfoliosController) GetAll() {
 				return
 			}
 
-			l[portfolioKey].(models.Portfolios).Images[imageKey] = image
+			l[i].(models.Portfolios).Images[imageKey] = image
 		}
 
 	}
@@ -308,7 +321,13 @@ func (c *PortfoliosController) Delete() {
 		return
 	}
 
-	err = models.DeletePortfolios(id)
+	trash := false
+
+	if c.Ctx.Input.Query("trash") != "" {
+		trash = true
+	}
+
+	err = models.DeletePortfolios(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -404,4 +423,81 @@ func (c *PortfoliosController) GetByCustomSearch() {
 
 	c.ServeJSON()
 
+}
+
+// GetPortfoliosByCountry ...
+// @Title Get One
+// @Description get Portfolios by Country
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Portfolios
+// @Failure 403 :id is empty
+// @router /iso [get]
+func (c *PortfoliosController) GetPortfoliosByCountry() {
+
+	CountryIso := c.Ctx.Input.Header("Country-Iso")
+
+	if CountryIso == "" {
+		CountryIso = "US"
+	}
+
+	_, err := models.GetCountriesByIso(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	var (
+		offset, limit int
+	)
+
+	queryOffset := c.Ctx.Input.Query("offset")
+
+	if queryOffset != "" {
+
+		offsetInt, err := strconv.Atoi(queryOffset)
+
+		if err != nil {
+			err = errors.New("offset value is not a valid int")
+			c.ServeErrorJSON(err)
+			return
+		}
+
+		offset = offsetInt
+
+	}
+
+	queryLimit := c.Ctx.Input.Query("limit")
+
+	if queryLimit != "" {
+
+		limitInt, err := strconv.Atoi(queryLimit)
+
+		if err != nil {
+			err = errors.New("limit value is not a valid int")
+			c.ServeErrorJSON(err)
+			return
+		}
+
+		limit = limitInt
+	}
+
+	country, err := models.GetCountriesByIso(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	filters := map[string]int{
+		"countries": country.ID,
+	}
+
+	v, err := models.GetPortfoliosByCustomSearch(filters, limit, offset)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
 }

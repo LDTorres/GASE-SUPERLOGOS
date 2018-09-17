@@ -19,6 +19,7 @@ type ServicesController struct {
 func (c *ServicesController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetPricesServiceByCountry", c.GetPricesServiceByCountry)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
@@ -145,9 +146,38 @@ func (c *ServicesController) GetAll() {
 	}
 
 	l, err := models.GetAllServices(query, fields, sortby, order, offset, limit)
+
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
+	}
+
+	CountryIso := c.Ctx.Input.Header("Country-Iso")
+
+	if CountryIso != "" {
+
+		country, err := models.GetCountriesByIso(CountryIso)
+
+		if err != nil {
+			c.ServeErrorJSON(err)
+			return
+		}
+
+		for i, service := range l {
+
+			s := service.(models.Services)
+			prices := s.Prices
+
+			for _, price := range prices {
+				if country.Currency.ID == price.Currency.ID {
+
+					s.Price = price
+					l[i] = s
+					break
+				}
+			}
+
+		}
 	}
 
 	c.Data["json"] = l
@@ -200,7 +230,7 @@ func (c *ServicesController) Put() {
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *ServicesController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
@@ -210,7 +240,13 @@ func (c *ServicesController) Delete() {
 		return
 	}
 
-	err = models.DeleteServices(id)
+	trash := false
+
+	if c.Ctx.Input.Query("trash") != "" {
+		trash = true
+	}
+
+	err = models.DeleteServices(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -222,5 +258,45 @@ func (c *ServicesController) Delete() {
 		PrettyMessage: "Elemento Eliminado",
 	}
 
+	c.ServeJSON()
+}
+
+// GetPricesServiceByCountry ...
+// @Title GetPricesServiceByCountry
+// @Description get Prices Services by Country Iso
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Services
+// @Failure 403 :id is empty
+// @router /:id/prices [get]
+func (c *ServicesController) GetPricesServiceByCountry() {
+	idStr := c.Ctx.Input.Param(":id")
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	CountryIso := c.Ctx.Input.Header("Country-Iso")
+
+	if CountryIso == "" {
+		CountryIso = "US"
+	}
+
+	_, err = models.GetCountriesByIso(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	v := &models.Services{ID: id}
+
+	err = v.GetPricesServicesByID(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
 	c.ServeJSON()
 }

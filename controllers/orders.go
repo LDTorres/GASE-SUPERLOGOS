@@ -130,7 +130,7 @@ func (c *OrdersController) Post() {
 		Order.Discount = (Order.InitialValue * el.Percentage) / 100
 	}
 
-	Order.State = "PENDING"
+	Order.Status = "PENDING"
 
 	// Create the new order
 	_, err = models.AddOrders(Order)
@@ -141,12 +141,15 @@ func (c *OrdersController) Post() {
 	}
 
 	// Add Prices relations
-	var pricesRelationsIDs []int
+	var pricesRelations []map[string]int
 	for _, service := range cart.Services {
-		pricesRelationsIDs = append(pricesRelationsIDs, service.Price.ID)
+
+		relation := map[string]int{"id": service.Price.ID, "quantity": service.Quantity}
+
+		pricesRelations = append(pricesRelations, relation)
 	}
 
-	_, err = models.RelationsM2M("INSERT", "orders", Order.ID, "prices", pricesRelationsIDs)
+	_, err = models.AddRelationsM2MQuantity("orders", Order.ID, "prices", pricesRelations)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -340,7 +343,7 @@ func (c *OrdersController) Put() {
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
-// @router /:id [delete]
+// @router /:id/trash [delete]
 func (c *OrdersController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
@@ -350,7 +353,13 @@ func (c *OrdersController) Delete() {
 		return
 	}
 
-	err = models.DeleteOrders(id)
+	trash := false
+
+	if c.Ctx.Input.Query("trash") != "" {
+		trash = true
+	}
+
+	err = models.DeleteOrders(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
