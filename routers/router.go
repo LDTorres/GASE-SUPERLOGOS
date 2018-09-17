@@ -18,14 +18,6 @@ func init() {
 
 	middlewares.LoadFilters()
 
-	views := beego.NewNamespace("/admin",
-		beego.NSInclude(
-			&controllers.MainController{},
-		),
-	)
-
-	beego.AddNamespace(views)
-
 	ns := beego.NewNamespace("/v1",
 
 		beego.NSNamespace("/activities",
@@ -149,6 +141,5 @@ func init() {
 			beego.NSRouter("/change-password", &controllers.UsersController{}, "post:ChangePassword"),
 		),
 	)
-
 	beego.AddNamespace(ns)
 }
