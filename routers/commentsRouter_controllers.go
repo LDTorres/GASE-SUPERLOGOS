@@ -495,6 +495,14 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["GASE/controllers:MainController"] = append(beego.GlobalControllerRouter["GASE/controllers:MainController"],
+		beego.ControllerComments{
+			Method: "Home",
+			Router: `/home`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "Post",
