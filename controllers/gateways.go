@@ -400,10 +400,11 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		}
 
 		paymentID = payment.ID
+		break
 
 	case "02": //stripe [credit card with element.js]
 
-		if value, ok := paymentData["token"]; !ok || value.(string) == "" {
+		if tokenValue, ok := paymentData["token"]; !ok || tokenValue.(string) == "" {
 
 			err = errors.New("token is missing")
 
@@ -422,6 +423,40 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		}
 
 		paymentID = payment.ID
+		break
+
+	case "03": //payU
+
+		//TODO: Validar campos
+
+		if tokenValue, ok := paymentData["token"]; !ok || tokenValue.(string) == "" {
+
+			if  tokenValue, ok := paymentData["token"];
+
+			
+
+			return
+		}
+
+		tokenPayu := paymentData["token"].(string)
+
+		payment := &services.CreditCardPayment{}
+		payment.Token = tokenPayu
+
+
+
+		payment.ExtraData = paymentData
+
+		err = payment.PayuCreditCard()
+
+		if err != nil {
+			return
+		}
+
+		paymentID = payment.ID
+
+		break
+	case "04":
 
 	}
 
