@@ -130,7 +130,7 @@ func (c *OrdersController) Post() {
 		Order.Discount = (Order.InitialValue * el.Percentage) / 100
 	}
 
-	Order.State = "PENDING"
+	Order.Status = "PENDING"
 
 	// Create the new order
 	_, err = models.AddOrders(Order)

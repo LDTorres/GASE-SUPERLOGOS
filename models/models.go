@@ -34,7 +34,7 @@ func init() {
 	RunMode := beego.BConfig.RunMode
 
 	if RunMode == "dev" {
-		orm.Debug = false
+		orm.Debug = true
 	}
 
 	//MONGO
