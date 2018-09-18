@@ -27,10 +27,6 @@ func (c *UsersController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create User
-// @Param	body		body 	models.User	true		"body for User content"
-// @Success 201 {int} models.User
-// @Failure 400 body is empty
 // @router / [post]
 func (c *UsersController) Post() {
 	var user models.User
@@ -68,10 +64,6 @@ func (c *UsersController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Users by id
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Users
-// @Failure 403 :id is empty
 // @router /:id [get]
 func (c *UsersController) GetOne() {
 	user := models.User{}
@@ -103,10 +95,6 @@ func (c *UsersController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get all Users
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Users
-// @Failure 403 :id is empty
 // @router /:id [get]
 func (c *UsersController) GetAll() {
 	var user models.User
@@ -129,10 +117,6 @@ func (c *UsersController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description Put User
-// @Param	body		body 	models.User	true		"body for User content"
-// @Success 201 {ObjectId} models.User
-// @Failure 400 body is empty
 // @router /:id [put]
 func (c *UsersController) Put() {
 	var user models.User
@@ -174,10 +158,6 @@ func (c *UsersController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description Delete User
-// @Param	body		body 	models.User	true		"body for User content"
-// @Success 201 {ObjectId} models.User
-// @Failure 400 body is empty
 // @router /:id/trash [delete]
 func (c *UsersController) Delete() {
 	var user models.User
@@ -212,10 +192,6 @@ func (c *UsersController) Delete() {
 
 // Login ...
 // @Title Post
-// @Description Login for Users
-// @Param	body		body 	models.Users	true		"body for Users content"
-// @Success 200 {Object} models.Users
-// @Failure 400 body is empty
 // @router /login [post]
 func (c *UsersController) Login() {
 	var user models.User
@@ -259,10 +235,6 @@ func (c *UsersController) Login() {
 
 // ChangePassword ...
 // @Title Post
-// @Description ChangePassword for Users
-// @Param	body		body 	models.Users	true		"body for Users content"
-// @Success 200 {Object} models.Users
-// @Failure 400 body is empty
 // @router /change-password [post]
 func (c *UsersController) ChangePassword() {
 	var user models.User

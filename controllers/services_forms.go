@@ -26,10 +26,6 @@ func (c *ServiceFormsController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create ServiceForms
-// @Param	body		body 	models.ServiceForms	true		"body for ServiceForms content"
-// @Success 201 {int} models.ServiceForms
-// @Failure 400 body is empty
 // @router / [post]
 func (c *ServiceFormsController) Post() {
 	var v models.ServiceForms
@@ -76,10 +72,6 @@ func (c *ServiceFormsController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get ServiceForms by id
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.ServiceForms
-// @Failure 403 :id is empty
 // @router /:id [get]
 func (c *ServiceFormsController) GetOne() {
 	v := models.ServiceForms{}
@@ -111,11 +103,7 @@ func (c *ServiceFormsController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get all ServiceForms
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.ServiceForms
-// @Failure 403 :id is empty
-// @router /:id [get]
+// @router / [get]
 func (c *ServiceFormsController) GetAll() {
 	var v models.ServiceForms
 
@@ -137,10 +125,6 @@ func (c *ServiceFormsController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description Put ServiceForms
-// @Param	body		body 	models.ServiceForms	true		"body for ServiceForms content"
-// @Success 201 {ObjectId} models.ServiceForms
-// @Failure 400 body is empty
 // @router /:id [put]
 func (c *ServiceFormsController) Put() {
 	var v models.ServiceForms
@@ -182,10 +166,6 @@ func (c *ServiceFormsController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description Delete ServiceForms
-// @Param	body		body 	models.ServiceForms	true		"body for ServiceForms content"
-// @Success 201 {ObjectId} models.ServiceForms
-// @Failure 400 body is empty
 // @router /:id/trash [delete]
 func (c *ServiceFormsController) Delete() {
 	var v models.ServiceForms
@@ -220,10 +200,6 @@ func (c *ServiceFormsController) Delete() {
 
 // GetOneByService ...
 // @Title Get One
-// @Description get ServiceForms by slug
-// @Param	slug		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.ServiceForms
-// @Failure 403 :slug is empty
 // @router /service/:slug [get]
 func (c *ServiceFormsController) GetOneByService() {
 	v := models.ServiceForms{}

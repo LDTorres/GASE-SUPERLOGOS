@@ -132,6 +132,7 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
+				v.Portfolios = nil
 				ml = append(ml, v)
 			}
 		} else {
@@ -143,6 +144,7 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 					m[fname] = val.FieldByName(fname).Interface()
 				}
 				v.loadRelations()
+				v.Portfolios = nil
 				ml = append(ml, m)
 			}
 		}

@@ -80,6 +80,8 @@ func GetCountriesByID(id int) (v *Countries, err error) {
 func GetCountriesByIso(iso string) (v *Countries, err error) {
 	o := orm.NewOrm()
 
+	iso = strings.ToUpper(iso)
+
 	v = &Countries{Iso: iso}
 	err = o.Read(v, "iso")
 

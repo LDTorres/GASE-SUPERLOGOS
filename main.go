@@ -6,6 +6,7 @@ import (
 	_ "GASE/tasks"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/plugins/cors"
 )
 
 func main() {
@@ -15,11 +16,18 @@ func main() {
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 
-	beego.BConfig.WebConfig.ViewsPath = "public/views"
+	//CORS
+	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
-	beego.SetStaticPath("admin/img", "public/assets/img")
-	beego.SetStaticPath("admin/css", "public/assets/css")
-	beego.SetStaticPath("admin/js", "public/assets/js")
+	beego.BConfig.WebConfig.ViewsPath = "public"
+
+	beego.SetStaticPath("/assets", "public/assets/")
 
 	beego.Run()
 }

@@ -27,11 +27,6 @@ func (c *BriefsController) URLMapping() {
 }
 
 // Post ...
-// @Title Post
-// @Description create Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {int} models.Briefs
-// @Failure 400 body is empty
 // @router / [post]
 func (c *BriefsController) Post() {
 	var v models.Briefs
@@ -66,11 +61,6 @@ func (c *BriefsController) Post() {
 }
 
 // GetOne ...
-// @Title Get One
-// @Description get Briefs by id
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
-// @Failure 403 :id is empty
 // @router /:id [get]
 func (c *BriefsController) GetOne() {
 	v := models.Briefs{}
@@ -101,11 +91,6 @@ func (c *BriefsController) GetOne() {
 }
 
 // GetAll ...
-// @Title Get All
-// @Description get all Briefs
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
-// @Failure 403 :id is empty
 // @router /:id [get]
 func (c *BriefsController) GetAll() {
 	var v models.Briefs
@@ -127,11 +112,6 @@ func (c *BriefsController) GetAll() {
 }
 
 // Put ...
-// @Title Put
-// @Description Put Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {ObjectId} models.Briefs
-// @Failure 400 body is empty
 // @router /:id [put]
 func (c *BriefsController) Put() {
 	var v models.Briefs
@@ -172,11 +152,6 @@ func (c *BriefsController) Put() {
 }
 
 // Delete ...
-// @Title Delete
-// @Description Delete Briefs
-// @Param	body		body 	models.Briefs	true		"body for Briefs content"
-// @Success 201 {ObjectId} models.Briefs
-// @Failure 400 body is empty
 // @router /:id/trash [delete]
 func (c *BriefsController) Delete() {
 	var v models.Briefs
@@ -210,11 +185,6 @@ func (c *BriefsController) Delete() {
 }
 
 // GetOneByCookie ...
-// @Title Get One
-// @Description get Briefs by cookie
-// @Param	cookie		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Briefs
-// @Failure 403 :cookie, :form, :service  is empty
 // @router /:service/:cookie [get]
 func (c *BriefsController) GetOneByCookie() {
 	v := models.Briefs{}
