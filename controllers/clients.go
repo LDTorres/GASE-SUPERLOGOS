@@ -229,7 +229,7 @@ func (c *ClientsController) Put() {
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
-// @router /:id/trash [delete]
+// @router /:id [delete]
 func (c *ClientsController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)

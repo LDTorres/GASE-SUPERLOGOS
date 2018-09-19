@@ -157,6 +157,7 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
+				v.Locations = nil
 				ml = append(ml, v)
 			}
 		} else {
@@ -168,6 +169,7 @@ func GetAllCountries(query map[string]string, fields []string, sortby []string, 
 					m[fname] = val.FieldByName(fname).Interface()
 				}
 				v.loadRelations()
+				v.Locations = nil
 				ml = append(ml, m)
 			}
 		}

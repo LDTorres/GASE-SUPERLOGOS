@@ -177,7 +177,7 @@ func (c *PaymentsMethodsController) Put() {
 
 // Delete ...
 // @Title Delete
-// @router /:id/trash [delete]
+// @router /:id [delete]
 func (c *PaymentsMethodsController) Delete() {
 	var v models.PaymentsMethods
 

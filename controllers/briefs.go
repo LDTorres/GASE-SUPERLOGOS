@@ -152,7 +152,7 @@ func (c *BriefsController) Put() {
 }
 
 // Delete ...
-// @router /:id/trash [delete]
+// @router /:id [delete]
 func (c *BriefsController) Delete() {
 	var v models.Briefs
 
