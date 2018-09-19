@@ -79,9 +79,7 @@ func LoginClients(m *Clients) (id int, err error) {
 
 	m.Password = GetMD5Hash(m.Password)
 
-	fmt.Println(m.Password)
-
-	err = o.QueryTable(m.TableName()).Filter("email", m.Email).Filter("password", m.Password).One(v)
+	err = o.QueryTable(m.TableName()).Filter("deleted_at__isnull", true).Filter("email", m.Email).Filter("password", m.Password).One(v)
 
 	if err != nil {
 		return 0, err

@@ -1,10 +1,6 @@
 // @APIVersion 1.0.0
-// @Title beego Test API
-// @Description beego has a very cool tools to autogenerate documents for your API
-// @Contact astaxie@gmail.com
-// @TermsOfServiceUrl http://beego.me/
-// @License Apache 2.0
-// @LicenseUrl http://www.apache.org/licenses/LICENSE-2.0.html
+// @Title GASE Api
+// @Description GASE autogenerate documents for your API
 package routers
 
 import (
@@ -17,6 +13,14 @@ import (
 func init() {
 
 	middlewares.LoadFilters()
+
+	views := beego.NewNamespace("/admin",
+		beego.NSInclude(
+			&controllers.ViewController{},
+		),
+	)
+
+	beego.AddNamespace(views)
 
 	ns := beego.NewNamespace("/v1",
 
@@ -141,5 +145,6 @@ func init() {
 			beego.NSRouter("/change-password", &controllers.UsersController{}, "post:ChangePassword"),
 		),
 	)
+
 	beego.AddNamespace(ns)
 }

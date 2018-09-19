@@ -269,10 +269,10 @@ func (c *CountriesController) Delete() {
 // @Param	Iso		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Countries
 // @Failure 403 :iso is empty
-// @router /iso [get]
+// @router /iso/:iso [get]
 func (c *CountriesController) GetOneByIso() {
 
-	header := c.Ctx.Input.Header("Country-Iso")
+	header := c.Ctx.Input.Param(":iso")
 
 	if header == "" {
 		header = "US"

@@ -250,7 +250,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "GetOneByIso",
-			Router: `/iso`,
+			Router: `/iso/:iso`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -340,14 +340,6 @@ func init() {
 			Method: "Delete",
 			Router: `/:id/trash`,
 			AllowHTTPMethods: []string{"delete"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["GASE/controllers:EmailController"] = append(beego.GlobalControllerRouter["GASE/controllers:EmailController"],
-		beego.ControllerComments{
-			Method: "Post",
-			Router: `/`,
-			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
 
@@ -545,15 +537,15 @@ func init() {
 
 	beego.GlobalControllerRouter["GASE/controllers:PaymentsMethodsController"] = append(beego.GlobalControllerRouter["GASE/controllers:PaymentsMethodsController"],
 		beego.ControllerComments{
-			Method: "GetOne",
-			Router: `/:id`,
+			Method: "GetAll",
+			Router: `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["GASE/controllers:PaymentsMethodsController"] = append(beego.GlobalControllerRouter["GASE/controllers:PaymentsMethodsController"],
 		beego.ControllerComments{
-			Method: "GetAll",
+			Method: "GetOne",
 			Router: `/:id`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
@@ -729,15 +721,15 @@ func init() {
 
 	beego.GlobalControllerRouter["GASE/controllers:ServiceFormsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServiceFormsController"],
 		beego.ControllerComments{
-			Method: "GetOne",
-			Router: `/:id`,
+			Method: "GetAll",
+			Router: `/`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["GASE/controllers:ServiceFormsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServiceFormsController"],
 		beego.ControllerComments{
-			Method: "GetAll",
+			Method: "GetOne",
 			Router: `/:id`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
@@ -868,6 +860,14 @@ func init() {
 			Method: "Login",
 			Router: `/login`,
 			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:ViewController"] = append(beego.GlobalControllerRouter["GASE/controllers:ViewController"],
+		beego.ControllerComments{
+			Method: "Main",
+			Router: `/`,
+			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
 

@@ -26,10 +26,6 @@ func (c *PaymentsMethodsController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create PaymentsMethods
-// @Param	body		body 	models.PaymentsMethods	true		"body for PaymentsMethods content"
-// @Success 201 {int} models.PaymentsMethods
-// @Failure 400 body is empty
 // @router / [post]
 func (c *PaymentsMethodsController) Post() {
 	var v models.PaymentsMethods
@@ -87,10 +83,6 @@ func (c *PaymentsMethodsController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get PaymentsMethods by id
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.PaymentsMethods
-// @Failure 403 :id is empty
 // @router /:id [get]
 func (c *PaymentsMethodsController) GetOne() {
 	v := models.PaymentsMethods{}
@@ -122,11 +114,7 @@ func (c *PaymentsMethodsController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get all PaymentsMethods
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.PaymentsMethods
-// @Failure 403 :id is empty
-// @router /:id [get]
+// @router / [get]
 func (c *PaymentsMethodsController) GetAll() {
 	var v models.PaymentsMethods
 
@@ -148,10 +136,6 @@ func (c *PaymentsMethodsController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description Put PaymentsMethods
-// @Param	body		body 	models.PaymentsMethods	true		"body for PaymentsMethods content"
-// @Success 201 {ObjectId} models.PaymentsMethods
-// @Failure 400 body is empty
 // @router /:id [put]
 func (c *PaymentsMethodsController) Put() {
 	var v models.PaymentsMethods
@@ -193,10 +177,6 @@ func (c *PaymentsMethodsController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description Delete PaymentsMethods
-// @Param	body		body 	models.PaymentsMethods	true		"body for PaymentsMethods content"
-// @Success 201 {ObjectId} models.PaymentsMethods
-// @Failure 400 body is empty
 // @router /:id/trash [delete]
 func (c *PaymentsMethodsController) Delete() {
 	var v models.PaymentsMethods
@@ -231,10 +211,6 @@ func (c *PaymentsMethodsController) Delete() {
 
 // GetOneByIsoAndGateway ...
 // @Title GetOneByIsoAndGateway
-// @Description get PaymentsMethods by iso and gateway
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.PaymentsMethods
-// @Failure 403 :id is empty
 // @router /:iso/:gateway [get]
 func (c *PaymentsMethodsController) GetOneByIsoAndGateway() {
 	v := models.PaymentsMethods{}
