@@ -195,6 +195,11 @@ func UpdateClientsByID(m *Clients) (err error) {
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
+
+		if m.Password != "" {
+			m.Password = GetMD5Hash(m.Password)
+		}
+
 		if num, err = o.Update(m); err == nil {
 			fmt.Println("Number of records updated in database:", num)
 		}
