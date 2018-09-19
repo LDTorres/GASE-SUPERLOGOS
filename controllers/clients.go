@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/astaxie/beego"
-
 	"github.com/astaxie/beego/validation"
 )
 
@@ -415,14 +413,6 @@ func (c *ClientsController) ChangePassword() {
 	}
 
 	decodedToken, err := VerifyToken(token, "Client")
-
-	beego.Debug(decodedToken.ID)
-
-	c.Ctx.Output.SetStatus(200)
-	c.Data["json"] = decodedToken
-	c.ServeJSON()
-
-	return
 
 	if err != nil {
 
