@@ -193,6 +193,22 @@ func init() {
 
 	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
 		beego.ControllerComments{
+			Method: "ChangePasswordRequest",
+			Router: `/change-password/:email`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+		beego.ControllerComments{
+			Method: "ChangePassword",
+			Router: `/change-password/:token`,
+			AllowHTTPMethods: []string{"patch"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+		beego.ControllerComments{
 			Method: "GetOneByEmail",
 			Router: `/email/:email`,
 			AllowHTTPMethods: []string{"get"},

@@ -437,9 +437,9 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 		if tokenValue, ok := paymentData["token"]; !ok || tokenValue.(string) == "" {
 
-			if  tokenValue, ok := paymentData["token"];
+			/* 	if  tokenValue, ok := paymentData["token"];
 
-			
+			 */
 
 			return
 		}
@@ -448,8 +448,6 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 		payment := &services.CreditCardPayment{}
 		payment.Token = tokenPayu
-
-
 
 		payment.ExtraData = paymentData
 

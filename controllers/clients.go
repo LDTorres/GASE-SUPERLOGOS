@@ -24,6 +24,8 @@ func (c *ClientsController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("ChangePasswordRequest", c.ChangePasswordRequest)
+	c.Mapping("ChangePassword", c.ChangePassword)
 }
 
 /* //Prepare Controller
@@ -82,7 +84,12 @@ func (c *ClientsController) Post() {
 		return
 	}
 
-	v.Token = c.GenerateToken("Client", string(id))
+	v.Token, err = c.GenerateToken("Client", string(id))
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v
@@ -261,7 +268,7 @@ func (c *ClientsController) Delete() {
 }
 
 // Login ...
-// @Title Post
+// @Title Login
 // @Description Login for Clients
 // @Param	body		body 	models.Clients	true		"body for Clients content"
 // @Success 201 {int} models.Clients
@@ -298,7 +305,12 @@ func (c *ClientsController) Login() {
 		return
 	}
 
-	v.Token = c.GenerateToken("Client", string(id))
+	v.Token, err = c.GenerateToken("Client", string(id))
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
 
 	c.Ctx.Output.SetStatus(200)
 	c.Data["json"] = v
@@ -308,7 +320,7 @@ func (c *ClientsController) Login() {
 }
 
 // GetOneByEmail ...
-// @Title Get One
+// @Title GetOneByEmail
 // @Description get Carts by Code
 // @Param	Code		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Carts
@@ -329,6 +341,93 @@ func (c *ClientsController) GetOneByEmail() {
 		return
 	}
 
+	c.Ctx.Output.SetStatus(200)
 	c.Data["json"] = v
+	c.ServeJSON()
+}
+
+// ChangePasswordRequest ...
+// @Title ChangePasswordRequest
+// @Description Change Password Request for Clients
+// @router /change-password/:email [post]
+func (c *ClientsController) ChangePasswordRequest() {
+
+	email := c.Ctx.Input.Param(":email")
+
+	if email == "" {
+		err := errors.New("No se ha recibido el email")
+		c.BadRequest(err)
+		return
+	}
+
+	v, err := models.GetClientsByEmail(email)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	token, err := c.GenerateToken("Client", string(v.ID), 1)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	v.Password = ""
+	v.Token = token
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+	c.ServeJSON()
+
+}
+
+// ChangePassword ...
+// @Title ChangePassword
+// @Description Change Password Request for Clients
+// @router /change-password/:token [patch]
+func (c *ClientsController) ChangePassword() {
+
+	token := c.Ctx.Input.Param(":token")
+
+	if token == "" {
+		err := errors.New("No se ha recibido el token")
+		c.BadRequest(err)
+		return
+	}
+
+	newPassword := c.Ctx.Input.Query("password")
+
+	if newPassword == "" {
+		err := errors.New("No se ha recibido el password")
+		c.BadRequest(err)
+		return
+	}
+
+	decodedToken, err := VerifyToken(token, "Client")
+
+	if err != nil {
+
+		err := errors.New("El token Proporcionado es inválido")
+		c.BadRequest(err)
+		return
+	}
+
+	clientID, _ := strconv.Atoi(decodedToken.ID)
+
+	v, err := models.GetClientsByID(clientID)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	v.Password = newPassword
+
+	err = models.UpdateClientsByID(v)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Ctx.Output.SetStatus(200)
 	c.ServeJSON()
 }

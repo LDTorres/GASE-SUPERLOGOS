@@ -224,7 +224,12 @@ func (c *UsersController) Login() {
 		return
 	}
 
-	user.Token = c.GenerateToken("Admin", user.Token)
+	user.Token, err = c.GenerateToken("Admin", user.Token)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
 
 	c.Ctx.Output.SetStatus(200)
 	c.Data["json"] = user
@@ -266,7 +271,12 @@ func (c *UsersController) ChangePassword() {
 		return
 	}
 
-	user.Token = c.GenerateToken("Admin", user.Token)
+	user.Token, err = c.GenerateToken("Admin", user.Token)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
 
 	c.Ctx.Output.SetStatus(200)
 	c.Data["json"] = user
