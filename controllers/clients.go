@@ -4,6 +4,7 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -384,8 +385,10 @@ func (c *ClientsController) ChangePasswordRequest() {
 // ChangePassword ...
 // @Title ChangePassword
 // @Description Change Password Request for Clients
-// @router /change-password/:token [patch]
+// @router /change-password/:token [put]
 func (c *ClientsController) ChangePassword() {
+
+	fmt.Println("DFGHJKDVCDKFBSDFYHBDYBF")
 
 	token := c.Ctx.Input.Param(":token")
 
