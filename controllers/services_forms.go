@@ -166,7 +166,7 @@ func (c *ServiceFormsController) Put() {
 
 // Delete ...
 // @Title Delete
-// @router /:id/trash [delete]
+// @router /:id [delete]
 func (c *ServiceFormsController) Delete() {
 	var v models.ServiceForms
 

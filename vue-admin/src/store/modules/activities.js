@@ -1,28 +1,21 @@
-import axios from '../../axios.js'
+// import axios from '../../axios.js'
 
 /**
  * Route
  */
 
-const route = '/activities'
+// const route = '/activities'
 
 export default {
   namespaced: true,
-  state: {all: []},
+  state: { all: [], defaultItem: {}, editedItem: {} },
   mutations: {
     GET_ALL (state, data) {
       state.all = data
     }
   },
   actions: {
-    async getAll ({commit}) {
-      try {
-        let res = await axios.get(route)
-        commit('GET_ALL', res.data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
+
   },
-  getters: { }
+  getters: {}
 }

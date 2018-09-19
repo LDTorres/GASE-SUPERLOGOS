@@ -1,6 +1,6 @@
 <template class="activities">
 <div>
-    <v-toolbar flat color="white">
+  <v-toolbar flat color="white">
       <v-toolbar-title class="text-capitalize">{{ viewName }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
@@ -30,7 +30,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-toolbar> 
+    </v-toolbar>
   <v-container fluid>
     <v-card>
       <v-card-title>
@@ -85,7 +85,7 @@
     name: 'activities',
     props: [],
     created () {
-      this.$store.dispatch(this.viewName + '/getAll')
+      this.$store.dispatch('getAll', this.storeParams)
     },
     mounted () {
     },
@@ -101,15 +101,7 @@
         search: '',
         pagination: {},
         dialog: false,
-        editedIndex: -1,
-        editedItem: {
-          name: '',
-          description: 0
-        },
-        defaultItem: {
-          name: '',
-          description: 0
-        }
+        editedIndex: -1
       }
     },
     methods: {
@@ -118,12 +110,13 @@
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
-
       deleteItem (item) {
-        const index = this.list.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.list.splice(index, 1)
-      },
+        let params = this.storeParams
+        item.index = this.list.indexOf(item)
+        params.item = item
 
+        confirm('Are you sure you want to delete this item?') && this.$store.dispatch('deleteOne', params)
+      },
       close () {
         this.dialog = false
         setTimeout(() => {
@@ -131,7 +124,6 @@
           this.editedIndex = -1
         }, 300)
       },
-
       save () {
         if (this.editedIndex > -1) {
           Object.assign(this.list[this.editedIndex], this.editedItem)
@@ -157,12 +149,30 @@
 
         return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
       },
+      viewName () {
+        return this.$route.name
+      },
+      storeParams: {
+        get () {
+          let params = {
+            route: '/' + this.viewName,
+            state: this.viewName
+          }
+          return params
+        },
+        set (value) {
+          this.storeParams = value
+        }
+      },
       formTitle () {
         var title = this.editedIndex === -1 ? 'New ' : 'Edit '
         return title + this.viewName
       },
-      viewName () {
-        return this.$route.name
+      defaultItem () {
+        return this.$store.state[this.viewName].defaultItem
+      },
+      editedItem () {
+        return this.$store.state[this.viewName].editedItem
       }
     }
 }

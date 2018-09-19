@@ -42,7 +42,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -82,7 +82,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -130,7 +130,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -186,7 +186,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -258,7 +258,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -306,7 +306,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -354,7 +354,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -388,6 +388,14 @@ func init() {
 			Method: "Put",
 			Router: `/:id`,
 			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+		beego.ControllerComments{
+			Method: "Delete",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
 
@@ -407,14 +415,6 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
-		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:id/trash`,
-			AllowHTTPMethods: []string{"delete"},
-			MethodParams: param.Make(),
-			Params: nil})
-
 	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "Post",
@@ -450,7 +450,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -498,7 +498,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LocationsController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -538,7 +538,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -578,7 +578,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:PaymentsMethodsController"] = append(beego.GlobalControllerRouter["GASE/controllers:PaymentsMethodsController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -682,7 +682,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE/controllers:PricesController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -722,7 +722,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -762,7 +762,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:ServiceFormsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServiceFormsController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -809,17 +809,17 @@ func init() {
 
 	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
 		beego.ControllerComments{
-			Method: "GetPricesServiceByCountry",
-			Router: `/:id/prices`,
-			AllowHTTPMethods: []string{"get"},
+			Method: "Delete",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})
 
 	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
 		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:id/trash`,
-			AllowHTTPMethods: []string{"delete"},
+			Method: "GetPricesServiceByCountry",
+			Router: `/:id/prices`,
+			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
 
@@ -858,7 +858,7 @@ func init() {
 	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
 		beego.ControllerComments{
 			Method: "Delete",
-			Router: `/:id/trash`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"delete"},
 			MethodParams: param.Make(),
 			Params: nil})

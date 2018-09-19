@@ -158,7 +158,7 @@ func (c *UsersController) Put() {
 
 // Delete ...
 // @Title Delete
-// @router /:id/trash [delete]
+// @router /:id [delete]
 func (c *UsersController) Delete() {
 	var user models.User
 

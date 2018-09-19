@@ -6,7 +6,16 @@ if (navigator.userAgent.indexOf('PhantomJS') > -1) {
 }
 
 export const mutations = {
-  action (state, todo) {
-    state.todos.push(todo)
+  GET_ALL (state, data) {
+    state[data.state].all = data.res
+  },
+  GET_ONE (state, data) {
+    state[data.state].all.push(data.res)
+  },
+  UPDATE_ONE (state, data) {
+    state[data.state].all[data.index] = data.item
+  },
+  DELETE_ONE (state, data) {
+    state[data.state].all.splice(data.index, 1)
   }
 }
