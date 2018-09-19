@@ -24,7 +24,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
+    <v-toolbar v-show="verifyUser"
       app
       :clipped-left="clipped"
     >
@@ -37,7 +37,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <v-content>
+    <v-content v-bind:class="{ 'no-padding': !verifyUser }">
       <router-view/>
     </v-content>
   </v-app>
@@ -47,8 +47,7 @@
 export default {
   data () {
     return {
-      clipped: true,
-      drawer: true,
+      clipped: false,
       fixed: false,
       miniVariant: false,
       right: true,
@@ -59,6 +58,17 @@ export default {
   computed: {
     items () {
       return this.$store.state.app.sidemenu
+    },
+    drawer () {
+      return this.verifyUser
+    },
+    verifyUser () {
+      let token = localStorage.getItem('token')
+      if(token !== null && token !== undefined && token !== ""){
+         return true
+      }
+
+      return false
     }
   },
   name: 'App'

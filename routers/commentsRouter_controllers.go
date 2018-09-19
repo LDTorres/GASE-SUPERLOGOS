@@ -203,7 +203,7 @@ func init() {
 		beego.ControllerComments{
 			Method: "ChangePassword",
 			Router: `/change-password/:token`,
-			AllowHTTPMethods: []string{"patch"},
+			AllowHTTPMethods: []string{"put"},
 			MethodParams: param.Make(),
 			Params: nil})
 

@@ -5,6 +5,7 @@ import Router from 'vue-router'
  * Components
  */
 
+import login from '@/components/login'
 import home from '@/components/home'
 import orders from '@/components/orders'
 import activities from '@/components/activities'
@@ -29,6 +30,11 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'login',
+      component: login
+    },
+    {
+      path: '/home',
       name: 'home',
       component: home
     },

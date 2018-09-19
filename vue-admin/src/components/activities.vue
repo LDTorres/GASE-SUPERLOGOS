@@ -125,10 +125,14 @@
         }, 300)
       },
       save () {
+        let params = this.storeParams
+        this.editedItem.index = this.editedIndex
+        params.item = this.editedItem
+
         if (this.editedIndex > -1) {
-          Object.assign(this.list[this.editedIndex], this.editedItem)
+          this.$store.dispatch('updateOne', params)
         } else {
-          this.list.push(this.editedItem)
+          this.$store.dispatch('create', params)
         }
         this.close()
       }
@@ -171,8 +175,14 @@
       defaultItem () {
         return this.$store.state[this.viewName].defaultItem
       },
-      editedItem () {
-        return this.$store.state[this.viewName].editedItem
+      editedItem: {
+        get () {
+          return this.$store.state[this.viewName].editedItem
+        },
+        set (value) {
+          this.$store.state[this.viewName].editedItem = value
+          return this.$store.state[this.viewName].editedItem
+        }
       }
     }
 }

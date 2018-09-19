@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego"
+
 	"github.com/astaxie/beego/validation"
 )
 
@@ -85,7 +87,9 @@ func (c *ClientsController) Post() {
 		return
 	}
 
-	v.Token, err = c.GenerateToken("Client", string(id))
+	ClientID := strconv.Itoa(int(id))
+
+	v.Token, err = c.GenerateToken("Client", ClientID)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -306,7 +310,9 @@ func (c *ClientsController) Login() {
 		return
 	}
 
-	v.Token, err = c.GenerateToken("Client", string(id))
+	ClientID := strconv.Itoa(id)
+
+	v.Token, err = c.GenerateToken("Client", ClientID)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -367,7 +373,9 @@ func (c *ClientsController) ChangePasswordRequest() {
 		return
 	}
 
-	token, err := c.GenerateToken("Client", string(v.ID), 1)
+	ClientID := strconv.Itoa(v.ID)
+
+	token, err := c.GenerateToken("Client", ClientID, 1)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -407,6 +415,14 @@ func (c *ClientsController) ChangePassword() {
 	}
 
 	decodedToken, err := VerifyToken(token, "Client")
+
+	beego.Debug(decodedToken.ID)
+
+	c.Ctx.Output.SetStatus(200)
+	c.Data["json"] = decodedToken
+	c.ServeJSON()
+
+	return
 
 	if err != nil {
 
