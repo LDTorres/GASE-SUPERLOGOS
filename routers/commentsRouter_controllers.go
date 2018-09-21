@@ -47,6 +47,22 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+		beego.ControllerComments{
+			Method: "RestoreFromTrash",
+			Router: `/:id/restore`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+		beego.ControllerComments{
+			Method: "GetAllFromTrash",
+			Router: `/trashed`,
+			AllowHTTPMethods: []string{"patch"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "Post",
@@ -68,14 +84,6 @@ func init() {
 			Method: "GetAll",
 			Router: `/:id`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
-
-	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
-		beego.ControllerComments{
-			Method: "Put",
-			Router: `/:id`,
-			AllowHTTPMethods: []string{"put"},
 			MethodParams: param.Make(),
 			Params: nil})
 

@@ -22,6 +22,7 @@ func (c *ActivitiesController) URLMapping() {
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("GetAllFromTrash", c.GetAllFromTrash)
+	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 
@@ -279,7 +280,7 @@ func (c *ActivitiesController) Delete() {
 // GetAllFromTrash ...
 // @Title Get All From Trash
 // @Description Get All From Trash
-// @router /trashed [get]
+// @router /trashed [patch]
 func (c *ActivitiesController) GetAllFromTrash() {
 
 	v, err := models.GetActivitiesFromTrash()

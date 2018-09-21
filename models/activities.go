@@ -196,9 +196,9 @@ func GetActivitiesFromTrash() (activities []*Activities, err error) {
 
 	o := orm.NewOrm()
 
-	v := []*Activities{}
+	var v []*Activities
 
-	_, err = o.QueryTable("activities").Filter("deleted_at__isnull", true).All(v)
+	_, err = o.QueryTable("activities").Filter("deleted_at__isnull", false).All(&v)
 
 	if err != nil {
 		return
