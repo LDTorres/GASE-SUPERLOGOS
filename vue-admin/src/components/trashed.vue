@@ -1,5 +1,10 @@
-<template class="briefs">
+<template class="trashed">
 <div>
+  <v-toolbar flat color="white">
+      <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-title class="text-capitalize">{{ model }}</v-toolbar-title>
+  </v-toolbar>
   <v-container fluid>
     <v-card>
       <v-card-title>
@@ -24,9 +29,15 @@
       >
       <template slot="items" slot-scope="props">
         <td>{{ props.item.id }}</td>
-        <td >{{ props.item.service_form.title }}</td>
-        <td >{{ props.item.cookie }}</td>
+        <td >{{ props.item.name }}</td>
         <td class="justify-center layout px-0">
+          <v-icon
+            title
+            class="mr-2" color="primary"
+            @click="editItem(props.item)"
+          >
+            restore
+          </v-icon>
           <v-icon
             title
             @click="deleteItem(props.item)" color="error"
@@ -43,20 +54,17 @@
 
 <script lang="js">
   export default {
-    name: 'briefs',
-    props: ['search'],
+    name: 'trashed',
+    props: ['model', 'search'],
     created () {
-      this.$store.dispatch('getAll', {state: this.viewName})
+      this.$store.dispatch('getAllTrashed', {state: this.model})
     },
     mounted () {
     },
     data () {
       return {
-        selectErrors: [],
         pagination: {},
-        dialog: false,
-        editedIndex: -1,
-        viewNameESP: 'Briefs'
+        viewNameESP: 'Papelera'
       }
     },
     methods: {
@@ -67,14 +75,16 @@
           item: item
         }
 
-        confirm('Esta seguro que desea eliminar este elemento?') && this.$store.dispatch('deleteOne', params)
+        confirm('Esta seguro que desea eliminar este elemento?') && this.$store.dispatch('trash', params)
       },
-      close () {
-        this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
+      restoreItem (item) {
+        item.index = this.list.indexOf(item)
+        let params = {
+          state: this.model,
+          item: item
+        }
+
+        confirm('Esta seguro que desea restaurar este elemento?') && this.$store.dispatch('restore', params)
       }
     },
     watch: {
@@ -84,10 +94,10 @@
     },
     computed: {
       headers () {
-        return this.$store.state[this.viewName].struct
+        return this.$store.state[this.model].struct
       },
       list () {
-        return this.$store.getters.getAll('briefs')
+        return this.$store.getters.getAllTrashed(this.model)
       },
       pages () {
         if (this.pagination.rowsPerPage == null ||
@@ -98,18 +108,6 @@
       },
       viewName () {
         return this.$route.name
-      },
-      defaultItem () {
-        return this.$store.state[this.viewName].defaultItem
-      },
-      editedItem: {
-        get () {
-          return this.$store.state[this.viewName].editedItem
-        },
-        set (value) {
-          this.$store.state[this.viewName].editedItem = value
-          return this.$store.state[this.viewName].editedItem
-        }
       }
     }
 }

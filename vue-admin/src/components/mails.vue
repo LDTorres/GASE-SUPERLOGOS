@@ -26,9 +26,3 @@
     }
 }
 </script>
-
-<style scoped lang="css">
-  .mails {
-
-  }
-</style>

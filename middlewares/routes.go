@@ -82,11 +82,11 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 		//Verify global method
 
 		methods := []string{
-			"POST", "DELETE", "PUT",
+			"POST", "DELETE", "PUT", "OPTIONS",
 		}
 
 		excludeUrls := []string{
-			"login", "carts", "change-password",
+			"login", "carts", "change-password", "custom-search",
 		}
 
 		verifyToken := true
@@ -122,6 +122,11 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 		// Verify if the method require a admin token
 		for _, method := range methods {
 			if ctx.Input.Method() == method {
+
+				if method == "OPTIONS" {
+					return
+				}
+
 				_, err := controllers.VerifyToken(token, "Admin")
 
 				if err != nil {

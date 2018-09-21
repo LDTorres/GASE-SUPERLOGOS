@@ -5,10 +5,22 @@ import axios from '../../axios.js'
  */
 
 const route = '/orders'
+var struct = [
+  { text: 'Id', align: 'left', sortable: true, value: 'id' },
+  { text: 'Valor Inicial', value: 'initial_value' },
+  { text: 'Valor Final', value: 'final_value' },
+  { text: 'Descuento', value: 'discount' },
+  { text: 'Estado', value: 'status' },
+  { text: 'Cliente', value: 'clients' },
+  { text: 'Pasarela', value: 'gateways' },
+  { text: 'Pais', value: 'countries' },
+  { text: 'Id de Pago', value: 'payment_id' },
+  { text: 'Acciones', align: 'center', value: '' }
+]
 
 export default {
   namespaced: true,
-  state: {all: []},
+  state: { all: [], defaultItem: {}, editedItem: {}, trash: [], struct: struct },
   mutations: {
     GET_ALL (state, data) {
       state.all = data

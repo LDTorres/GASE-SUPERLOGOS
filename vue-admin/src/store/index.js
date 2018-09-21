@@ -9,7 +9,6 @@ import actions from './actions'
 
 import activities from './modules/activities'
 import briefs from './modules/briefs'
-import carts from './modules/carts'
 import clients from './modules/clients'
 import countries from './modules/countries'
 import coupons from './modules/coupons'
@@ -20,9 +19,9 @@ import mails from './modules/mails'
 import orders from './modules/orders'
 import paymentsMethods from './modules/payments_methods'
 import sectors from './modules/sectors'
-import servicesForms from './modules/service_forms'
 import services from './modules/services'
 import users from './modules/users'
+import portfolios from './modules/portfolios'
 
 import app from './modules/app'
 
@@ -30,14 +29,31 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]')
+    todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]'),
+    user: JSON.parse(window.localStorage.getItem('bazam-user') || '{}'),
+    token: localStorage.getItem('bazam-token') || ''
+  },
+  getters: {
+    getAll: (state) => (stateName) => {
+      state[stateName].all.forEach((element, i) => {
+        state[stateName].all[i].in = i
+      })
+
+      return state[stateName].all
+    },
+    getAllTrashed: (state) => (stateName) => {
+      state[stateName].trash.forEach((element, i) => {
+        state[stateName].trash[i].in = i
+      })
+
+      return state[stateName].trash
+    }
   },
   actions,
   mutations,
   modules: {
     activities: activities,
     briefs: briefs,
-    carts: carts,
     clients: clients,
     countries: countries,
     coupons: coupons,
@@ -46,11 +62,11 @@ export default new Vuex.Store({
     locations: locations,
     mails: mails,
     orders: orders,
-    paymentsMethods: paymentsMethods,
+    'payments-methods': paymentsMethods,
     sectors: sectors,
-    servicesForms: servicesForms,
     services: services,
     users: users,
+    portfolios: portfolios,
     app: app
   }
 })

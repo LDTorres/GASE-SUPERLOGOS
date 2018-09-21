@@ -116,7 +116,7 @@ func init() {
 			beego.NSRouter("/:id", &controllers.BriefsController{}, "delete:Delete"),
 		),
 
-		beego.NSNamespace("/forms",
+		beego.NSNamespace("/services-forms",
 			beego.NSRouter("/", &controllers.ServiceFormsController{}, "post:Post"),
 			beego.NSRouter("/", &controllers.ServiceFormsController{}, "get:GetAll"),
 			beego.NSRouter("/:id", &controllers.ServiceFormsController{}, "get:Get"),

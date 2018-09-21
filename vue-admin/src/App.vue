@@ -10,7 +10,7 @@
       app
     >
       <v-list>
-        <v-list-tile @click="" :to="item.route"
+        <v-list-tile :to="item.route"
           value="true"
           v-for="(item, i) in items"
           :key="i"
@@ -28,7 +28,6 @@
       app
       :clipped-left="clipped"
     >
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
       </v-btn>
@@ -45,6 +44,11 @@
 
 <script>
 export default {
+  created () {
+    if (!this.verifyUser) {
+      this.$router.push('/')
+    }
+  },
   data () {
     return {
       clipped: false,
@@ -52,26 +56,36 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: true,
-      title: 'Liderlogo Admin'
+      title: 'Liderlogo'
     }
   },
   computed: {
     items () {
       return this.$store.state.app.sidemenu
     },
-    drawer () {
-      return this.verifyUser
+    drawer: {
+      set (value) {
+        return value
+      },
+      get () {
+        return this.verifyUser
+      }
     },
     verifyUser () {
-      let token = localStorage.getItem('token')
-      if(token !== null && token !== undefined && token !== ""){
-         return true
+      if (this.$store.state.token !== null && this.$store.state.token !== undefined && this.$store.state.token !== '') {
+        return true
       }
-
       return false
     }
   },
   name: 'App'
 }
 </script>
+
+<style>
+  main.no-padding.v-content {
+      padding: 0 !important;
+  }
+</style>
+
 

@@ -6,6 +6,12 @@ if (navigator.userAgent.indexOf('PhantomJS') > -1) {
 }
 
 export const mutations = {
+  LOGIN (state, data) {
+    state.user = data.res
+    localStorage.setItem('bazam-token', state.user.token)
+    localStorage.setItem('bazam-user', JSON.stringify(state.user))
+    alert(data.message)
+  },
   GET_ALL (state, data) {
     state[data.state].all = data.res
   },
@@ -13,15 +19,27 @@ export const mutations = {
     state[data.state].editedItem = data.res
   },
   CREATE (state, data) {
-    state[data.state].all.push(data.res)
-    alert('the element was created')
+    state[data.state].all.unshift(data.res)
+    alert('El elemento fue creado')
   },
   UPDATE_ONE (state, data) {
-    state[data.state].all[data.index] = data.item
-    alert('the element was updated')
+    state[data.state].all[data.item.in] = data.item
+    console.log(state[data.state].all[data.item.in])
+    alert('El elemento fue actualizado')
   },
   DELETE_ONE (state, data) {
-    state[data.state].all.splice(data.index, 1)
-    alert('the element was deleted')
+    state[data.state].all.splice(data.item.index, 1)
+    alert('El elemento fue eliminado')
+  },
+  GET_ALL_TRASH (state, data) {
+    state[data.state].trash = data.res
+  },
+  RESTORE (state, data) {
+    state[data.state].trash.splice(data.item.index, 1)
+    alert('El elemento fue restaurado')
+  },
+  TRASH (state, data) {
+    state[data.state].trash.splice(data.item.index, 1)
+    alert('El elemento fue eliminado permanentemente')
   }
 }

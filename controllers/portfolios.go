@@ -99,7 +99,7 @@ func (c *PortfoliosController) Post() {
 
 	if c.Ctx.Input.IsUpload() {
 
-		images, err := c.GetFiles("images[]")
+		images, err := c.GetFiles("images")
 
 		if err != nil {
 			c.BadRequest(err)

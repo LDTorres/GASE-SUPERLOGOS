@@ -6,9 +6,16 @@ import axios from '../../axios.js'
 
 const route = '/briefs'
 
+var struct = [
+  { text: 'Id', align: 'left', sortable: true, value: 'id' },
+  { text: 'Formulario', value: 'service_form.title' },
+  { text: 'cookie', value: 'cookie' },
+  { text: 'Acciones', align: 'center', value: '' }
+]
+
 export default {
   namespaced: true,
-  state: {all: []},
+  state: { all: [], defaultItem: {}, editedItem: {}, trash: [], struct: struct },
   mutations: {
     GET_ALL (state, data) {
       state.all = data

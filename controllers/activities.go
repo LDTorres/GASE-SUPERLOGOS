@@ -25,7 +25,6 @@ func (c *ActivitiesController) URLMapping() {
 	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-
 }
 
 // Post ...
@@ -51,7 +50,7 @@ func (c *ActivitiesController) Post() {
 
 	valid := validation.Validation{}
 
-	b, err := valid.Valid(&v)
+	b, _ := valid.Valid(&v)
 
 	if !b {
 		c.BadRequestErrors(valid.Errors, v.TableName())
@@ -60,13 +59,10 @@ func (c *ActivitiesController) Post() {
 
 	// Validate foreings keys
 
-	foreignsModels := map[string]int{
-		"Sectors": v.Sector.ID,
-	}
+	exists := models.ValidateExists("Sectors", v.Sector.ID)
 
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
+	if !exists {
+		c.BadRequestDontExists("Sector")
 		return
 	}
 
@@ -206,7 +202,7 @@ func (c *ActivitiesController) Put() {
 
 	valid := validation.Validation{}
 
-	b, err := valid.Valid(&v)
+	b, _ := valid.Valid(&v)
 
 	if !b {
 		c.BadRequestErrors(valid.Errors, v.TableName())
@@ -215,13 +211,10 @@ func (c *ActivitiesController) Put() {
 
 	// Validate foreings keys
 
-	foreignsModels := map[string]int{
-		"Sectors": v.Sector.ID,
-	}
+	exists := models.ValidateExists("Sectors", v.Sector.ID)
 
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
+	if !exists {
+		c.BadRequestDontExists("Sector")
 		return
 	}
 

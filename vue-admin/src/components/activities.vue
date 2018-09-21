@@ -1,10 +1,10 @@
 <template class="activities">
 <div>
   <v-toolbar flat color="white">
-      <v-toolbar-title class="text-capitalize">{{ viewName }}</v-toolbar-title>
+      <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">
-        <v-btn slot="activator" color="primary" dark class="mb-2">New {{ viewName }}</v-btn>
+        <v-btn slot="activator" color="primary" outline class="mb-2">Nuevas {{ viewNameESP }}</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -13,20 +13,43 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs12 sm6 md12>
-                  <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.name" label="Nombre"></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md12>
+                <v-flex xs12>
                   <v-text-field v-model="editedItem.description" label="Description"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md12 ng-if="editedIndex < 0">
+                   <v-select
+                    v-model="editedItem.sector"
+                    :items="sectors"
+                    item-text="name"
+                    item-value="in"
+                    :error-messages="selectErrors"
+                    return-object
+                    label="Sectors"
+                    required
+                  ></v-select>
+                </v-flex>
+                <v-flex xs12 sm6 md12 v-if="editedItem.sector">
+                  <p>
+                    <b>Sector:</b> 
+                    <span v-text="editedItem.sector.name"></span>
+                  </p>
+                  <p>
+                    <b>Portfolios:</b> 
+                    <span v-text="editedItem.portfolios.length"></span>
+                  </p>
                 </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
 
           <v-card-actions>
+            <v-btn :to="'/portfolios?q='+editedItem.name" v-if="editedItem.portfolios" outline color="primary" exact>Portfolios</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+            <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
+            <v-btn color="primary" outline  @click.native="save">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -39,20 +62,20 @@
               <v-text-field
                 v-model="search"
                 append-icon="search"
-                label="Search"
+                label="Buscar:"
                 single-line
                 hide-details
               ></v-text-field>
           </v-flex>
         </v-layout>
       </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="list"
-      class="elevation-1"
-      no-data-text="No results"
-      :search="search"
-    >
+      <v-data-table
+        :headers="headers"
+        :items="list"
+        class="elevation-1"
+        no-data-text="No hubo resultados"
+        :search="search"
+      >
       <template slot="items" slot-scope="props">
         <td>{{ props.item.id }}</td>
         <td >{{ props.item.name }}</td>
@@ -83,39 +106,37 @@
 <script lang="js">
   export default {
     name: 'activities',
-    props: [],
+    props: ['search'],
     created () {
-      this.$store.dispatch('getAll', this.storeParams)
+      this.$store.dispatch('getAll', {state: this.viewName})
+      this.$store.dispatch('getAll', {state: 'sectors'})
     },
     mounted () {
     },
     data () {
       return {
-        headers: [
-          { text: 'Id', align: 'left', sortable: true, value: 'id' },
-          { text: 'Name', value: 'name' },
-          { text: 'Description', value: 'description' },
-          { text: 'Sector', value: 'sector' },
-          {text: 'Actions', align: 'center', value: ''}
-        ],
-        search: '',
+        selectErrors: [],
         pagination: {},
         dialog: false,
-        editedIndex: -1
+        editedIndex: -1,
+        viewNameESP: 'Actividades'
       }
     },
     methods: {
       editItem (item) {
         this.editedIndex = this.list.indexOf(item)
+        console.log(this.editedIndex)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
       deleteItem (item) {
-        let params = this.storeParams
         item.index = this.list.indexOf(item)
-        params.item = item
+        let params = {
+          state: this.viewName,
+          item: item
+        }
 
-        confirm('Are you sure you want to delete this item?') && this.$store.dispatch('deleteOne', params)
+        confirm('Esta seguro que desea eliminar este elemento?') && this.$store.dispatch('deleteOne', params)
       },
       close () {
         this.dialog = false
@@ -125,9 +146,10 @@
         }, 300)
       },
       save () {
-        let params = this.storeParams
-        this.editedItem.index = this.editedIndex
-        params.item = this.editedItem
+        let params = {
+          state: this.viewName,
+          item: this.editedItem
+        }
 
         if (this.editedIndex > -1) {
           this.$store.dispatch('updateOne', params)
@@ -143,8 +165,14 @@
       }
     },
     computed: {
+      headers () {
+        return this.$store.state[this.viewName].struct
+      },
       list () {
-        return this.$store.state[this.viewName].all
+        return this.$store.getters.getAll('activities')
+      },
+      sectors () {
+        return this.$store.getters.getAll('sectors')
       },
       pages () {
         if (this.pagination.rowsPerPage == null ||
@@ -156,21 +184,9 @@
       viewName () {
         return this.$route.name
       },
-      storeParams: {
-        get () {
-          let params = {
-            route: '/' + this.viewName,
-            state: this.viewName
-          }
-          return params
-        },
-        set (value) {
-          this.storeParams = value
-        }
-      },
       formTitle () {
-        var title = this.editedIndex === -1 ? 'New ' : 'Edit '
-        return title + this.viewName
+        var title = this.editedIndex === -1 ? 'Nueva ' : 'Editar '
+        return title + this.viewNameESP
       },
       defaultItem () {
         return this.$store.state[this.viewName].defaultItem
@@ -187,8 +203,3 @@
     }
 }
 </script>
-
-<style scoped lang="css">
-.activities {
-}
-</style>

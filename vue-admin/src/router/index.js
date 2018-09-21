@@ -10,7 +10,6 @@ import home from '@/components/home'
 import orders from '@/components/orders'
 import activities from '@/components/activities'
 import briefs from '@/components/briefs'
-import carts from '@/components/carts'
 import clients from '@/components/clients'
 import countries from '@/components/countries'
 import coupons from '@/components/coupons'
@@ -20,13 +19,14 @@ import locations from '@/components/locations'
 import mails from '@/components/mails'
 import paymentsMethods from '@/components/payments_methods'
 import sectors from '@/components/sectors'
-import serviceForms from '@/components/service_forms'
 import services from '@/components/services'
 import users from '@/components/users'
+import portfolios from '@/components/portfolios'
+import trashed from '@/components/trashed'
 
 Vue.use(Router)
 
-export default new Router({
+var instance = new Router({
   routes: [
     {
       path: '/',
@@ -41,82 +41,100 @@ export default new Router({
     {
       path: '/orders',
       name: 'orders',
-      component: orders
+      component: orders,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/activities',
       name: 'activities',
-      component: activities
+      component: activities,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/briefs',
       name: 'briefs',
-      component: briefs
-    },
-    {
-      path: '/carts',
-      name: 'carts',
-      component: carts
+      component: briefs,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/clients',
       name: 'clients',
-      component: clients
+      component: clients,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/countries',
       name: 'countries',
-      component: countries
+      component: countries,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/coupons',
       name: 'coupons',
-      component: coupons
+      component: coupons,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/currencies',
       name: 'currencies',
-      component: currencies
+      component: currencies,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/gateways',
       name: 'gateways',
-      component: gateways
+      component: gateways,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/locations',
       name: 'locations',
-      component: locations
+      component: locations,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/mails',
       name: 'mails',
-      component: mails
+      component: mails,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/payments-methods',
       name: 'payments-methods',
-      component: paymentsMethods
+      component: paymentsMethods,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/sectors',
       name: 'sectors',
-      component: sectors
-    },
-    {
-      path: '/service-forms',
-      name: 'service-forms',
-      component: serviceForms
+      component: sectors,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/services',
       name: 'services',
-      component: services
+      component: services,
+      props: (route) => ({ search: route.query.q })
     },
     {
       path: '/users',
       name: 'users',
-      component: users
+      component: users,
+      props: (route) => ({ search: route.query.q })
+    },
+    {
+      path: '/portfolios',
+      name: 'portfolios',
+      component: portfolios,
+      props: (route) => ({ search: route.query.q })
+    },
+    {
+      path: '/trashed',
+      name: 'trashed',
+      component: trashed,
+      props: (route) => ({ model: route.query.m, search: route.query.q })
     }
   ]
 })
+
+export default instance

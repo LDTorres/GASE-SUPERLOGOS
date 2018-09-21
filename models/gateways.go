@@ -126,6 +126,7 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
+				v.Orders = nil
 				ml = append(ml, v)
 			}
 		} else {
@@ -137,6 +138,7 @@ func GetAllGateways(query map[string]string, fields []string, sortby []string, o
 					m[fname] = val.FieldByName(fname).Interface()
 				}
 				v.loadRelations()
+				v.Orders = nil
 				ml = append(ml, m)
 			}
 		}

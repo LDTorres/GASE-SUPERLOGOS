@@ -68,6 +68,8 @@ func (c *ClientsController) Post() {
 		return
 	}
 
+	v.Password = "bazam12345"
+
 	// Validate context body
 
 	valid := validation.Validation{}

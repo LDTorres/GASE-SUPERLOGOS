@@ -92,7 +92,11 @@ func GetURLMapping(route string) (validation map[string][]string) {
 	}
 
 	briefs := map[string][]string{
-		"/:id;PUT,DELETE": {"Client"},
+		"/:id;PUT,DELETE": {"Admin"},
+	}
+
+	activities := map[string][]string{
+		"/:id;PUT,DELETE": {"Admin"},
 	}
 
 	users := map[string][]string{
@@ -132,6 +136,7 @@ func GetURLMapping(route string) (validation map[string][]string) {
 		"portfolios":       portfolios,
 		"payments-methods": payments,
 		"forms":            forms,
+		"activities":       activities,
 	}
 
 	return validations[route]

@@ -2,85 +2,86 @@ const app = {
   sidemenu:
   [
     {
+      icon: 'money',
+      title: 'Monedas',
+      route: 'currencies'
+    },
+    {
+      icon: 'outlined_flag',
+      title: 'Paises',
+      route: 'countries'
+    },
+    {
+      icon: 'bookmark_border',
+      title: 'Locaciones',
+      route: 'locations'
+    },
+    {
+      icon: 'bookmark_border',
+      title: 'Sectores',
+      route: 'sectors'
+    },
+    {
       icon: 'local_activity',
-      title: 'Activities',
+      title: 'Actividades',
       route: 'activities'
     },
+    {
+      icon: 'subtitles',
+      title: 'Servicios',
+      route: 'services'
+    },
+    {
+      icon: 'description',
+      title: 'Ordenes',
+      route: 'orders'
+    },
+    {
+      icon: 'payment',
+      title: 'Pasarelas',
+      route: 'gateways'
+    },
+    {
+      icon: 'card_giftcard',
+      title: 'Cupones',
+      route: 'coupons'
+    },
+    /*  {
+      icon: 'payment',
+      title: 'Metodos de pago',
+      route: 'payments-methods'
+    }, */
     {
       icon: 'work',
       title: 'Briefs',
       route: 'briefs'
     },
     {
-      icon: 'shopping_cart',
-      title: 'Carts',
-      route: 'carts'
+      icon: 'work',
+      title: 'Portafolios',
+      route: 'portfolios'
     },
     {
       icon: 'face',
-      title: 'Clients',
+      title: 'Clientes',
       route: 'clients'
     },
     {
-      icon: 'outlined_flag',
-      title: 'Countries',
-      route: 'countries'
-    },
-    {
-      icon: 'card_giftcard',
-      title: 'Coupons',
-      route: 'coupons'
-    },
-    {
-      icon: 'money',
-      title: 'Currencies',
-      route: 'currencies'
-    },
-    {
-      icon: 'payment',
-      title: 'Gateways',
-      route: 'gateways'
-    },
-    {
-      icon: 'bookmark_border',
-      title: 'Locations',
-      route: 'locations'
-    },
-    {
-      icon: 'mail_outline',
-      title: 'Mails',
-      route: 'mails'
-    },
-    {
-      icon: 'description',
-      title: 'Orders',
-      route: 'orders'
-    },
-    {
-      icon: 'payment',
-      title: 'Payments Methods',
-      route: 'payments-methods'
-    },
-    {
-      icon: 'bookmark_border',
-      title: 'Sectors',
-      route: 'sectors'
-    },
-    {
-      icon: 'web_asset',
-      title: 'Service Forms',
-      route: 'service-forms'
-    },
-    {
-      icon: 'subtitles',
-      title: 'Services',
-      route: 'services'
-    },
-    {
       icon: 'account_circle',
-      title: 'Users',
+      title: 'Usuarios',
       route: 'users'
-    }]
+    },
+    {
+      icon: 'delete',
+      title: 'Papelera',
+      route: 'trashed?m=orders'
+    }
+    /* ,{
+      icon: 'mail_outline',
+      title: 'Plantillas de Emails',
+      route: 'mails'
+    } */
+  ]
 }
 
 export default {

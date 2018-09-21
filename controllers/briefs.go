@@ -21,6 +21,7 @@ func (c *BriefsController) URLMapping() {
 	c.Mapping("Get", c.GetOne)
 	c.Mapping("GetOneByCookie", c.GetOneByCookie)
 	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("Options", c.Options)
 }
 
 // Post ...
@@ -46,6 +47,8 @@ func (c *BriefsController) Post() {
 		c.BadRequestErrors(valid.Errors, "Briefs")
 		return
 	}
+
+	v.ID = bson.NewObjectId()
 
 	err = v.Insert()
 

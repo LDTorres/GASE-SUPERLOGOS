@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/globalsign/mgo/bson"
 
 	"github.com/gosimple/slug"
 )
@@ -20,9 +21,9 @@ type Services struct {
 	Prices     []*Prices     `orm:"reverse(many)" json:"prices,omitempty"`
 	Price      *Prices       `orm:"-" json:"price,omitempty"`
 	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
-	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
+	Code       string        `orm:"column(code);size(255)" json:"-"`
 	Portfolios []*Portfolios `orm:"reverse(many)" json:"portfolios,omitempty"`
-	Quantity   int           `orm:"-" bson:"quantity"     json:"quantity,omitempty" valid:"Required"`
+	Quantity   int           `orm:"-" bson:"quantity"     json:"quantity,omitempty"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null" json:"-"`
@@ -50,6 +51,8 @@ func (m *Services) loadRelations() {
 //AddServices insert a new Services into database and returns last inserted Id on success.
 func AddServices(m *Services) (id int64, err error) {
 	o := orm.NewOrm()
+
+	m.Code = bson.NewObjectId().String()
 
 	m.Slug = GenerateSlug(m.TableName(), m.Name)
 

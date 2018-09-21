@@ -1,9 +1,27 @@
 import axios from '../axios.js'
 
 export default {
+  async login ({ commit }, params) {
+    try {
+      let res = await axios.post('/users/login', params.item)
+      params.res = res.data
+      commit('LOGIN', params)
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  async register ({ commit }, params) {
+    try {
+      let res = await axios.post('/users', params.item)
+      params.res = res.data
+      commit('LOGIN', params)
+    } catch (error) {
+      console.log(error)
+    }
+  },
   async getAll ({ commit }, params) {
     try {
-      let res = await axios.get(params.route)
+      let res = await axios.get('/' + params.state)
       params.res = res.data
       commit('GET_ALL', params)
     } catch (error) {
@@ -12,7 +30,7 @@ export default {
   },
   async getOne ({ commit }, params) {
     try {
-      let res = await axios.get(params.route + '/' + params.item.id)
+      let res = await axios.get('/' + params.state + '/' + params.item.id)
       params.res = res.data
       commit('GET_ONE', params)
     } catch (error) {
@@ -21,7 +39,7 @@ export default {
   },
   async create ({ commit }, params) {
     try {
-      let res = await axios.post(params.route, params.item)
+      let res = await axios.post('/' + params.state, params.item)
       params.res = res.data
       commit('CREATE', params)
     } catch (error) {
@@ -30,7 +48,7 @@ export default {
   },
   async updateOne ({ commit }, params) {
     try {
-      let res = await axios.put(params.route + '/' + params.item.id, params.item)
+      let res = await axios.put('/' + params.state + '/' + params.item.id, params.item)
       params.res = res.data
       commit('UPDATE_ONE', params)
     } catch (error) {
@@ -39,9 +57,36 @@ export default {
   },
   async deleteOne ({ commit }, params) {
     try {
-      let res = await axios.delete(params.route + '/' + params.item.id + '?trash=false')
+      let res = await axios.delete('/' + params.state + '/' + params.item.id)
       params.res = res.data
       commit('DELETE_ONE', params)
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  async getAllTrashed ({ commit }, params) {
+    try {
+      let res = await axios.get('/' + params.state + '/trashed')
+      params.res = res.data
+      commit('GET_ALL', params)
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  async restore ({ commit }, params) {
+    try {
+      let res = await axios.delete('/' + params.state + '/' + params.item.id + '/restore')
+      params.res = res.data
+      commit('RESTORE', params)
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  async trash ({ commit }, params) {
+    try {
+      let res = await axios.delete('/' + params.state + '/' + params.item.id + '?trash=true')
+      params.res = res.data
+      commit('TRASH', params)
     } catch (error) {
       console.log(error)
     }

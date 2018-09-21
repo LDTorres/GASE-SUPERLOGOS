@@ -2,10 +2,11 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/astaxie/beego"
 
 	"github.com/astaxie/beego/orm"
 	"github.com/gosimple/slug"
@@ -154,14 +155,21 @@ func UpdateActivitiesByID(m *Activities) (err error) {
 	o := orm.NewOrm()
 	v := Activities{ID: m.ID}
 	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Update(m); err == nil {
-			fmt.Println("Number of records updated in database:", num)
-		}
+	err = o.Read(&v)
+	if err != nil {
+		return
 	}
 
-	v.loadRelations()
+	var num int64
+
+	num, err = o.Update(m)
+
+	if err != nil {
+		return
+	}
+
+	beego.Debug("Number of records updated in database:", num)
+
 	return
 }
 
