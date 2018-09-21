@@ -293,3 +293,32 @@ func (c *ActivitiesController) GetAllFromTrash() {
 	c.ServeJSON()
 
 }
+
+// RestoreFromTrash ...
+// @Title Restore From Trash
+// @Description Restore From Trash
+// @router /:id/restore [put]
+func (c *ActivitiesController) RestoreFromTrash() {
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v := &models.Activities{ID: id}
+
+	err = models.RestoreFromTrash(v.TableName(), v.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
+}

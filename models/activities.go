@@ -193,6 +193,7 @@ func DeleteActivities(id int, trash bool) (err error) {
 
 //GetActivitiesFromTrash return Activities soft Deleted
 func GetActivitiesFromTrash() (activities []*Activities, err error) {
+
 	o := orm.NewOrm()
 
 	v := []*Activities{}
