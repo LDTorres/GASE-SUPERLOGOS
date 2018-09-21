@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"GASE/controllers/services"
+	"GASE/controllers/services/payments"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -395,7 +395,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 		paypalID := paymentData["id"].(string)
 
-		payment := &services.WebCheckoutPayment{}
+		payment := &payments.WebCheckoutPayment{}
 
 		payment.ID = paypalID
 
@@ -419,7 +419,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 		tokenStripe := paymentData["token"].(string)
 
-		payment := &services.CreditCardPayment{}
+		payment := &payments.CreditCardPayment{}
 		payment.Token = tokenStripe
 
 		err = payment.CreditCardStripe()
@@ -446,7 +446,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 		tokenPayu := paymentData["token"].(string)
 
-		payment := &services.CreditCardPayment{}
+		payment := &payments.CreditCardPayment{}
 		payment.Token = tokenPayu
 
 		payment.ExtraData = paymentData

@@ -1,18 +1,17 @@
 package models
 
 import (
-	"errors"
-
 	"github.com/globalsign/mgo/bson"
 	"github.com/gofrs/uuid"
 )
 
 // Briefs model definiton.
 type Briefs struct {
-	ID          bson.ObjectId `orm:"-" bson:"_id,omitempty"      json:"id,omitempty"`
-	Cookie      string        `orm:"-" bson:"cookie"     json:"cookie,omitempty"`
-	ServiceForm *ServiceForms `orm:"-" bson:"service_form"     json:"service_form,omitempty" valid:"Required"`
-	Client      *Clients      `orm:"-" bson:"client"     json:"client,omitempty"`
+	ID     bson.ObjectId `orm:"-" bson:"_id,omitempty"      json:"id,omitempty"`
+	Cookie string        `orm:"-" bson:"cookie"     json:"cookie,omitempty"`
+	//ServiceForm *ServiceForms `orm:"-" bson:"service_form"     json:"service_form,omitempty" valid:"Required"`
+	Client *Clients `orm:"-" bson:"client"     json:"client,omitempty"`
+	Data   map[string]interface{}
 }
 
 //TableName define Name
@@ -27,13 +26,13 @@ func (m *Briefs) Insert() (err error) {
 
 	c := mConn.DB("").C(m.TableName())
 
-	if m.Cookie != "" {
-		err = m.GetBriefsByCookie(m.Cookie, m.ServiceForm.Service.Slug)
+	/* if m.Cookie != "" {
+		err = m.GetBriefsByCookie(m.Cookie)
 
 		if err == nil {
 			return errors.New("El elemento ya existe")
 		}
-	}
+	} */
 
 	UUID, err := uuid.NewV4()
 
@@ -69,7 +68,7 @@ func (m *Briefs) GetBriefsByID(id string) (err error) {
 }
 
 // GetBriefsByCookie =
-func (m *Briefs) GetBriefsByCookie(cookie string, service string) (err error) {
+func (m *Briefs) GetBriefsByCookie(cookie string) (err error) {
 	mConn := Conn()
 	defer mConn.Close()
 
@@ -85,11 +84,11 @@ func (m *Briefs) GetBriefsByCookie(cookie string, service string) (err error) {
 }
 
 // GetAllBriefs =
-func (m *Briefs) GetAllBriefs() (Briefs []*Briefs, err error) {
+func GetAllBriefs() (Briefs []*Briefs, err error) {
 	mConn := Conn()
 	defer mConn.Close()
 
-	c := mConn.DB("").C(m.TableName())
+	c := mConn.DB("").C("briefs")
 
 	err = c.Find(nil).All(&Briefs)
 

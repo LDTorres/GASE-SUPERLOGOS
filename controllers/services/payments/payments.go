@@ -1,4 +1,4 @@
-package services
+package payments
 
 import (
 	"github.com/stripe/stripe-go"

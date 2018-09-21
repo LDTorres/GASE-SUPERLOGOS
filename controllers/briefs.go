@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/astaxie/beego"
-
 	"github.com/astaxie/beego/validation"
 	"github.com/globalsign/mgo/bson"
 )
@@ -19,7 +17,6 @@ type BriefsController struct {
 // URLMapping ...
 func (c *BriefsController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("Get", c.GetOne)
 	c.Mapping("GetOneByCookie", c.GetOneByCookie)
@@ -29,6 +26,7 @@ func (c *BriefsController) URLMapping() {
 // Post ...
 // @router / [post]
 func (c *BriefsController) Post() {
+
 	var v models.Briefs
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
@@ -63,17 +61,16 @@ func (c *BriefsController) Post() {
 // GetOne ...
 // @router /:id [get]
 func (c *BriefsController) GetOne() {
+
 	v := models.Briefs{}
 
 	idStr := c.Ctx.Input.Param(":id")
-
 	if idStr == "" {
 		c.BadRequest(errors.New("El campo id no púede ser vacio"))
 		return
 	}
 
 	validID := bson.IsObjectIdHex(idStr)
-
 	if !validID {
 		c.BadRequest(errors.New("El Id no es valido"))
 		return
@@ -93,9 +90,9 @@ func (c *BriefsController) GetOne() {
 // GetAll ...
 // @router /:id [get]
 func (c *BriefsController) GetAll() {
-	var v models.Briefs
+	//var v models.Briefs
 
-	Briefs, err := v.GetAllBriefs()
+	Briefs, err := models.GetAllBriefs()
 
 	if err != nil {
 		c.BadRequest(err)
@@ -108,46 +105,6 @@ func (c *BriefsController) GetAll() {
 	}
 
 	c.Data["json"] = Briefs
-	c.ServeJSON()
-}
-
-// Put ...
-// @router /:id [put]
-func (c *BriefsController) Put() {
-	var v models.Briefs
-
-	idStr := c.Ctx.Input.Param(":id")
-
-	if idStr == "" {
-		c.BadRequest(errors.New("El campo id no púede ser vacio"))
-		return
-	}
-
-	validID := bson.IsObjectIdHex(idStr)
-
-	if !validID {
-		c.BadRequest(errors.New("El Id no es valido"))
-		return
-	}
-
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	err = v.Update()
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	c.Data["json"] = MessageResponse{
-		Message:       "Updated element",
-		PrettyMessage: "Elemento Actualizado",
-	}
 	c.ServeJSON()
 }
 
@@ -196,42 +153,12 @@ func (c *BriefsController) GetOneByCookie() {
 		return
 	}
 
-	service := c.Ctx.Input.Param(":service")
-
-	if service == "" {
-		c.BadRequest(errors.New("El campo service no púede ser vacio"))
-		return
-	}
-
-	err := v.GetBriefsByCookie(cookie, service)
+	err := v.GetBriefsByCookie(cookie)
 
 	if err != nil {
 
-		if err.Error() == "not found" {
-			// Verify if exists a form
-			form := models.ServiceForms{}
-
-			err = form.GetServiceFormsByServiceSlug(service)
-
-			if err != nil {
-				c.BadRequest(err)
-				return
-			}
-
-			v.ServiceForm = &form
-
-			v.Cookie = ""
-
-			err = v.Insert()
-
-			beego.Debug(err)
-
-			if err != nil {
-				c.BadRequest(err)
-				return
-			}
-		}
-
+		c.ServeErrorJSON(err)
+		return
 	}
 
 	c.Data["json"] = v

@@ -191,6 +191,24 @@ func DeleteActivities(id int, trash bool) (err error) {
 	return
 }
 
+//GetActivitiesFromTrash return Activities soft Deleted
+func GetActivitiesFromTrash() (activities []*Activities, err error) {
+	o := orm.NewOrm()
+
+	v := []*Activities{}
+
+	_, err = o.QueryTable("activities").Filter("deleted_at__isnull", true).All(v)
+
+	if err != nil {
+		return
+	}
+
+	activities = v
+
+	return
+
+}
+
 func addDefaultDataActivities() (count int64, errors []error) {
 
 	o := orm.NewOrm()

@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -324,6 +325,26 @@ func GetMD5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+//RestoreFromTrash ...
+func RestoreFromTrash(tableName string, id int) (err error) {
+
+	o := orm.NewOrm()
+
+	num, err := o.QueryTable(tableName).Filter("id", id).Filter("deleted_at__isnull", false).Update(orm.Params{
+		"deleted_at": nil,
+	})
+
+	if err != nil {
+		return
+	}
+
+	if num == 0 {
+		err = errors.New("not found")
+	}
+
+	return
 }
 
 /* func filterDeleted(model interface{}) {

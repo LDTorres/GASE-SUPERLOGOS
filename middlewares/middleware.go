@@ -42,9 +42,9 @@ func GetURLMapping(route string) (validation map[string][]string) {
 	}
 
 	clients := map[string][]string{
-		";GET":                {"Admin"},
-		"/email/:email;GET":   {"Admin", "Client"},
-		"/:id;GET,PUT,DELETE": {"Client"},
+		";GET":              {"Admin"},
+		"/email/:email;GET": {"Admin", "Client"},
+		//"/:id;GET,PUT,DELETE": {"Client"},
 	}
 
 	countries := map[string][]string{

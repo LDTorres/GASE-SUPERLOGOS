@@ -112,8 +112,7 @@ func init() {
 			beego.NSRouter("/", &controllers.BriefsController{}, "post:Post"),
 			beego.NSRouter("/", &controllers.BriefsController{}, "get:GetAll"),
 			beego.NSRouter("/:id", &controllers.BriefsController{}, "get:Get"),
-			beego.NSRouter("/:service/:cookie", &controllers.BriefsController{}, "get:GetOneByCookie"),
-			beego.NSRouter("/:id", &controllers.BriefsController{}, "put:Put"),
+			beego.NSRouter("/uuid/:cookie", &controllers.BriefsController{}, "get:GetOneByCookie"),
 			beego.NSRouter("/:id", &controllers.BriefsController{}, "delete:Delete"),
 		),
 

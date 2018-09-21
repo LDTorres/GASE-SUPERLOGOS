@@ -128,16 +128,15 @@ func (c *PortfoliosController) Post() {
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *PortfoliosController) GetOne() {
+
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
-
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
 	CountryIso := c.Ctx.Input.Header("Country-Iso")
-
 	if CountryIso == "" {
 		CountryIso = "US"
 	}
@@ -149,7 +148,6 @@ func (c *PortfoliosController) GetOne() {
 	}
 
 	v, err := models.GetPortfoliosByID(id)
-
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return

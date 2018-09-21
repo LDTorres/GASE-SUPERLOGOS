@@ -32,7 +32,7 @@ type MessageResponse struct {
 }
 
 var (
-	rootDir, _      = filepath.Abs(beego.AppConfig.String("assets::saltos"))
+	rootDir, _      = filepath.Abs(beego.AppConfig.String("assets::jumps"))
 	imageFolderPath = beego.AppConfig.String("assets::imageFolderPath")
 	imageFolderDir  = rootDir + "/" + imageFolderPath
 )

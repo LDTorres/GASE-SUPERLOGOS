@@ -21,6 +21,7 @@ func (c *ActivitiesController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetAllFromTrash", c.GetAllFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 
@@ -273,4 +274,22 @@ func (c *ActivitiesController) Delete() {
 	}
 
 	c.ServeJSON()
+}
+
+// GetAllFromTrash ...
+// @Title Get All From Trash
+// @Description Get All From Trash
+// @router /trashed [get]
+func (c *ActivitiesController) GetAllFromTrash() {
+
+	v, err := models.GetActivitiesFromTrash()
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
 }

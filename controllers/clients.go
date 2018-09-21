@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GASE/controllers/services/mails"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -94,6 +95,16 @@ func (c *ClientsController) Post() {
 		return
 	}
 
+	go (func() {
+		HTMLParams := &mails.HTMLParams{Client: &v}
+
+		Email := &mails.Email{
+			To:         []string{v.Email},
+			HTMLParams: HTMLParams,
+		}
+		mails.SendMail(Email, "001")
+	})()
+
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v
 
@@ -121,6 +132,12 @@ func (c *ClientsController) GetOne() {
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
+	}
+
+	v.Password = ""
+
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	c.Data["json"] = v
@@ -382,6 +399,16 @@ func (c *ClientsController) ChangePasswordRequest() {
 	v.Password = ""
 	v.Token = token
 
+	go (func() {
+		HTMLParams := &mails.HTMLParams{Token: v.Token}
+
+		Email := &mails.Email{
+			To:         []string{v.Email},
+			HTMLParams: HTMLParams,
+		}
+		mails.SendMail(Email, "002")
+	})()
+
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v
 	c.ServeJSON()
@@ -393,8 +420,6 @@ func (c *ClientsController) ChangePasswordRequest() {
 // @Description Change Password Request for Clients
 // @router /change-password/:token [put]
 func (c *ClientsController) ChangePassword() {
-
-	fmt.Println("DFGHJKDVCDKFBSDFYHBDYBF")
 
 	token := c.Ctx.Input.Param(":token")
 
@@ -436,6 +461,16 @@ func (c *ClientsController) ChangePassword() {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	go (func() {
+		HTMLParams := &mails.HTMLParams{Token: v.Token}
+
+		Email := &mails.Email{
+			To:         []string{v.Email},
+			HTMLParams: HTMLParams,
+		}
+		mails.SendMail(Email, "003")
+	})()
 
 	c.Ctx.Output.SetStatus(200)
 	c.ServeJSON()

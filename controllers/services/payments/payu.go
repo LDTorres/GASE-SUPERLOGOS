@@ -1,4 +1,4 @@
-package services
+package payments
 
 import (
 	"bytes"
@@ -174,7 +174,7 @@ func (ccp *CreditCardPayment) PayuCreditCard() (err error) {
 	taxValue := payuTaxValue{
 		Currency: ccp.Currency,
 		Value:    ccp.Price,
-	} 
+	}
 
 	additionalValues := payuAdditionalValues{TaxValue: taxValue}
 
