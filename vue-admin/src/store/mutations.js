@@ -31,15 +31,15 @@ export const mutations = {
     state[data.state].all.splice(data.item.index, 1)
     alert('El elemento fue eliminado')
   },
-  GET_ALL_TRASH (state, data) {
-    state[data.state].trash = data.res
+  GET_ALL_TRASHED (state, data) {
+    state[data.state].trashed = data.res
   },
   RESTORE (state, data) {
-    state[data.state].trash.splice(data.item.index, 1)
+    state[data.state].trashed.splice(data.item.index, 1)
     alert('El elemento fue restaurado')
   },
   TRASH (state, data) {
-    state[data.state].trash.splice(data.item.index, 1)
+    state[data.state].trashed.splice(data.item.index, 1)
     alert('El elemento fue eliminado permanentemente')
   }
 }

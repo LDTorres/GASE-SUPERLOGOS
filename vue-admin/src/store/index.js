@@ -42,11 +42,11 @@ export default new Vuex.Store({
       return state[stateName].all
     },
     getAllTrashed: (state) => (stateName) => {
-      state[stateName].trash.forEach((element, i) => {
-        state[stateName].trash[i].in = i
+      state[stateName].trashed.forEach((element, i) => {
+        state[stateName].trashed[i].in = i
       })
 
-      return state[stateName].trash
+      return state[stateName].trashed
     }
   },
   actions,

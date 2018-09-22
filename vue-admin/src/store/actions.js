@@ -66,9 +66,9 @@ export default {
   },
   async getAllTrashed ({ commit }, params) {
     try {
-      let res = await axios.get('/' + params.state + '/trashed')
+      let res = await axios.patch('/' + params.state + '/trashed')
       params.res = res.data
-      commit('GET_ALL', params)
+      commit('GET_ALL_TRASHED', params)
     } catch (error) {
       console.log(error)
     }

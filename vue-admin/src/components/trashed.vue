@@ -28,8 +28,9 @@
         :search="search"
       >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.id }}</td>
-        <td >{{ props.item.name }}</td>
+        <td v-for="key in getKeysArray(props.item)" :key="key">
+          {{props.item[key]}}
+        </td>
         <td class="justify-center layout px-0">
           <v-icon
             title
@@ -85,6 +86,46 @@
         }
 
         confirm('Esta seguro que desea restaurar este elemento?') && this.$store.dispatch('restore', params)
+      },
+      getKeysArray (obj) {
+        let keys = []
+
+        for (let i = 0; i < this.headers.length; i++) {
+          const element = this.headers[i];
+          if(element.text != 'Acciones'){
+            keys.push(element.value)
+          }
+        }
+
+        for (let i = 0; i < keys.length; i++) {
+          const key = keys[i]
+          if (typeof obj[key] === 'object') {
+            if (obj[key].name !== undefined) {
+              obj[key] = obj[key].name
+            } else if (obj[key].iso !== undefined) {
+              obj[key] = obj[key].iso
+            } else if (obj[key].id !== undefined) {
+              obj[key] = obj[key].id
+            } else if (obj[key].title !== undefined) {
+              obj[key] = obj[key].title
+            }
+            continue
+          }
+
+          if (obj[key][0] !== undefined) {
+            if (obj[key][0].name !== undefined) {
+              obj[key][0] = obj[key].name
+            } else if (obj[key].iso !== undefined) {
+              obj[key][0] = obj[key].iso
+            } else if (obj[key].title !== undefined) {
+              obj[key][0] = obj[key].title
+            }
+          }
+        }
+
+        console.log(keys)
+
+        return keys
       }
     },
     watch: {

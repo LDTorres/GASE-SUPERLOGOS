@@ -46,7 +46,7 @@ var getForm = (data) => {
 
 export default {
   namespaced: true,
-  state: { all: [], defaultItem: {}, editedItem: {}, trash: [], struct: struct },
+  state: { all: [], defaultItem: {}, editedItem: {}, trashed: [], struct: struct },
   mutations: {
     GET_ALL (state, data) {
       state.all = data
