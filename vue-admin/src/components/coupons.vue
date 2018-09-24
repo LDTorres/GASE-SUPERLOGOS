@@ -14,7 +14,10 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field v-model="editedItem.percentage" label="Porcentage"></v-text-field>
+                  <v-text-field type="number" name="Porcentage" v-validate="'required|numeric|max:2'" v-model="editedItem.percentage" label="Porcentage"></v-text-field>
+                  <span v-show="errors.has('Porcentage')">{{ errors.first('Porcentage') }}</span>
+                </v-flex>
+                <v-flex xs12>
                   <v-select
                     v-model="editedItem.status"
                     :items="status"
@@ -24,7 +27,10 @@
                     return-object
                     label="Estado"
                     required
+                    name="Estado"
+                    v-validate="'required'"
                   ></v-select>
+                  <span v-show="errors.has('Estado')">{{ errors.first('Estado') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -33,7 +39,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
-            <v-btn color="primary" outline  @click.native="save">Guardar</v-btn>
+            <v-btn color="primary" outline  @click.native="save" :disabled="errors.count() > 0">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -131,7 +137,13 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {
+      save () {         
+        this.$validator.validate().then(result => {           
+          if (!result) {             
+            alert('Llene los campos correctamente.')           
+            }         
+        });
+
         let params = {
           state: this.viewName,
           item: this.editedItem

@@ -10,9 +10,9 @@ var struct = [
   { text: 'Nombre', value: 'name' },
   { text: 'Descripción', value: 'description' },
   { text: 'Cliente', value: 'client' },
-  { text: 'Locación', value: 'location' },
-  { text: 'Servicio', value: 'service' },
-  { text: 'Actividad', value: 'activity' },
+  { text: 'Locación', value: 'location.name' },
+  { text: 'Servicio', value: 'service.name' },
+  { text: 'Actividad', value: 'activity.name' },
   {text: 'Acciones', align: 'center', value: ''}
 ]
 const options = { headers: { 'Content-Type': 'multipart/form-data' } }

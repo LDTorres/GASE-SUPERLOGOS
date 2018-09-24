@@ -75,7 +75,7 @@ export default {
   },
   async restore ({ commit }, params) {
     try {
-      let res = await axios.delete('/' + params.state + '/' + params.item.id + '/restore')
+      let res = await axios.put('/' + params.state + '/' + params.item.id + '/restore')
       params.res = res.data
       commit('RESTORE', params)
     } catch (error) {

@@ -17,7 +17,6 @@ import gateways from './modules/gateways'
 import locations from './modules/locations'
 import mails from './modules/mails'
 import orders from './modules/orders'
-import paymentsMethods from './modules/payments_methods'
 import sectors from './modules/sectors'
 import services from './modules/services'
 import users from './modules/users'
@@ -62,7 +61,6 @@ export default new Vuex.Store({
     locations: locations,
     mails: mails,
     orders: orders,
-    'payments-methods': paymentsMethods,
     sectors: sectors,
     services: services,
     users: users,

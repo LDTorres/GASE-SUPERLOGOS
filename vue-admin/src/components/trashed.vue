@@ -35,7 +35,7 @@
           <v-icon
             title
             class="mr-2" color="primary"
-            @click="editItem(props.item)"
+            @click="restoreItem(props.item)"
           >
             restore
           </v-icon>
@@ -72,7 +72,7 @@
       deleteItem (item) {
         item.index = this.list.indexOf(item)
         let params = {
-          state: this.viewName,
+          state: this.model,
           item: item
         }
 
@@ -88,42 +88,31 @@
         confirm('Esta seguro que desea restaurar este elemento?') && this.$store.dispatch('restore', params)
       },
       getKeysArray (obj) {
-        let keys = []
+        var keys = []
 
         for (let i = 0; i < this.headers.length; i++) {
-          const element = this.headers[i];
-          if(element.text != 'Acciones'){
-            keys.push(element.value)
+          const header = this.headers[i]
+
+          if (header.text !== 'Acciones') {
+            let key = header.value
+            let newKey = 'name'
+            let json = []
+
+            if (key.indexOf('.') !== -1) {
+              json = key.split('.')
+              key = json[0] + '-' + newKey
+
+              obj[key] = obj[json[0]][json[1]]
+            } else if (key.includes('[0].')) {
+              json = key.split('[0].')
+              key = json[0] + '-' + newKey
+
+              obj[key] = obj[json[0]][json[1]]
+            }
+
+            keys.push(key)
           }
         }
-
-        for (let i = 0; i < keys.length; i++) {
-          const key = keys[i]
-          if (typeof obj[key] === 'object') {
-            if (obj[key].name !== undefined) {
-              obj[key] = obj[key].name
-            } else if (obj[key].iso !== undefined) {
-              obj[key] = obj[key].iso
-            } else if (obj[key].id !== undefined) {
-              obj[key] = obj[key].id
-            } else if (obj[key].title !== undefined) {
-              obj[key] = obj[key].title
-            }
-            continue
-          }
-
-          if (obj[key][0] !== undefined) {
-            if (obj[key][0].name !== undefined) {
-              obj[key][0] = obj[key].name
-            } else if (obj[key].iso !== undefined) {
-              obj[key][0] = obj[key].iso
-            } else if (obj[key].title !== undefined) {
-              obj[key][0] = obj[key].title
-            }
-          }
-        }
-
-        console.log(keys)
 
         return keys
       }

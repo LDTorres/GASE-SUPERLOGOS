@@ -14,9 +14,16 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field v-model="editedItem.name" label="Nombre"></v-text-field>
-                  <v-text-field v-model="editedItem.iso" label="Iso"></v-text-field>
-                  <v-text-field v-model="editedItem.symbol" label="Simbolo"></v-text-field>
+                  <v-text-field type="text" name="name" v-validate="'required|text'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
+                  <span v-show="errors.has('name')">{{ errors.first('name') }}</span>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field type="text" name="Iso" v-validate="'required|text|max:3'" v-model="editedItem.iso" label="Iso"></v-text-field>
+                  <span v-show="errors.has('Iso')">{{ errors.first('Iso') }}</span>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field type="text" name="Simbolo" v-validate="'required|text|max:3'" v-model="editedItem.symbol" label="Simbolo"></v-text-field>
+                  <span v-show="errors.has('Simbolo')">{{ errors.first('Simbolo') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -25,7 +32,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
-            <v-btn color="primary" outline  @click.native="save">Guardar</v-btn>
+            <v-btn color="primary" outline  @click.native="save" :disabled="errors.count() > 0">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -122,7 +129,13 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {
+      save () {         
+        this.$validator.validate().then(result => {           
+          if (!result) {             
+            alert('Llene los campos correctamente.')           
+            }         
+        });
+        
         let params = {
           state: this.viewName,
           item: this.editedItem

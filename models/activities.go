@@ -206,7 +206,7 @@ func GetActivitiesFromTrash() (activities []*Activities, err error) {
 
 	var v []*Activities
 
-	_, err = o.QueryTable("activities").Filter("deleted_at__isnull", false).All(&v)
+	_, err = o.QueryTable("activities").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
 
 	if err != nil {
 		return

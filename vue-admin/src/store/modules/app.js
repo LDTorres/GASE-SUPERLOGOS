@@ -46,11 +46,6 @@ const app = {
       title: 'Cupones',
       route: 'coupons'
     },
-    /*  {
-      icon: 'payment',
-      title: 'Metodos de pago',
-      route: 'payments-methods'
-    }, */
     {
       icon: 'work',
       title: 'Briefs',
