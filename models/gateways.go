@@ -204,3 +204,22 @@ func AddDefaultDataGateways() (count int64, err error) {
 
 	return
 }
+
+//GetGatewaysFromTrash return Gateways soft Deleted
+func GetGatewaysFromTrash() (gateways []*Gateways, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Gateways
+
+	_, err = o.QueryTable("gateways").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	gateways = v
+
+	return
+
+}

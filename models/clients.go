@@ -232,3 +232,22 @@ func DeleteClients(id int, trash bool) (err error) {
 
 	return
 }
+
+//GetClientsFromTrash return Clients soft Deleted
+func GetClientsFromTrash() (clients []*Clients, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Clients
+
+	_, err = o.QueryTable("clients").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	clients = v
+
+	return
+
+}

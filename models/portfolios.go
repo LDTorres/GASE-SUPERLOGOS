@@ -343,3 +343,22 @@ func GetPortfoliosByCustomSearch(filters map[string]int, limit int, offset int) 
 
 	return
 }
+
+//GetPortfoliosFromTrash return Portfolios soft Deleted
+func GetPortfoliosFromTrash() (portfolios []*Portfolios, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Portfolios
+
+	_, err = o.QueryTable("portfolios").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	portfolios = v
+
+	return
+
+}

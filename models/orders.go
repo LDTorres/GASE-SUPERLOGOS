@@ -188,3 +188,22 @@ func DeleteOrders(id int, trash bool) (err error) {
 
 	return
 }
+
+//GetOrdersFromTrash return Orders soft Deleted
+func GetOrdersFromTrash() (locations []*Orders, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Orders
+
+	_, err = o.QueryTable("locations").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	locations = v
+
+	return
+
+}
