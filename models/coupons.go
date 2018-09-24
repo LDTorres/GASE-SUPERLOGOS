@@ -200,3 +200,22 @@ func DeleteCoupons(id int, trash bool) (err error) {
 
 	return
 }
+
+//GetCouponsFromTrash return Coupons soft Deleted
+func GetCouponsFromTrash() (coupons []*Coupons, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Coupons
+
+	_, err = o.QueryTable("coupons").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	coupons = v
+
+	return
+
+}

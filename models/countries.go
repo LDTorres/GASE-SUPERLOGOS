@@ -219,6 +219,25 @@ func DeleteCountries(id int, trash bool) (err error) {
 	return
 }
 
+//GetCountriesFromTrash return Countries soft Deleted
+func GetCountriesFromTrash() (countries []*Countries, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Countries
+
+	_, err = o.QueryTable("countries").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	countries = v
+
+	return
+
+}
+
 func addDefaultDataCountries() (count int64, err error) {
 
 	o := orm.NewOrm()

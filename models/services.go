@@ -250,3 +250,22 @@ func (m *Services) GetPricesServicesByID(iso string) (err error) {
 
 	return
 }
+
+//GetServicesFromTrash return Services soft Deleted
+func GetServicesFromTrash() (services []*Services, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Services
+
+	_, err = o.QueryTable("services").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	services = v
+
+	return
+
+}

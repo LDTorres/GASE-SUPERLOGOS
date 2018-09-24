@@ -260,3 +260,22 @@ func addRelationsGatewaysCurrencies() (count int64, errors []error) {
 
 	return
 }
+
+//GetCurrenciesFromTrash return Currencies soft Deleted
+func GetCurrenciesFromTrash() (currencies []*Currencies, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Currencies
+
+	_, err = o.QueryTable("currencies").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	currencies = v
+
+	return
+
+}

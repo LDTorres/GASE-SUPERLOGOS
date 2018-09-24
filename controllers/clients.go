@@ -24,6 +24,8 @@ func (c *ClientsController) URLMapping() {
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetOneByEmail", c.GetOneByEmail)
 	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetAllFromTrash", c.GetAllFromTrash)
+	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("ChangePasswordRequest", c.ChangePasswordRequest)
@@ -476,4 +478,51 @@ func (c *ClientsController) ChangePassword() {
 
 	c.Ctx.Output.SetStatus(200)
 	c.ServeJSON()
+}
+
+// GetAllFromTrash ...
+// @Title Get All From Trash
+// @Description Get All From Trash
+// @router /trashed [patch]
+func (c *ClientsController) GetAllFromTrash() {
+
+	v, err := models.GetClientsFromTrash()
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
+}
+
+// RestoreFromTrash ...
+// @Title Restore From Trash
+// @Description Restore From Trash
+// @router /:id/restore [put]
+func (c *ClientsController) RestoreFromTrash() {
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v := &models.Clients{ID: id}
+
+	err = models.RestoreFromTrash(v.TableName(), v.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
 }

@@ -22,6 +22,8 @@ func (c *GatewaysController) URLMapping() {
 	c.Mapping("AddNewsCurrencies", c.AddNewsCurrencies)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetAllFromTrash", c.GetAllFromTrash)
+	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("DeleteCurrencies", c.DeleteCurrencies)
@@ -465,4 +467,51 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 	}
 
 	return
+}
+
+// GetAllFromTrash ...
+// @Title Get All From Trash
+// @Description Get All From Trash
+// @router /trashed [patch]
+func (c *GatewaysController) GetAllFromTrash() {
+
+	v, err := models.GetGatewaysFromTrash()
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
+}
+
+// RestoreFromTrash ...
+// @Title Restore From Trash
+// @Description Restore From Trash
+// @router /:id/restore [put]
+func (c *GatewaysController) RestoreFromTrash() {
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v := &models.Gateways{ID: id}
+
+	err = models.RestoreFromTrash(v.TableName(), v.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
 }

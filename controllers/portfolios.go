@@ -20,6 +20,8 @@ func (c *PortfoliosController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetAllFromTrash", c.GetAllFromTrash)
+	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("GetByCustomSearch", c.GetByCustomSearch)
@@ -498,4 +500,51 @@ func (c *PortfoliosController) GetPortfoliosByCountry() {
 
 	c.Data["json"] = v
 	c.ServeJSON()
+}
+
+// GetAllFromTrash ...
+// @Title Get All From Trash
+// @Description Get All From Trash
+// @router /trashed [patch]
+func (c *PortfoliosController) GetAllFromTrash() {
+
+	v, err := models.GetPortfoliosFromTrash()
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
+}
+
+// RestoreFromTrash ...
+// @Title Restore From Trash
+// @Description Restore From Trash
+// @router /:id/restore [put]
+func (c *PortfoliosController) RestoreFromTrash() {
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v := &models.Portfolios{ID: id}
+
+	err = models.RestoreFromTrash(v.TableName(), v.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
 }

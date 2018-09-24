@@ -310,3 +310,22 @@ func AddDefaultDataSectors() (count int64, err error) {
 
 	return
 }
+
+//GetSectorsFromTrash return Sectors soft Deleted
+func GetSectorsFromTrash() (sectors []*Sectors, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Sectors
+
+	_, err = o.QueryTable("sectors").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	sectors = v
+
+	return
+
+}

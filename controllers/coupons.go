@@ -21,6 +21,8 @@ func (c *CouponsController) URLMapping() {
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetOneByCode", c.GetOneByCode)
 	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetAllFromTrash", c.GetAllFromTrash)
+	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 }
@@ -261,4 +263,51 @@ func (c *CouponsController) GetOneByCode() {
 
 	c.Data["json"] = v
 	c.ServeJSON()
+}
+
+// GetAllFromTrash ...
+// @Title Get All From Trash
+// @Description Get All From Trash
+// @router /trashed [patch]
+func (c *CouponsController) GetAllFromTrash() {
+
+	v, err := models.GetCouponsFromTrash()
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
+}
+
+// RestoreFromTrash ...
+// @Title Restore From Trash
+// @Description Restore From Trash
+// @router /:id/restore [put]
+func (c *CouponsController) RestoreFromTrash() {
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v := &models.Coupons{ID: id}
+
+	err = models.RestoreFromTrash(v.TableName(), v.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
 }
