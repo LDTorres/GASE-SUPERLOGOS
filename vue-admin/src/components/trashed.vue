@@ -3,7 +3,7 @@
   <v-toolbar flat color="white">
       <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-title class="text-capitalize">{{ model }}</v-toolbar-title>
+      <v-btn :to="'/'+model" color="primary" outline class="mb-2">VOLVER</v-btn>
   </v-toolbar>
   <v-container fluid>
     <v-card>
@@ -98,22 +98,27 @@
             let newKey = 'name'
             let json = []
 
+            if (key.indexOf('[0].') !== -1) {
+              json = key.split('[0].')
+              key = json[0] + '-' + newKey
+
+              if(obj[json[0]] != undefined){
+                obj[key] = obj[json[0]][0][json[1]]
+              }
+            }
+
             if (key.indexOf('.') !== -1) {
               json = key.split('.')
               key = json[0] + '-' + newKey
 
-              obj[key] = obj[json[0]][json[1]]
-            } else if (key.includes('[0].')) {
-              json = key.split('[0].')
-              key = json[0] + '-' + newKey
-
-              obj[key] = obj[json[0]][json[1]]
+              if(obj[json[0]] != undefined){
+                obj[key] = obj[json[0]][json[1]]
+              }
             }
 
             keys.push(key)
           }
         }
-
         return keys
       }
     },

@@ -293,7 +293,7 @@ func (c *CountriesController) GetOneByIso() {
 // GetAllFromTrash ...
 // @Title Get All From Trash
 // @Description Get All From Trash
-// @router /trashed [patch]
+// @router /trashed [get]
 func (c *CountriesController) GetAllFromTrash() {
 
 	v, err := models.GetCountriesFromTrash()

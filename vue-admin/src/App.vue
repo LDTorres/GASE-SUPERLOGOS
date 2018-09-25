@@ -35,6 +35,7 @@
         <v-btn flat to="/" exact v-text="title" class="headline"></v-btn>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn @click="logout()" outline class="mb-2">SALIR</v-btn>
     </v-toolbar>
     <v-content v-bind:class="{ 'no-padding': !verifyUser }">
       <router-view/>
@@ -59,6 +60,12 @@ export default {
       title: 'Liderlogo'
     }
   },
+  methods: {
+    logout () {
+      localStorage.clear()
+      location.reload()
+    }
+  },
   computed: {
     items () {
       return this.$store.state.app.sidemenu
@@ -76,7 +83,7 @@ export default {
         return true
       }
       return false
-    }
+    },
   },
   name: 'App'
 }

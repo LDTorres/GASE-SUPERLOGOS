@@ -234,7 +234,7 @@ func (c *SectorsController) Delete() {
 // GetAllFromTrash ...
 // @Title Get All From Trash
 // @Description Get All From Trash
-// @router /trashed [patch]
+// @router /trashed [get]
 func (c *SectorsController) GetAllFromTrash() {
 
 	v, err := models.GetSectorsFromTrash()

@@ -8,7 +8,6 @@ const route = '/briefs'
 
 var struct = [
   { text: 'Id', align: 'left', sortable: true, value: 'id' },
-  { text: 'Formulario', value: 'service_form.title' },
   { text: 'cookie', value: 'cookie' },
   { text: 'Acciones', align: 'center', value: '' }
 ]

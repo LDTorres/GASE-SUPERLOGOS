@@ -324,6 +324,10 @@ func GetSectorsFromTrash() (sectors []*Sectors, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	sectors = v
 
 	return

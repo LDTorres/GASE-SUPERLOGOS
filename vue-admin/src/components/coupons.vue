@@ -3,6 +3,7 @@
   <v-toolbar flat color="white">
       <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn :to="'/trashed?m='+viewName" color="error" outline class="mb-2">PAPELERA</v-btn>
       <v-dialog v-model="dialog" max-width="500px">
         <v-btn slot="activator" color="primary" outline class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
         <v-card>
@@ -141,8 +142,8 @@
         this.$validator.validate().then(result => {           
           if (!result) {             
             alert('Llene los campos correctamente.')           
-            }         
-        });
+          }         
+        })
 
         let params = {
           state: this.viewName,

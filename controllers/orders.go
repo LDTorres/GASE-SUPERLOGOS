@@ -378,7 +378,7 @@ func (c *OrdersController) Delete() {
 // GetAllFromTrash ...
 // @Title Get All From Trash
 // @Description Get All From Trash
-// @router /trashed [patch]
+// @router /trashed [get]
 func (c *OrdersController) GetAllFromTrash() {
 
 	v, err := models.GetOrdersFromTrash()

@@ -4,7 +4,7 @@
       <v-flex xs12 sm8 md4 v-show="!showRegister">
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Login</v-toolbar-title>
+            <v-toolbar-title>Inicio de Sesion</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
@@ -13,7 +13,7 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" v-on:click="showRegister = !showRegister">Sing up</v-btn>
+            <v-btn color="primary" v-on:click="showRegister = !showRegister">Registro</v-btn>
             <v-spacer></v-spacer>
             <v-btn color="primary" v-on:click="singIn">Login</v-btn>
           </v-card-actions>
@@ -22,7 +22,7 @@
       <v-flex xs12 sm8 md4 v-show="showRegister">
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Sing Up</v-toolbar-title>
+            <v-toolbar-title>Registro</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
@@ -31,9 +31,9 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" v-on:click="showRegister = !showRegister">Login</v-btn>
+            <v-btn color="primary" v-on:click="showRegister = !showRegister">Inicio de Sesion</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" v-on:click="singUp">Sing up</v-btn>
+            <v-btn color="primary" v-on:click="singUp">Regitro</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -72,7 +72,7 @@
         if (this.login.email !== '' && this.login.password !== '') {
           let params = {
             item: this.login,
-            message: 'You have logged in'
+            message: 'Has iniciado sesion'
           }
           this.$store.dispatch('login', params)
         }
@@ -81,7 +81,7 @@
         if (this.register.username !== '' && this.register.password !== '' && this.register.email !== '') {
           let params = {
             item: this.register,
-            message: 'You have singed in'
+            message: 'Te has registrado con exito'
           }
           this.$store.dispatch('register', params)
         }

@@ -264,6 +264,10 @@ func GetServicesFromTrash() (services []*Services, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	services = v
 
 	return

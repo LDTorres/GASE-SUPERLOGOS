@@ -357,6 +357,10 @@ func GetPortfoliosFromTrash() (portfolios []*Portfolios, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	portfolios = v
 
 	return

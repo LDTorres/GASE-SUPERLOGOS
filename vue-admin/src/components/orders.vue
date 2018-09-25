@@ -1,40 +1,45 @@
 <template class="orders">
 <div>
-  <v-dialog v-model="dialog" max-width="500px">
-    <v-card>
-      <v-card-title>
-        <span class="headline">{{ formTitle }}</span>
-      </v-card-title>
+  <v-toolbar flat color="white">
+    <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-btn :to="'/trashed?m='+viewName" color="error" outline class="mb-2">PAPELERA</v-btn>
+    <v-dialog v-model="dialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{ formTitle }}</span>
+        </v-card-title>
 
-      <v-card-text>
-        <v-container grid-list-md>
-          <v-layout wrap>
-            <v-flex xs12>
-              <v-select
-                v-model="editedItem.status"
-                :items="status"
-                item-text="value"
-                item-value="value"
-                :error-messages="selectErrors"
-                return-object
-                label="Estado"
-                required
-                name="Estado" 
-                v-validate="'required'"
-              ></v-select>
-              <span v-show="errors.has('Estado')">{{ errors.first('Estado') }}</span>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-card-text>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-select
+                  v-model="editedItem.status"
+                  :items="status"
+                  item-text="value"
+                  item-value="value"
+                  :error-messages="selectErrors"
+                  return-object
+                  label="Estado"
+                  required
+                  name="Estado" 
+                  v-validate="'required'"
+                ></v-select>
+                <span v-show="errors.has('Estado')">{{ errors.first('Estado') }}</span>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
 
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
-        <v-btn color="primary" outline  @click.native="save" :disabled="errors.count() > 0">Guardar</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
+          <v-btn color="primary" outline  @click.native="save" :disabled="errors.count() > 0">Guardar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-toolbar>
   <v-container fluid>
     <v-card>
       <v-card-title>
@@ -139,8 +144,8 @@
         this.$validator.validate().then(result => {           
           if (!result) {             
             alert('Llene los campos correctamente.')           
-            }         
-        });
+          }         
+        })
 
         let params = {
           state: this.viewName,

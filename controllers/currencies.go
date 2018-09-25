@@ -241,7 +241,7 @@ func (c *CurrenciesController) Delete() {
 // GetAllFromTrash ...
 // @Title Get All From Trash
 // @Description Get All From Trash
-// @router /trashed [patch]
+// @router /trashed [get]
 func (c *CurrenciesController) GetAllFromTrash() {
 
 	v, err := models.GetCurrenciesFromTrash()

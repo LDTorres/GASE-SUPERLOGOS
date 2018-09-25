@@ -264,10 +264,10 @@ func (c *LocationsController) Delete() {
 // GetAllFromTrash ...
 // @Title Get All From Trash
 // @Description Get All From Trash
-// @router /trashed [patch]
+// @router /trashed [get]
 func (c *LocationsController) GetAllFromTrash() {
 
-	v, err := models.GetLocaltionsFromTrash()
+	v, err := models.GetLocationsFromTrash()
 
 	if err != nil {
 		c.ServeErrorJSON(err)

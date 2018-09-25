@@ -3,6 +3,7 @@
   <v-toolbar flat color="white">
       <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn :to="'/trashed?m='+viewName" color="error" outline class="mb-2">PAPELERA</v-btn>
       <v-dialog v-model="dialog" max-width="500px">
         <v-btn slot="activator" color="primary" outline class="mb-2">Nuevas {{ viewNameESP }}</v-btn>
         <v-card>
@@ -14,15 +15,15 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field type="text" name="name" v-validate="'required|text'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
+                  <v-text-field type="text" name="name" v-validate="'required'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
                   <span v-show="errors.has('name')">{{ errors.first('name') }}</span>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field type="text" name="Iso" v-validate="'required|text|max:3'" v-model="editedItem.iso" label="Iso"></v-text-field>
+                  <v-text-field type="text" name="Iso" v-validate="'required|max:3'" v-model="editedItem.iso" label="Iso"></v-text-field>
                   <span v-show="errors.has('Iso')">{{ errors.first('Iso') }}</span>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field type="text" name="Simbolo" v-validate="'required|text|max:3'" v-model="editedItem.symbol" label="Simbolo"></v-text-field>
+                  <v-text-field type="text" name="Simbolo" v-validate="'required|max:3'" v-model="editedItem.symbol" label="Simbolo"></v-text-field>
                   <span v-show="errors.has('Simbolo')">{{ errors.first('Simbolo') }}</span>
                 </v-flex>
               </v-layout>
@@ -133,8 +134,8 @@
         this.$validator.validate().then(result => {           
           if (!result) {             
             alert('Llene los campos correctamente.')           
-            }         
-        });
+          }         
+        })
         
         let params = {
           state: this.viewName,

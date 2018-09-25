@@ -3,6 +3,7 @@
   <v-toolbar flat color="white">
       <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn :to="'/trashed?m='+viewName" color="error" outline class="mb-2">PAPELERA</v-btn>
       <v-dialog v-model="dialog" max-width="500px">
         <v-btn slot="activator" color="primary" outline class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
         <v-card>
@@ -14,7 +15,7 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field type="text" name="Nombre" v-validate="'required|text'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
+                  <v-text-field type="text" name="Nombre" v-validate="'required'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
                   <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
               </v-layout>
@@ -120,8 +121,8 @@
         this.$validator.validate().then(result => {           
           if (!result) {             
             alert('Llene los campos correctamente.')           
-            }         
-        });
+          }         
+        })
         
         let params = {
           state: this.viewName,
