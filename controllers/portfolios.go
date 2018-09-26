@@ -108,11 +108,29 @@ func (c *PortfoliosController) Post() {
 			return
 		}
 
+		var i []*models.Images
+
 		for _, fileHeader := range images {
 
 			go addNewImage(fileHeader, &v)
 
+			/* 	if err != nil {
+				c.BadRequest(err)
+				return
+			}
+
+			err = generateImageURL(image)
+
+			if err != nil {
+				c.BadRequest(err)
+				return
+			}
+
+			i = append(i, image)*/
+
 		}
+
+		v.Images = i
 
 	}
 
@@ -505,7 +523,7 @@ func (c *PortfoliosController) GetPortfoliosByCountry() {
 // GetAllFromTrash ...
 // @Title Get All From Trash
 // @Description Get All From Trash
-// @router /trashed [patch]
+// @router /trashed [get]
 func (c *PortfoliosController) GetAllFromTrash() {
 
 	v, err := models.GetPortfoliosFromTrash()

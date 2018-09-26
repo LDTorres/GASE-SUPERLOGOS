@@ -202,6 +202,10 @@ func GetOrdersFromTrash() (locations []*Orders, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	locations = v
 
 	return

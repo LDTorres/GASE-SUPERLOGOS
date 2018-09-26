@@ -11,9 +11,9 @@ var struct = [
   { text: 'Valor Final', value: 'final_value' },
   { text: 'Descuento', value: 'discount' },
   { text: 'Estado', value: 'status' },
-  { text: 'Cliente', value: 'clients' },
-  { text: 'Pasarela', value: 'gateways' },
-  { text: 'Pais', value: 'countries' },
+  { text: 'Cliente', value: 'clients.email' },
+  { text: 'Pasarela', value: 'gateways.name' },
+  { text: 'Pais', value: 'countries.name' },
   { text: 'Id de Pago', value: 'payment_id' },
   { text: 'Acciones', align: 'center', value: '' }
 ]

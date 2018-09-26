@@ -472,7 +472,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 // GetAllFromTrash ...
 // @Title Get All From Trash
 // @Description Get All From Trash
-// @router /trashed [patch]
+// @router /trashed [get]
 func (c *GatewaysController) GetAllFromTrash() {
 
 	v, err := models.GetGatewaysFromTrash()

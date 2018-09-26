@@ -212,6 +212,10 @@ func GetActivitiesFromTrash() (activities []*Activities, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	activities = v
 
 	return

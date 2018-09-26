@@ -274,6 +274,10 @@ func GetCurrenciesFromTrash() (currencies []*Currencies, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	currencies = v
 
 	return

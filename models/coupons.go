@@ -214,6 +214,10 @@ func GetCouponsFromTrash() (coupons []*Coupons, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	coupons = v
 
 	return

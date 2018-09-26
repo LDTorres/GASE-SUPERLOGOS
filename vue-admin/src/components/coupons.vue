@@ -1,10 +1,11 @@
 <template class="coupons">
 <div>
   <v-toolbar flat color="white">
-      <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+      <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
       <v-dialog v-model="dialog" max-width="500px">
-        <v-btn slot="activator" color="primary" outline class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
+        <v-btn slot="activator" color="primary" flat class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -14,7 +15,10 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field v-model="editedItem.percentage" label="Porcentage"></v-text-field>
+                  <v-text-field type="number" name="Porcentage" v-validate="'required|numeric|max:2'" v-model="editedItem.percentage" label="Porcentage"></v-text-field>
+                  <span v-show="errors.has('Porcentage')">{{ errors.first('Porcentage') }}</span>
+                </v-flex>
+                <v-flex xs12>
                   <v-select
                     v-model="editedItem.status"
                     :items="status"
@@ -24,7 +28,10 @@
                     return-object
                     label="Estado"
                     required
+                    name="Estado"
+                    v-validate="'required'"
                   ></v-select>
+                  <span v-show="errors.has('Estado')">{{ errors.first('Estado') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -32,8 +39,8 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
-            <v-btn color="primary" outline  @click.native="save">Guardar</v-btn>
+            <v-btn color="error" flat  @click.native="close">Cancelar</v-btn>
+            <v-btn color="primary" flat  @click.native="save" :disabled="errors.count() > 0">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -131,7 +138,13 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {
+      save () {         
+        this.$validator.validate().then(result => {           
+          if (!result) {             
+            console.log(error.response.data.pretty_message)         
+          }         
+        })
+
         let params = {
           state: this.viewName,
           item: this.editedItem

@@ -75,11 +75,9 @@ func GetClientsByEmail(Email string) (v *Clients, err error) {
 func LoginClients(m *Clients) (id int, err error) {
 	o := orm.NewOrm()
 
-	v := &Clients{}
-
 	m.Password = GetMD5Hash(m.Password)
 
-	err = o.QueryTable(m.TableName()).Filter("deleted_at__isnull", true).Filter("email", m.Email).Filter("password", m.Password).One(v)
+	err = o.QueryTable(m.TableName()).Filter("deleted_at__isnull", true).Filter("email", m.Email).Filter("password", m.Password).One(m)
 
 	if err != nil {
 		return 0, err
@@ -87,7 +85,7 @@ func LoginClients(m *Clients) (id int, err error) {
 
 	m.Password = ""
 
-	return v.ID, err
+	return m.ID, err
 }
 
 // GetClientsByID retrieves Clients by Id. Returns error if
@@ -244,6 +242,10 @@ func GetClientsFromTrash() (clients []*Clients, err error) {
 
 	if err != nil {
 		return
+	}
+
+	for _, currency := range v {
+		currency.loadRelations()
 	}
 
 	clients = v

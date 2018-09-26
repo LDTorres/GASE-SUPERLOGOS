@@ -7,7 +7,7 @@ export default {
       params.res = res.data
       commit('LOGIN', params)
     } catch (error) {
-      console.log(error)
+      // // console.log(error)
     }
   },
   async register ({ commit }, params) {
@@ -16,7 +16,7 @@ export default {
       params.res = res.data
       commit('LOGIN', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   },
   async getAll ({ commit }, params) {
@@ -25,7 +25,7 @@ export default {
       params.res = res.data
       commit('GET_ALL', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   },
   async getOne ({ commit }, params) {
@@ -34,7 +34,7 @@ export default {
       params.res = res.data
       commit('GET_ONE', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   },
   async create ({ commit }, params) {
@@ -43,7 +43,7 @@ export default {
       params.res = res.data
       commit('CREATE', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   },
   async updateOne ({ commit }, params) {
@@ -52,7 +52,7 @@ export default {
       params.res = res.data
       commit('UPDATE_ONE', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   },
   async deleteOne ({ commit }, params) {
@@ -61,25 +61,25 @@ export default {
       params.res = res.data
       commit('DELETE_ONE', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   },
   async getAllTrashed ({ commit }, params) {
     try {
-      let res = await axios.patch('/' + params.state + '/trashed')
+      let res = await axios.get('/' + params.state + '/trashed')
       params.res = res.data
       commit('GET_ALL_TRASHED', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   },
   async restore ({ commit }, params) {
     try {
-      let res = await axios.delete('/' + params.state + '/' + params.item.id + '/restore')
+      let res = await axios.put('/' + params.state + '/' + params.item.id + '/restore')
       params.res = res.data
       commit('RESTORE', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   },
   async trash ({ commit }, params) {
@@ -88,7 +88,7 @@ export default {
       params.res = res.data
       commit('TRASH', params)
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   }
 }

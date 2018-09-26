@@ -1,10 +1,11 @@
 <template class="portfolios">
 <div>
   <v-toolbar flat color="white">
-      <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+      <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
       <v-dialog v-model="dialog" max-width="700px">
-        <v-btn slot="activator" color="primary" outline class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
+        <v-btn slot="activator" color="primary" flat class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -14,46 +15,85 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 md6>
-                  <v-text-field v-model="editedItem.name" label="Nombre del Portafolio"></v-text-field>
-                  <v-text-field v-model="editedItem.client" label="Cliente"></v-text-field>
-                  <v-text-field v-model="editedItem.description" label="Descripción"></v-text-field>
-                  <v-text-field type="number" v-model="editedItem.priority" label="Prioridad"></v-text-field>
+                  <v-layout wrap>
+                    <v-flex xs12>
+                      <v-text-field type="text" name="Nombre" v-validate="'required'" v-model="editedItem.name" label="Nombre del Portafolio"></v-text-field>
+                      <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
+                    </v-flex>
+                    <v-flex xs12>
+                      <v-text-field type="text" name="Cliente" v-validate="'required'" v-model="editedItem.client" label="Cliente"></v-text-field>
+                      <span v-show="errors.has('Cliente')">{{ errors.first('Cliente') }}</span>
+                    </v-flex>
+                    <v-flex xs12>
+                      <v-text-field type="number" name="Prioridad" v-validate="'required|numeric|max:2'" v-model="editedItem.priority" label="Prioridad"></v-text-field>
+                      <span v-show="errors.has('Prioridad')">{{ errors.first('Prioridad') }}</span>
+                    </v-flex>
+                  </v-layout>
                 </v-flex>
                 <v-flex xs12 md6>
-                  <v-select
-                    v-model="editedItem.location"
-                    :items="locations"
-                    item-text="name"
-                    item-value="in"
-                    :error-messages="selectErrors"
-                    return-object
-                    label="Locacion"
-                    required
-                  ></v-select>
-                  <v-select
-                    v-model="editedItem.service"
-                    :items="services"
-                    item-text="name"
-                    item-value="in"
-                    :error-messages="selectErrors"
-                    return-object
-                    label="Service"
-                    required
-                  ></v-select>
-                  <v-select
-                    v-model="editedItem.activity"
-                    :items="activities"
-                    item-text="name"
-                    item-value="in"
-                    :error-messages="selectErrors"
-                    return-object
-                    label="Actividad"
-                    required
-                  ></v-select>
+                  <v-layout wrap>
+                    <v-flex xs12>
+                      <v-select
+                        v-model="editedItem.location"
+                        :items="locations"
+                        item-text="name"
+                        item-value="in"
+                        :error-messages="selectErrors"
+                        return-object
+                        label="Locacion"
+                        required
+                        name="Locacion" 
+                        v-validate="'required'"
+                      ></v-select>
+                      <span v-show="errors.has('Locacion')">{{ errors.first('Locacion') }}</span>
+                    </v-flex>
+                    <v-flex xs12>
+                      <v-select
+                        v-model="editedItem.service"
+                        :items="services"
+                        item-text="name"
+                        item-value="in"
+                        :error-messages="selectErrors"
+                        return-object
+                        label="Servicio"
+                        required
+                        name="Servicio" 
+                        v-validate="'required'"
+                      ></v-select>
+                      <span v-show="errors.has('Servicio')">{{ errors.first('Servicio') }}</span>
+                    </v-flex>
+                    <v-flex xs12>
+                      <v-select
+                        v-model="editedItem.activity"
+                        :items="activities"
+                        item-text="name"
+                        item-value="in"
+                        :error-messages="selectErrors"
+                        return-object
+                        label="Actividad"
+                        required
+                        name="Actividad" 
+                        v-validate="'required'"
+                      ></v-select>
+                      <span v-show="errors.has('Actividad')">{{ errors.first('Actividad') }}</span>
+                    </v-flex>
+                  </v-layout>
                 </v-flex>
-                <v-flex xs12>
-                  <div class="btn btn-primary jbtn-file">Cargar Imagenes: <input
-    type="file" v-on:change="fileSelected" multiple></div>
+                <v-flex xs6>
+                      <v-textarea
+                        name="Descripcion"
+                        label="Descripción"
+                        v-validate="'required'"
+                        v-model="editedItem.description"
+                      ></v-textarea>
+                      <span v-show="errors.has('Descripción')">{{ errors.first('Descripción') }}</span>
+                  </v-flex>
+                <v-flex xs6>
+                  <p >Cargar Imagenes Jpg o Png:</p>
+                  <input type="file" v-validate="'required|size:15000|mimes:image/*'" name="Imagenes" v-on:change="fileSelected" multiple>
+                  <br>
+                  <br>
+                  <span v-show="errors.has('Imagenes')">{{ errors.first('Imagenes') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -61,8 +101,8 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
-            <v-btn color="primary" outline  @click.native="save">Guardar</v-btn>
+            <v-btn color="error" flat  @click.native="close">Cancelar</v-btn>
+            <v-btn color="primary" flat  @click.native="save" :disabled="errors.count() > 0">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -194,7 +234,13 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {
+      save () {         
+        this.$validator.validate().then(result => {           
+          if (!result) {             
+            console.log(error.response.data.pretty_message)          
+          }         
+        })
+
         let params = {
           state: this.viewName,
           item: this.editedItem

@@ -1,10 +1,11 @@
 <template class="activities">
 <div>
   <v-toolbar flat color="white">
-      <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+      <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
       <v-dialog v-model="dialog" max-width="500px">
-        <v-btn slot="activator" color="primary" outline class="mb-2">Nuevas {{ viewNameESP }}</v-btn>
+        <v-btn slot="activator" color="primary" flat class="mb-2">Nuevas {{ viewNameESP }}</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -14,10 +15,8 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field v-model="editedItem.name" label="Nombre"></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field v-model="editedItem.description" label="Description"></v-text-field>
+                  <v-text-field type="text" name="Nombre" v-validate="'required'" v-model="editedItem.name" label="Nombre"></v-text-field>
+                  <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
                 <v-flex xs12 sm6 md12 ng-if="editedIndex < 0">
                    <v-select
@@ -29,7 +28,19 @@
                     return-object
                     label="Sectors"
                     required
+                    name="Sector" 
+                    v-validate="'required'"
                   ></v-select>
+                  <span v-show="errors.has('Sector')">{{ errors.first('Sector') }}</span>
+                </v-flex>
+                <v-flex xs12>
+                  <v-textarea
+                    name="Descripcion"
+                    label="Descripción"
+                    v-validate="'required'"
+                    v-model="editedItem.description"
+                  ></v-textarea>
+                  <span v-show="errors.has('Descripción')">{{ errors.first('Descripción') }}</span>
                 </v-flex>
                 <v-flex xs12 sm6 md12 v-if="editedItem.sector">
                   <p>
@@ -46,10 +57,10 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn :to="'/portfolios?q='+editedItem.name" v-if="editedItem.portfolios" outline color="primary" exact>Portfolios</v-btn>
+            <v-btn :to="'/portfolios?q='+editedItem.name" v-if="editedItem.portfolios" flat color="primary" exact>Portfolios</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
-            <v-btn color="primary" outline  @click.native="save">Guardar</v-btn>
+            <v-btn color="error" flat  @click.native="close">Cancelar</v-btn>
+            <v-btn color="primary" flat  @click.native="save" :disabled="errors.count() > 0">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -145,7 +156,13 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {
+      save () {         
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          }
+        })
+
         let params = {
           state: this.viewName,
           item: this.editedItem

@@ -9,7 +9,7 @@ var struct = [
   { text: 'Id', align: 'left', sortable: true, value: 'id' },
   { text: 'Nombre', value: 'name' },
   { text: 'Code', value: 'code' },
-  { text: 'Monedas', value: 'currencies' },
+  { text: 'Monedas', value: 'currencies[0].name' },
   {text: 'Acciones', align: 'center', value: ''}
 ]
 

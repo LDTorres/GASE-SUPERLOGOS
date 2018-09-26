@@ -1,5 +1,10 @@
 <template class="briefs">
 <div>
+  <v-toolbar flat color="white">
+    <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
+  </v-toolbar>
   <v-container fluid>
     <v-card>
       <v-card-title>
@@ -24,7 +29,6 @@
       >
       <template slot="items" slot-scope="props">
         <td>{{ props.item.id }}</td>
-        <td >{{ props.item.service_form.title }}</td>
         <td >{{ props.item.cookie }}</td>
         <td class="justify-center layout px-0">
           <v-icon

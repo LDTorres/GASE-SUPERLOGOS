@@ -218,6 +218,10 @@ func GetGatewaysFromTrash() (gateways []*Gateways, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	gateways = v
 
 	return

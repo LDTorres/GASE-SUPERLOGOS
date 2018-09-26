@@ -232,6 +232,10 @@ func GetCountriesFromTrash() (countries []*Countries, err error) {
 		return
 	}
 
+	for _, currency := range v {
+		currency.loadRelations()
+	}
+
 	countries = v
 
 	return

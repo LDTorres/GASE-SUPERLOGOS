@@ -1,10 +1,11 @@
 <template class="services">
 <div>
   <v-toolbar flat color="white">
-      <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+      <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
       <v-dialog v-model="dialog" max-width="500px">
-        <v-btn slot="activator" color="primary" outline class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
+        <v-btn slot="activator" color="primary" flat class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -14,10 +15,17 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field v-model="editedItem.name" label="Nombre"></v-text-field>
+                  <v-text-field type="text" name="Nombre" v-validate="'required'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
+                  <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field v-model="editedItem.percentage" label="Porcentage"></v-text-field>
+                  <v-text-field type="text" name="Porcentage" v-validate="'required|max:2'" v-model="editedItem.percentage" label="Porcentage"></v-text-field>
+                  <span v-show="errors.has('Porcentage')">{{ errors.first('Porcentage') }}</span>
+                </v-flex>
+
+                <v-flex xs3 v-for="(currency, i) in currencies" :key="currency.id">
+                  <v-text-field type="text" :name="currency + i" v-validate="'required|max:6'" v-model="currency.price" :label="currency.iso"></v-text-field>
+                  <span v-show="errors.has(currency + i)">{{ errors.first(currency + i) }}</span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -25,8 +33,8 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="error" outline  @click.native="close">Cancelar</v-btn>
-            <v-btn color="primary" outline  @click.native="save">Guardar</v-btn>
+            <v-btn color="error" flat  @click.native="close">Cancelar</v-btn>
+            <v-btn color="primary" flat  @click.native="save" :disabled="errors.count() > 0">Guardar</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -85,6 +93,7 @@
     props: ['search'],
     created () {
       this.$store.dispatch('getAll', {state: this.viewName})
+      this.$store.dispatch('getAll', {state: 'currencies'})
     },
     mounted () {
     },
@@ -120,6 +129,12 @@
         }, 300)
       },
       save () {
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          }
+        })
+
         this.editedItem.percentage = parseFloat(this.editedItem.percentage)
 
         let params = {
@@ -146,6 +161,9 @@
       },
       list () {
         return this.$store.getters.getAll('services')
+      },
+      currencies () {
+        return this.$store.getters.getAll('currencies')
       },
       pages () {
         if (this.pagination.rowsPerPage == null ||
