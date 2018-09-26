@@ -66,7 +66,7 @@
         <td >{{ props.item.iso }}</td>
         <td >{{ props.item.symbol }}</td>
         <td >
-          <span v-for="country in props.item.countries" :key="country.name">{{ country.name }}, </span>
+          <span v-for="country in props.item.countries" :key="country.name">{{ country.name }} </span>
         </td>
         <td class="justify-center layout px-0">
           <v-icon
