@@ -49,6 +49,7 @@ func (c *SectorsController) Post() {
 
 	if !b {
 		c.BadRequestErrors(valid.Errors, "Sectors")
+		return
 	}
 
 	_, err = models.AddSectors(&v)

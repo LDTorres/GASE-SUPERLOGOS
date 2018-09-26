@@ -44,12 +44,48 @@ func (c *ServicesController) Post() {
 		return
 	}
 
+	prices := v.Prices
+	v.Prices = nil
+
 	valid := validation.Validation{}
 
-	b, err := valid.Valid(&v)
+	b, _ := valid.Valid(&v)
 
 	if !b {
 		c.BadRequestErrors(valid.Errors, "Services")
+		return
+	}
+
+	var currencies map[int]*models.Currencies
+
+	for _, price := range prices {
+
+		currency := price.Currency
+
+		_, err := models.GetCurrenciesByID(currency.ID)
+
+		if err != nil {
+			c.BadRequestDontExists("Currencies")
+			return
+		}
+
+		if _, ok := currencies[currency.ID]; ok {
+
+			err := errors.New("Currencies duplicated")
+			c.BadRequest(err)
+			return
+		}
+
+		currencies[currency.ID] = currency
+
+		price.Currency = nil
+		b, _ := valid.Valid(price)
+
+		if !b {
+			c.BadRequestErrors(valid.Errors, "Prices")
+			return
+		}
+
 	}
 
 	_, err = models.AddServices(&v)
@@ -110,8 +146,6 @@ func (c *ServicesController) GetAll() {
 	var query = make(map[string]string)
 	var limit int64 = 10
 	var offset int64
-
-	//TODO: QUERY FILTER POR PAIS Y MONEDAS
 
 	// fields: col1,col2,entity.col3
 	if v := c.GetString("fields"); v != "" {

@@ -351,7 +351,7 @@ func GetPortfoliosFromTrash() (portfolios []*Portfolios, err error) {
 
 	var v []*Portfolios
 
-	_, err = o.QueryTable("portfolios").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+	_, err = o.QueryTable("portfolios").Filter("deleted_at__isnull", false).OrderBy("priority").RelatedSel().All(&v)
 
 	if err != nil {
 		return

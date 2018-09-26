@@ -267,7 +267,7 @@ func (c *LocationsController) Delete() {
 // @router /trashed [patch]
 func (c *LocationsController) GetAllFromTrash() {
 
-	v, err := models.GetLocaltionsFromTrash()
+	v, err := models.GetLocationsFromTrash()
 
 	if err != nil {
 		c.ServeErrorJSON(err)
