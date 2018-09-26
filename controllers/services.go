@@ -4,6 +4,7 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -37,6 +38,8 @@ func (c *ServicesController) URLMapping() {
 func (c *ServicesController) Post() {
 	var v models.Services
 
+	fmt.Println("hola")
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -56,44 +59,74 @@ func (c *ServicesController) Post() {
 		return
 	}
 
-	var currencies map[int]*models.Currencies
-
-	for _, price := range prices {
-
-		currency := price.Currency
-
-		_, err := models.GetCurrenciesByID(currency.ID)
-
-		if err != nil {
-			c.BadRequestDontExists("Currencies")
-			return
-		}
-
-		if _, ok := currencies[currency.ID]; ok {
-
-			err := errors.New("Currencies duplicated")
-			c.BadRequest(err)
-			return
-		}
-
-		currencies[currency.ID] = currency
-
-		price.Currency = nil
-		b, _ := valid.Valid(price)
-
-		if !b {
-			c.BadRequestErrors(valid.Errors, "Prices")
-			return
-		}
-
-	}
-
 	_, err = models.AddServices(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	go func() {
+		var p map[int]*models.Prices
+		var currenciesID []int
+
+		for _, price := range prices {
+
+			currency := price.Currency
+
+			_, err := models.GetCurrenciesByID(currency.ID)
+
+			if err != nil {
+				c.BadRequestDontExists("Currencies")
+				return
+			}
+
+			if _, ok := p[currency.ID]; ok {
+
+				err := errors.New("Currencies duplicated")
+				c.BadRequest(err)
+				return
+			}
+
+			price.Service.ID = v.ID
+			p[currency.ID] = price
+
+			price.Currency = nil
+			b, _ := valid.Valid(price)
+
+			if !b {
+				c.BadRequestErrors(valid.Errors, "Prices")
+				return
+			}
+
+			currenciesID = append(currenciesID, currency.ID)
+
+		}
+
+		//missingCurrencies, err := models.GetMissingCurrencies(currenciesID...)
+
+		var missingCurrencies []*models.Currencies
+
+		if err != nil {
+			c.ServeErrorJSON(err)
+			return
+		}
+
+		for _, missingCurrency := range missingCurrencies {
+
+			p[missingCurrency.ID] = &models.Prices{
+				Value:    0,
+				Currency: missingCurrency,
+				Service:  &v,
+			}
+
+		}
+
+		for _, price := range p {
+			go models.AddPrices(price)
+		}
+
+	}()
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v

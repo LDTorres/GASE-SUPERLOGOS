@@ -283,3 +283,21 @@ func GetCurrenciesFromTrash() (currencies []*Currencies, err error) {
 	return
 
 }
+
+func GetMissingCurrencies(currenciesIDs ...interface{}) (currencies []*Currencies, err error) {
+
+	o := orm.NewOrm()
+
+	v := []*Currencies{}
+
+	_, err = o.QueryTable("currencies").Exclude("id__in", currenciesIDs...).Filter("deleted_at__isnull", true).All(&v)
+
+	if err != nil {
+		return
+	}
+
+	currencies = v
+
+	return
+
+}
