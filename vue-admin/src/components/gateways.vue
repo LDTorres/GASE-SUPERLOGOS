@@ -31,7 +31,7 @@
                     item-value="value"
                     :error-messages="selectErrors"
                     return-object
-                    label="Estado"
+                    label="Monedas"
                     required
                     name="Estado" 
                     v-validate="'required'"
