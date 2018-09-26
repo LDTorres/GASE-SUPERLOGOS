@@ -8,14 +8,22 @@
           </v-toolbar>
           <v-card-text>
             <v-form>
-              <v-text-field prepend-icon="mail" name="email" label="Email" type="text" v-model="login.email"></v-text-field>
-              <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password" v-model="login.password"></v-text-field>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field v-validate="'required|email'" prepend-icon="mail" name="Correo" label="Correo" type="text" v-model="login.email"></v-text-field>
+                  <span v-show="errors.has('Correo')">{{ errors.first('Correo') }}</span>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field id="password" v-validate="'required|min:6|alpha_dash'" prepend-icon="lock" name="Contrasena" label="Contraseña" type="password" v-model="login.password"></v-text-field>
+                  <span v-show="errors.has('Contrasena')">{{ errors.first('Contrasena') }}</span>
+                </v-flex>
+              </v-layout>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-btn color="primary" v-on:click="showRegister = !showRegister">Registro</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" v-on:click="singIn">Login</v-btn>
+            <v-btn color="primary" v-on:click="singIn">Inicio de Sesion</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -26,14 +34,26 @@
           </v-toolbar>
           <v-card-text>
             <v-form>
-              <v-text-field prepend-icon="person-r" name="username-r" label="Nombre" type="text" v-model="register.username"></v-text-field>
-              <v-text-field prepend-icon="mail-r" name="email-r" label="Email" type="text" v-model="register.email"></v-text-field>              <v-text-field id="password-r" prepend-icon="lock" name="password-r" label="Password" type="password" v-model="register.password"></v-text-field>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field v-validate="'required'" prepend-icon="person-r" name="Nombre-r" label="Nombre de Usuario" type="text" v-model="register.username"></v-text-field>
+                  <span v-show="errors.has('Nombre-r')">{{ errors.first('Nombre-r') }}</span>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-validate="'required|email'" prepend-icon="mail-r" name="Correo-r" label="Correo" type="text" v-model="register.email"></v-text-field>
+                  <span v-show="errors.has('Correo-r')">{{ errors.first('Correo-r') }}</span>
+                </v-flex>
+                <v-flex xs12>              
+                  <v-text-field v-validate="'required|min:8|alpha_dash'" id="password-r" prepend-icon="lock" name="Contrasena-r" label="Contraseña" type="password" v-model="register.password"></v-text-field>
+                  <span v-show="errors.has('Contrasena-r')">{{ errors.first('Contrasena-r') }}</span>
+                </v-flex>
+              </v-layout>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-btn color="primary" v-on:click="showRegister = !showRegister">Inicio de Sesion</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" v-on:click="singUp">Regitro</v-btn>
+            <v-btn color="primary" v-on:click="singUp">Registro</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -47,7 +67,7 @@
     props: [],
     created () {
       if (this.verifyUser) {
-        this.$router.push('/home')
+        this.$router.push('/orders')
       }
     },
     mounted () {

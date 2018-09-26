@@ -108,11 +108,29 @@ func (c *PortfoliosController) Post() {
 			return
 		}
 
+		var i []*models.Images
+
 		for _, fileHeader := range images {
 
 			go addNewImage(fileHeader, &v)
 
+			/* 	if err != nil {
+				c.BadRequest(err)
+				return
+			}
+
+			err = generateImageURL(image)
+
+			if err != nil {
+				c.BadRequest(err)
+				return
+			}
+
+			i = append(i, image)*/
+
 		}
+
+		v.Images = i
 
 	}
 

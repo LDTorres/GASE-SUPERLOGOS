@@ -38,7 +38,7 @@ var getForm = (data) => {
   // Set Images
   for (let i = 0; i < length; i++) {
     const element = images[i]
-    formData.append('images[]', element)
+    formData.append('images', element)
   }
 
   return formData

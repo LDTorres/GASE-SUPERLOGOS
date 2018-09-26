@@ -1,9 +1,9 @@
 <template class="briefs">
 <div>
   <v-toolbar flat color="white">
-    <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+    <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn :to="'/trashed?m='+viewName" color="error" outline class="mb-2">PAPELERA</v-btn>
+    <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
   </v-toolbar>
   <v-container fluid>
     <v-card>

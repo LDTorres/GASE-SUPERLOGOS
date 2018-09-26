@@ -1,9 +1,9 @@
 <template class="trashed">
 <div>
   <v-toolbar flat color="white">
-      <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+      <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn :to="'/'+model" color="primary" outline class="mb-2">VOLVER</v-btn>
+      <v-btn :to="'/'+model" color="primary" flat class="mb-2">VOLVER</v-btn>
   </v-toolbar>
   <v-container fluid>
     <v-card>
@@ -102,7 +102,7 @@
               json = key.split('[0].')
               key = json[0] + '-' + newKey
 
-              if(obj[json[0]] != undefined){
+              if (obj[json[0]] !== undefined) {
                 obj[key] = obj[json[0]][0][json[1]]
               }
             }
@@ -111,7 +111,7 @@
               json = key.split('.')
               key = json[0] + '-' + newKey
 
-              if(obj[json[0]] != undefined){
+              if (obj[json[0]] !== undefined) {
                 obj[key] = obj[json[0]][json[1]]
               }
             }
