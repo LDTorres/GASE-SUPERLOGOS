@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 )
 
@@ -46,7 +45,7 @@ func (c *ServicesController) Post() {
 	}
 
 	prices := v.Prices
-	v.Prices = nil
+	v.Prices = []*models.Prices{}
 
 	valid := validation.Validation{}
 
@@ -111,7 +110,6 @@ func (c *ServicesController) Post() {
 	missingCurrencies, err := models.GetMissingCurrencies(currenciesID...)
 
 	if err != nil {
-		beego.Debug("hola becerro")
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -126,21 +124,27 @@ func (c *ServicesController) Post() {
 
 	}
 
-	/* v.Prices = []*models.Prices{} */
+	pricesToAdd := []*models.Prices{}
 
 	for _, price := range p {
-		_, err = models.AddPrices(price)
 
-		if err != nil {
-			c.ServeErrorJSON(err)
-			return
-		}
+		priceToAdd := *price
 
-		/* v.Prices = append(v.Prices, price) */
+		pricesToAdd = append(pricesToAdd, &priceToAdd)
 	}
 
+	prices, err = models.AddManyPrices(pricesToAdd)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	newService := v
+	newService.Prices = prices
+
 	c.Ctx.Output.SetStatus(201)
-	c.Data["json"] = v
+	c.Data["json"] = newService
 
 	c.ServeJSON()
 }

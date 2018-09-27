@@ -4,6 +4,7 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -99,22 +100,23 @@ func (c *PortfoliosController) Post() {
 		return
 	}
 
+	var i []*models.Images
+
 	if c.Ctx.Input.IsUpload() {
 
 		images, err := c.GetFiles("images")
 
-		if err != nil {
+		if err != nil && err != http.ErrMissingFile {
+
 			c.BadRequest(err)
 			return
 		}
 
-		var i []*models.Images
-
 		for _, fileHeader := range images {
 
-			go addNewImage(fileHeader, &v)
+			image, err := addNewImage(fileHeader, &v)
+			if err != nil {
 
-			/* 	if err != nil {
 				c.BadRequest(err)
 				return
 			}
@@ -126,16 +128,16 @@ func (c *PortfoliosController) Post() {
 				return
 			}
 
-			i = append(i, image)*/
-
+			i = append(i, image)
 		}
-
-		v.Images = i
 
 	}
 
+	data := v
+	data.Images = i
+
 	c.Ctx.Output.SetStatus(201)
-	c.Data["json"] = v
+	c.Data["json"] = data
 
 	c.ServeJSON()
 }
