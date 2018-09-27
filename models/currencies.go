@@ -296,7 +296,13 @@ func GetMissingCurrencies(currenciesIDs ...int) (currencies []*Currencies, err e
 
 	v := []*Currencies{}
 
-	_, err = o.QueryTable("currencies").Exclude("id__in", interfacesIDs...).Filter("deleted_at__isnull", true).All(&v)
+	qs := o.QueryTable("currencies")
+
+	if len(interfacesIDs) > 0 {
+		qs = qs.Exclude("id__in", interfacesIDs...)
+	}
+
+	_, err = qs.Filter("deleted_at__isnull", true).All(&v)
 
 	if err == orm.ErrNoRows {
 		err = nil

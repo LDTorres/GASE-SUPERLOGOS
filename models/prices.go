@@ -235,3 +235,19 @@ func AddDefaultDataPrices() (count int64, errors []error) {
 
 	return
 }
+
+func AddManyPrices(p []*Prices) (prices []*Prices, err error) {
+
+	o := orm.NewOrm()
+
+	_, err = o.InsertMulti(100, p)
+
+	if err != nil {
+		return
+	}
+
+	prices = p
+
+	return
+
+}
