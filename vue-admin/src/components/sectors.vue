@@ -120,7 +120,7 @@
       save () {         
         this.$validator.validate().then(result => {           
           if (!result) {             
-            console.log(error.response.data.pretty_message)          
+            alert('Llene los campos correctamente.')          
           }         
         })
         
