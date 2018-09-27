@@ -185,6 +185,11 @@ func DeletePortfolios(id int, trash bool) (err error) {
 
 	if trash {
 		_, err = o.Delete(&v)
+
+		if err != nil {
+
+		}
+
 	} else {
 		v.DeletedAt = time.Now()
 		_, err = o.Update(&v)

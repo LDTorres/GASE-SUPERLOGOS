@@ -1,10 +1,12 @@
 package models
 
 import (
+	"GASE/controllers/services/statics"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"mime/multipart"
+	"os"
 	"reflect"
 	"strings"
 	"time"
@@ -239,6 +241,12 @@ func DeleteImages(id int, trash bool) (err error) {
 
 	if trash {
 		_, err = o.Delete(&v)
+
+		if err == nil {
+			imagePath := statics.ImageFolderDir + "/" + v.UUID
+			os.Remove(imagePath)
+		}
+
 	} else {
 		v.DeletedAt = time.Now()
 		_, err = o.Update(&v)
