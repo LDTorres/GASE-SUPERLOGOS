@@ -19,13 +19,19 @@
                   <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field type="text" name="Porcentage" v-validate="'required|max:2'" v-model="editedItem.percentage" label="Porcentage"></v-text-field>
+                  <v-text-field type="number" name="Porcentage" v-validate="'required|numeric|max:2'" v-model="editedItem.percentage" label="Porcentage"></v-text-field>
                   <span v-show="errors.has('Porcentage')">{{ errors.first('Porcentage') }}</span>
                 </v-flex>
 
-                <v-flex xs3 v-for="(currency, i) in currencies" :key="currency.id">
-                  <v-text-field type="text" :name="currency + i" v-validate="'required|max:6'" v-model="currency.price" :label="currency.iso"></v-text-field>
+                <!-- Si es nuevo -->
+                <v-flex v-if="editedIndex === -1" xs3 v-for="(currency, i) in currencies" :key="currency.id">
+                  <v-text-field type="number" :name="currency + i" v-validate="'required|numeric|max:6'" v-model="currency.price" :label="currency.iso"></v-text-field>
                   <span v-show="errors.has(currency + i)">{{ errors.first(currency + i) }}</span>
+                </v-flex>
+
+                <!-- Si es editado -->
+                <v-flex v-if="editedIndex !== -1" xs3 v-for="(price) in editedItem.prices" :key="price.id">
+                  <v-text-field type="text" v-validate="'required|max:6'" v-model="price.value" :label="price.currency.name"></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -145,6 +151,22 @@
         if (this.editedIndex > -1) {
           this.$store.dispatch('updateOne', params)
         } else {
+
+          this.editedItem.prices = []
+
+          this.currencies.forEach(currency => {
+            let price = {
+              currency: {
+                id: currency.id
+              },
+              value: parseFloat(currency.price)
+            }
+
+            this.editedItem.prices.push(price)
+          })
+
+          params.editedItem = this.editedItem
+
           this.$store.dispatch('create', params)
         }
         this.close()

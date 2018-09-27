@@ -4,10 +4,10 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 )
 
@@ -38,8 +38,6 @@ func (c *ServicesController) URLMapping() {
 func (c *ServicesController) Post() {
 	var v models.Services
 
-	fmt.Println("hola")
-
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -66,67 +64,80 @@ func (c *ServicesController) Post() {
 		return
 	}
 
-	go func() {
-		var p map[int]*models.Prices
-		var currenciesID []int
+	p := make(map[int]*models.Prices)
+	var currenciesID []int
 
-		for _, price := range prices {
+	for _, price := range prices {
 
-			currency := price.Currency
+		currency := price.Currency
 
-			_, err := models.GetCurrenciesByID(currency.ID)
-
-			if err != nil {
-				c.BadRequestDontExists("Currencies")
-				return
-			}
-
-			if _, ok := p[currency.ID]; ok {
-
-				err := errors.New("Currencies duplicated")
-				c.BadRequest(err)
-				return
-			}
-
-			price.Service.ID = v.ID
-			p[currency.ID] = price
-
-			price.Currency = nil
-			b, _ := valid.Valid(price)
-
-			if !b {
-				c.BadRequestErrors(valid.Errors, "Prices")
-				return
-			}
-
-			currenciesID = append(currenciesID, currency.ID)
-
+		if currency == nil {
+			err := errors.New("Currencies is missing")
+			c.BadRequest(err)
+			return
 		}
 
-		//missingCurrencies, err := models.GetMissingCurrencies(currenciesID...)
+		_, err := models.GetCurrenciesByID(currency.ID)
 
-		var missingCurrencies []*models.Currencies
+		if err != nil {
+			c.BadRequestDontExists("Currencies")
+			return
+		}
+
+		if _, ok := p[currency.ID]; ok {
+
+			err := errors.New("Currencies duplicated")
+			c.BadRequest(err)
+			return
+		}
+
+		price.Service = &v
+		p[currency.ID] = price
+
+		price.Currency = nil
+		b, _ := valid.Valid(price)
+
+		if !b {
+			c.BadRequestErrors(valid.Errors, "Prices")
+			return
+		}
+
+		price.Currency = currency
+
+		currenciesID = append(currenciesID, currency.ID)
+
+	}
+
+	missingCurrencies, err := models.GetMissingCurrencies(currenciesID...)
+
+	if err != nil {
+		beego.Debug("hola becerro")
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	for _, missingCurrency := range missingCurrencies {
+
+		p[missingCurrency.ID] = &models.Prices{
+			Value:    0,
+			Currency: missingCurrency,
+			Service:  &v,
+		}
+
+	}
+
+	/* v.Prices = []*models.Prices{} */
+
+	for _, price := range p {
+		_, err = models.AddPrices(price)
 
 		if err != nil {
 			c.ServeErrorJSON(err)
 			return
 		}
 
-		for _, missingCurrency := range missingCurrencies {
-
-			p[missingCurrency.ID] = &models.Prices{
-				Value:    0,
-				Currency: missingCurrency,
-				Service:  &v,
-			}
-
-		}
-
-		for _, price := range p {
-			go models.AddPrices(price)
-		}
-
-	}()
+		/* v.Prices = append(v.Prices, price) */
+	}
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v

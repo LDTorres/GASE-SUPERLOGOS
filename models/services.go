@@ -57,6 +57,13 @@ func AddServices(m *Services) (id int64, err error) {
 	m.Slug = GenerateSlug(m.TableName(), m.Name)
 
 	id, err = o.Insert(m)
+
+	if err != nil {
+		return
+	}
+
+	m.ID = int(id)
+
 	return
 }
 
@@ -135,6 +142,9 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
+				for _, price := range v.Prices {
+					price.loadRelations()
+				}
 				v.Portfolios = nil
 				ml = append(ml, v)
 			}
@@ -147,6 +157,9 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 					m[fname] = val.FieldByName(fname).Interface()
 				}
 				v.loadRelations()
+				for _, price := range v.Prices {
+					price.loadRelations()
+				}
 				v.Portfolios = nil
 				ml = append(ml, m)
 			}

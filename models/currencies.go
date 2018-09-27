@@ -284,13 +284,23 @@ func GetCurrenciesFromTrash() (currencies []*Currencies, err error) {
 
 }
 
-func GetMissingCurrencies(currenciesIDs ...interface{}) (currencies []*Currencies, err error) {
+func GetMissingCurrencies(currenciesIDs ...int) (currencies []*Currencies, err error) {
 
 	o := orm.NewOrm()
 
+	interfacesIDs := []interface{}{}
+
+	for _, currencyID := range currenciesIDs {
+		interfacesIDs = append(interfacesIDs, interface{}(currencyID))
+	}
+
 	v := []*Currencies{}
 
-	_, err = o.QueryTable("currencies").Exclude("id__in", currenciesIDs...).Filter("deleted_at__isnull", true).All(&v)
+	_, err = o.QueryTable("currencies").Exclude("id__in", interfacesIDs...).Filter("deleted_at__isnull", true).All(&v)
+
+	if err == orm.ErrNoRows {
+		err = nil
+	}
 
 	if err != nil {
 		return
