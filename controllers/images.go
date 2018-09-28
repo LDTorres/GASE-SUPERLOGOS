@@ -87,7 +87,7 @@ func (c *ImagesController) Post() {
 	}
 
 	v := &models.Images{
-		Priority:  int8(intValues["priority"]),
+		Priority:  intValues["priority"],
 		Portfolio: &models.Portfolios{ID: intValues["portfolio"]},
 	}
 
