@@ -44,6 +44,28 @@ var getForm = (data) => {
   return formData
 }
 
+var getFormUploadImage = (data) => {
+  let formData = new FormData()
+  let images
+  if (data.files) {
+    images = data.files
+  } else if (data.file) {
+    images = data.file
+  }
+  let length = images.length
+
+  formData.append('priority', data.priorityImage)
+  formData.append('portfolio[id]', data.id)
+
+  // Set Images
+  for (let i = 0; i < length; i++) {
+    const element = images[i]
+    formData.append('images', element)
+  }
+
+  return formData
+}
+
 export default {
   namespaced: true,
   state: { all: [], defaultItem: {}, editedItem: {}, trashed: [], struct: struct },
@@ -58,6 +80,19 @@ export default {
     UPDATE_ONE (state, data) {
       state.all[data.item.in] = data.item
       alert('El elemento fue actualizado')
+    },
+    UPLOAD_IMAGE (state, data) {
+      if (state.all[data.item.in].images !== undefined) {
+        state.all[data.item.in].images.push(data.res)
+      } else {
+        state.all[data.item.in].images = []
+        state.all[data.item.in].images.push(data.res)
+      }
+      alert('El elemento fue actualizado')
+    },
+    DELETE_IMAGE (state, data) {
+      state.all[data.item.in].images.splice(data.indexImage, 1)
+      alert('El elemento fue eliminado')
     }
   },
   actions: {
@@ -66,7 +101,7 @@ export default {
         let res = await axios.get(route)
         commit('GET_ALL', res.data)
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     },
     async create ({ commit }, params) {
@@ -81,7 +116,7 @@ export default {
         params.res.activity = item.activity
         commit('CREATE', params)
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     },
     async updateOne ({ commit }, params) {
@@ -92,7 +127,36 @@ export default {
         params.res = res.data
         commit('UPDATE_ONE', params)
       } catch (error) {
-        console.log(error)
+        // console.log(error)
+      }
+    },
+    async uploadImage ({ commit }, params) {
+      let formData = getFormUploadImage(params.item)
+
+      try {
+        let res = await axios.post('/images', formData, options)
+        params.res = res.data
+        commit('UPLOAD_IMAGE', params)
+      } catch (error) {
+        // console.log(error)
+      }
+    },
+    async imageDelete ({ commit }, params) {
+      let id = params.item.images[params.indexImage].id
+      try {
+        let res = await axios.delete('/images/' + id + '?trash=true')
+        params.res = res.data
+        commit('DELETE_IMAGE', params)
+      } catch (error) {
+        // console.log(error)
+      }
+    },
+    async imagePriority ({ commit }, params) {
+      try {
+        await axios.put('/images/' + params.item.id, params.item)
+        alert('Se ha colocado la prioridad')
+      } catch (error) {
+        // console.log(error)
       }
     }
   }

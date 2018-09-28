@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego"
+
 	"github.com/astaxie/beego/orm"
 	"github.com/gofrs/uuid"
 )
@@ -18,7 +20,7 @@ import (
 //Images Model
 type Images struct {
 	ID        int         `orm:"column(id);pk" json:"id"`
-	Priority  int         `orm:"column(priority)" json:"priority,omitempty"`
+	Priority  int         `orm:"column(priority)" json:"priority"`
 	Name      string      `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Slug      string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	UUID      string      `orm:"column(uuid);size(255)" json:"uuid,omitempty" valid:"Required"`
@@ -46,6 +48,8 @@ func AddImages(m *Images, fh *multipart.FileHeader, folderPath string) (id int64
 	if err != nil {
 		return 0, err
 	}
+
+	beego.Debug("prioridad", m.Priority)
 
 	m.UUID = UUID.String()
 
@@ -220,7 +224,7 @@ func UpdateImagesByID(m *Images) (err error) {
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Update(m); err == nil {
+		if num, err = o.Update(m, "priority"); err == nil {
 			fmt.Println("Number of records updated in database:", num)
 		}
 	}

@@ -341,6 +341,7 @@ func GetPortfoliosFromTrash() (portfolios []*Portfolios, err error) {
 
 }
 
+// OrderImagesByPriority ...
 func (t *Portfolios) OrderImagesByPriority() {
 
 	imagesPriority := map[int][]*Images{}

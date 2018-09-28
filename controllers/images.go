@@ -35,24 +35,6 @@ func (c *ImagesController) URLMapping() {
 // @Failure 400 body is empty
 // @router / [post]
 func (c *ImagesController) Post() {
-	//var v models.Images
-
-	//err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	/*
-		if err != nil {
-			c.BadRequest(err)
-			return
-		}
-
-		valid := validation.Validation{}
-
-		b, err := valid.Valid(&v)
-
-		if !b {
-			c.BadRequestErrors(valid.Errors, v.TableName())
-			return
-		}
-	*/
 
 	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
 
@@ -76,26 +58,16 @@ func (c *ImagesController) Post() {
 		return
 	}
 
-	foreignsModels := map[string]int{
-		"Portfolios": intValues["portfolio"],
-	}
+	portfolio, err := models.GetPortfoliosByID(intValues["portfolio"])
 
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
+	if err != nil {
+		c.BadRequestDontExists("Portfolio dont exists")
 		return
 	}
 
 	v := &models.Images{
 		Priority:  intValues["priority"],
-		Portfolio: &models.Portfolios{ID: intValues["portfolio"]},
-	}
-
-	portfolio, err := models.GetPortfoliosByID(v.Portfolio.ID)
-
-	if err != nil {
-		c.BadRequestDontExists("Portfolio dont exists")
-		return
+		Portfolio: portfolio,
 	}
 
 	portfolio.Images = []*models.Images{}
@@ -113,7 +85,7 @@ func (c *ImagesController) Post() {
 		return
 	}
 
-	v, err = addNewImage(fileHeader, v.Portfolio)
+	v, err = addNewImage(fileHeader, v.Portfolio, v.Priority)
 
 	if err != nil {
 		c.ServeErrorJSON(err)

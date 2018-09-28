@@ -156,7 +156,7 @@
         <v-container grid-list-md text-xs-center>
           <v-layout row wrap>
             <v-flex
-               v-for="img in props.item.images" :key="img.name"
+               v-for="(img, i) in props.item.images" :key="img.name + i"
                xs3
             >
               <v-card>
@@ -168,16 +168,49 @@
                   <v-flex>
                       <v-text-field type="number" name="Prioridad" v-model="img.priority" label="Prioridad"></v-text-field>
                   </v-flex>
-                  <v-btn icon @click="imagePriority(img, 0)">
+                  <v-btn icon @click="imagePriority(img, i)">
                     <v-icon>save</v-icon>
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn icon @click="deleteImage(img)">
+                  <v-btn icon @click="deleteImage(img, props.item, i)">
                     <v-icon>delete</v-icon>
                   </v-btn>
                 </v-card-actions>
               </v-card>
             </v-flex>
+
+            <!-- prueba -->
+            <v-flex xs3>
+              <v-card>
+                <v-img
+                  :src="imagePreviewUrl"
+                  height="200px"
+                ></v-img>
+                <input type="file" class="input-file-preview" name="Imagenes" v-on:change="fileSelected">
+                <v-card-actions>
+                  <v-flex>
+                      <v-text-field type="number" name="prioridadnueva" v-validate="'required|max:2'" v-model="props.item.priorityImage" label="Prioridad"></v-text-field>
+                  </v-flex>
+                  <v-spacer></v-spacer>
+                  <v-btn icon :disabled="errors.first('prioridadnueva')" @click="uploadImage(props.item)">
+                      <v-icon>save</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-flex>
+
+            <!-- <v-flex xs12 d-flex justify-center align-center>
+              <input type="file" v-validate="'required|size:15000|mimes:image/*'" name="Imagenes" v-on:change="fileSelected">
+
+                <v-flex xs5 d-flex justify-center align-center>
+                  <v-text-field type="number" name="Prioridad" v-validate="'required|max:2'" v-model="props.item.priorityImage" label="Prioridad"></v-text-field>
+                  <v-btn outline small color="primary" :disabled="errors.count() > 0" @click="uploadImage(props.item)">
+                      GUARDAR
+                  </v-btn>
+                </v-flex>
+              <br>
+              <span v-show="errors.has('Imagenes')">{{ errors.first('Imagenes') }}</span>
+            </v-flex> -->
           </v-layout>
         </v-container>
       </template>
@@ -202,12 +235,13 @@
     data () {
       return {
         // Cambiar dependiendo del enviroment
-        urlHosting: 'http://localhost:9090',
+        urlHosting: process.env.NODE_ENV === 'development' ? 'http://localhost:9090' : 'http://api.liderlogos.com',
         selectErrors: [],
         pagination: {},
         dialog: false,
         editedIndex: -1,
-        viewNameESP: 'Portafolios'
+        viewNameESP: 'Portafolios',
+        imagePreviewUrl: ''
       }
     },
     methods: {
@@ -251,12 +285,53 @@
         }
         this.close()
       },
-      imagePriority () {
+      uploadImage (item) {
+        item['files'] = this.editedItem['files']
+
+        let params = {
+          state: this.viewName,
+          item: item
+        }
+
+        this.imagePreviewUrl = ''
+        this.$store.dispatch('portfolios/uploadImage', params)
       },
-      deleteImage () {
+      imagePriority (img) {
+
+        img.priority = parseInt(img.priority)
+
+        let params = {
+          state: this.viewName,
+          item: img
+        }
+
+        this.$store.dispatch('portfolios/imagePriority', params)
+      },
+      deleteImage (img, item, i) {
+        let params = {
+          state: this.viewName,
+          item: item,
+          indexImage: i
+        }
+
+        this.$store.dispatch('portfolios/imageDelete', params)
       },
       fileSelected (e) {
+        this.previewImage(e.target.files)
         this.editedItem['files'] = e.target.files
+      },
+      previewImage (files) {
+        var v = this
+
+        if (files && files[0]) {
+          var reader = new FileReader();
+
+          reader.onload = function(e) {
+            v.imagePreviewUrl = e.target.result
+          }
+
+          reader.readAsDataURL(files[0]);
+        }
       }
     },
     watch: {
@@ -309,3 +384,14 @@
     }
 }
 </script>
+
+<style scoped>
+  input.input-file-preview {
+    color: transparent;
+    position: absolute;
+    left: 0;
+    width: 75%;
+    left: 22%;
+    top: 59%;
+  }
+</style>

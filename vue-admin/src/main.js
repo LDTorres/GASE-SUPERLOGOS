@@ -175,6 +175,9 @@ instance.interceptors.response.use(function (response) {
         localStorage.clear()
         location.reload()
         break
+      case 409:
+        alert('El elemento esta uso, por favor liberalo antes de eliminarlo')
+        break
       default:
         console.log('Server response: ', error.response.data.pretty_message)
         break

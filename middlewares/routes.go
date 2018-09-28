@@ -130,7 +130,7 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 				_, err := controllers.VerifyToken(token, "Admin")
 
 				if err != nil {
-					beego.Debug("No valido")
+					//beego.Debug("No valido")
 					err := errors.New("Usuario Invalido")
 					DenyAccess(ctx, err)
 				}
@@ -143,9 +143,9 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 
 		urlMapping := GetURLMapping(controller)
 
-		beego.Debug("Url: ", controller, "| Match: ", pattern)
-		beego.Debug("Allowed users: ", userTypes)
-		beego.Debug("Method: ", ctx.Input.Method())
+		//beego.Debug("Url: ", controller, "| Match: ", pattern)
+		//beego.Debug("Allowed users: ", userTypes)
+		//beego.Debug("Method: ", ctx.Input.Method())
 
 		denyAccess := true
 
@@ -161,7 +161,7 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 			}
 		}
 
-		beego.Debug("Allowed users: ", userTypes)
+		//beego.Debug("Allowed users: ", userTypes)
 
 		// Deny Access if the token is empty
 		if token == "" {
