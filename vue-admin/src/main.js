@@ -167,7 +167,7 @@ instance.interceptors.response.use(function (response) {
   return response
 }, function (error) {
   if (error.response) {
-    // console.log(error.response.data);
+    // console.log(error.response)
     // console.log(error.response.status);
     // console.log(error.response.headers);
     switch (error.response.status) {

@@ -37,7 +37,6 @@
                         v-model="editedItem.location"
                         :items="locations"
                         item-text="name"
-                        item-value="in"
                         :error-messages="selectErrors"
                         return-object
                         label="Locacion"
@@ -52,7 +51,6 @@
                         v-model="editedItem.service"
                         :items="services"
                         item-text="name"
-                        item-value="in"
                         :error-messages="selectErrors"
                         return-object
                         label="Servicio"
@@ -67,7 +65,6 @@
                         v-model="editedItem.activity"
                         :items="activities"
                         item-text="name"
-                        item-value="in"
                         :error-messages="selectErrors"
                         return-object
                         label="Actividad"
@@ -168,13 +165,13 @@
                   height="200px"
                 ></v-img>
                 <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn icon @click="imagePriority(img, 1)">
-                    <v-icon>favorite</v-icon>
-                  </v-btn>
+                  <v-flex>
+                      <v-text-field type="number" name="Prioridad" v-model="img.priority" label="Prioridad"></v-text-field>
+                  </v-flex>
                   <v-btn icon @click="imagePriority(img, 0)">
-                    <v-icon>favorite_border</v-icon>
+                    <v-icon>save</v-icon>
                   </v-btn>
+                  <v-spacer></v-spacer>
                   <v-btn icon @click="deleteImage(img)">
                     <v-icon>delete</v-icon>
                   </v-btn>
@@ -204,6 +201,7 @@
     },
     data () {
       return {
+        // Cambiar dependiendo del enviroment
         urlHosting: 'http://localhost:9090',
         selectErrors: [],
         pagination: {},
@@ -234,11 +232,11 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {         
-        this.$validator.validate().then(result => {           
-          if (!result) {             
-            alert('Llene los campos correctamente.')          
-          }         
+      save () {
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          }
         })
 
         let params = {

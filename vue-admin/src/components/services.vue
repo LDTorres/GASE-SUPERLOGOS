@@ -31,7 +31,7 @@
 
                 <!-- Si es editado -->
                 <v-flex v-if="editedIndex !== -1" xs3 v-for="(price) in editedItem.prices" :key="price.id">
-                  <v-text-field type="text" v-validate="'required|max:6'" v-model="price.value" :label="price.currency.name"></v-text-field>
+                  <v-text-field type="text" v-validate="'required|max:6'" v-model="price.value" :label="price.currency.iso"></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -149,9 +149,13 @@
         }
 
         if (this.editedIndex > -1) {
+          for (let i = 0; i < this.editedItem.prices.length; i++) {
+            const price = this.editedItem.prices[i];
+            price.value =  parseFloat(price.value)
+          }
+          
           this.$store.dispatch('updateOne', params)
         } else {
-
           this.editedItem.prices = []
 
           this.currencies.forEach(currency => {

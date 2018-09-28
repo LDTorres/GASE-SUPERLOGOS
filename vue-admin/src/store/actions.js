@@ -50,7 +50,7 @@ export default {
     try {
       let res = await axios.put('/' + params.state + '/' + params.item.id, params.item)
       params.res = res.data
-      commit('UPDATE_ONE', params)
+      alert('El elemento fue actualizado')
     } catch (error) {
       // console.log(error)
     }

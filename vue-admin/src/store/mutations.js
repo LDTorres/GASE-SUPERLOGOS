@@ -24,7 +24,6 @@ export const mutations = {
   },
   UPDATE_ONE (state, data) {
     state[data.state].all[data.item.in] = data.item
-    console.log(state[data.state].all[data.item.in])
     alert('El elemento fue actualizado')
   },
   DELETE_ONE (state, data) {

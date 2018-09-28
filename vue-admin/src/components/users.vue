@@ -23,7 +23,7 @@
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field type="password" name="Contrasena" v-validate="'required|min:8|alpha_dash'" v-model="editedItem.password" label="Contraseña"></v-text-field>
-                  <span v-show="errors.has('Contraseña')">{{ errors.first('Contraseña') }}</span>
+                  <span v-show="errors.has('Contrasena')">{{ errors.first('Contrasena') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>

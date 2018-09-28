@@ -14,14 +14,6 @@ func init() {
 
 	middlewares.LoadFilters()
 
-	views := beego.NewNamespace("/admin",
-		beego.NSInclude(
-			&controllers.ViewController{},
-		),
-	)
-
-	beego.AddNamespace(views)
-
 	ns := beego.NewNamespace("/v1",
 
 		beego.NSNamespace("/activities",

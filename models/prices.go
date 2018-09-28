@@ -46,6 +46,13 @@ func (t *Prices) loadRelations() {
 func AddPrices(m *Prices) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
+
+	if err != nil {
+		return
+	}
+
+	m.ID = int(id)
+
 	return
 }
 
@@ -156,6 +163,41 @@ func UpdatePricesByID(m *Prices) (err error) {
 	return
 }
 
+//UpdateManyPricesByID updates Prices by Id and returns error if the record to be updated doesn't exist
+func UpdateManyPricesByID(prices []*Prices) (err error) {
+	o := orm.NewOrm()
+	err = o.Begin()
+
+	if err != nil {
+		return err
+	}
+
+	for _, price := range prices {
+		v := Prices{ID: price.ID}
+
+		err = o.Read(&v)
+		if err == nil {
+			_, err = o.Update(price, "value")
+
+			if err != nil {
+				errRoll := o.Rollback()
+				if errRoll != nil {
+					return errRoll
+				}
+				return err
+			}
+		}
+	}
+
+	err = o.Commit()
+
+	if err != nil {
+		return err
+	}
+
+	return
+}
+
 // DeletePrices deletes Prices by Id and returns error if
 // the record to be deleted doesn't exist
 func DeletePrices(id int, trash bool) (err error) {
@@ -236,6 +278,7 @@ func AddDefaultDataPrices() (count int64, errors []error) {
 	return
 }
 
+// AddManyPrices ...
 func AddManyPrices(p []*Prices) (prices []*Prices, err error) {
 
 	o := orm.NewOrm()

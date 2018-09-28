@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-	"github.com/globalsign/mgo/bson"
+	"github.com/gofrs/uuid"
 
 	"github.com/gosimple/slug"
 )
@@ -52,7 +52,8 @@ func (m *Services) loadRelations() {
 func AddServices(m *Services) (id int64, err error) {
 	o := orm.NewOrm()
 
-	m.Code = bson.NewObjectId().String()
+	UUID, err := uuid.NewV4()
+	m.Code = UUID.String()
 
 	m.Slug = GenerateSlug(m.TableName(), m.Name)
 
@@ -142,9 +143,11 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 		if len(fields) == 0 {
 			for _, v := range l {
 				v.loadRelations()
+
 				for _, price := range v.Prices {
-					price.loadRelations()
+					searchFK(price.TableName(), price.ID).One(price)
 				}
+
 				v.Portfolios = nil
 				ml = append(ml, v)
 			}
@@ -158,8 +161,9 @@ func GetAllServices(query map[string]string, fields []string, sortby []string, o
 				}
 				v.loadRelations()
 				for _, price := range v.Prices {
-					price.loadRelations()
+					searchFK(price.TableName(), price.ID).One(&price)
 				}
+
 				v.Portfolios = nil
 				ml = append(ml, m)
 			}

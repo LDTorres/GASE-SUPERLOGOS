@@ -19,13 +19,16 @@
                   <span v-show="errors.has('Porcentage')">{{ errors.first('Porcentage') }}</span>
                 </v-flex>
                 <v-flex xs12>
+                  <v-text-field type="text" name="Codigo" v-validate="'required'" v-model="editedItem.code" label="Codigo"></v-text-field>
+                  <span v-show="errors.has('Codigo')">{{ errors.first('Codigo') }}</span>
+                </v-flex>
+                <v-flex xs12>
                   <v-select
                     v-model="editedItem.status"
                     :items="status"
                     item-text="name"
                     item-value="value"
                     :error-messages="selectErrors"
-                    return-object
                     label="Estado"
                     required
                     name="Estado"
@@ -70,6 +73,7 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.item.id }}</td>
         <td >{{ props.item.percentage }}</td>
+        <td >{{ props.item.code }}</td>
         <td v-if="props.item.status == 1">Activo</td>
         <td v-if="props.item.status == 0">Inactivo</td>
         <td class="justify-center layout px-0">
@@ -124,6 +128,7 @@
       },
       deleteItem (item) {
         item.index = this.list.indexOf(item)
+
         let params = {
           state: this.viewName,
           item: item
@@ -138,12 +143,14 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {         
-        this.$validator.validate().then(result => {           
-          if (!result) {             
-            alert('Llene los campos correctamente.')         
-          }         
+      save () {
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          }
         })
+
+        this.editedItem.percentage = parseFloat(this.editedItem.percentage)
 
         let params = {
           state: this.viewName,

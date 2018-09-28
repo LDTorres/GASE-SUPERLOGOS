@@ -16,7 +16,7 @@ import (
 //Images Model
 type Images struct {
 	ID        int         `orm:"column(id);pk" json:"id"`
-	Priority  int8        `orm:"column(priority)" json:"priority,omitempty"`
+	Priority  int8        `orm:"column(priority)" json:"priority"`
 	Name      string      `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Slug      string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	UUID      string      `orm:"column(uuid);size(255)" json:"uuid,omitempty" valid:"Required"`

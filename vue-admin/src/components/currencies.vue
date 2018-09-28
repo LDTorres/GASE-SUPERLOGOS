@@ -130,13 +130,12 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {         
-        this.$validator.validate().then(result => {           
-          if (!result) {             
-            alert('Llene los campos correctamente.')          
-          }         
+      save () {
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          }
         })
-        
         let params = {
           state: this.viewName,
           item: this.editedItem

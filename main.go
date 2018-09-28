@@ -25,12 +25,9 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	beego.BConfig.WebConfig.ViewsPath = "public"
 	beego.BConfig.ServerName = "liderlogo"
 	beego.BConfig.WebConfig.FlashName = "LIDERLOGO_FLASH"
 	beego.BConfig.Listen.ServerTimeOut = 60
-
-	beego.SetStaticPath("/assets", "public/assets/")
 
 	beego.Run()
 }

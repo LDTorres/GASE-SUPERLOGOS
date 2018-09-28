@@ -23,7 +23,6 @@
                     v-model="editedItem.country"
                     :items="countries"
                     item-text="name"
-                    item-value="in"
                     :error-messages="selectErrors"
                     return-object
                     label="Paises"
@@ -134,11 +133,11 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {         
-        this.$validator.validate().then(result => {           
-          if (!result) {             
-            alert('Llene los campos correctamente.')         
-          }         
+      save () {
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          }
         })
 
         let params = {
