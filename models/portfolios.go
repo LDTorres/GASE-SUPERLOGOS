@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -18,7 +19,7 @@ type Portfolios struct {
 	Slug        string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	Description string      `orm:"column(description)" json:"description,omitempty" valid:"Required"`
 	Client      string      `orm:"column(client);size(255)" json:"client,omitempty" valid:"Required"`
-	Priority    int8        `orm:"column(priority)" json:"priority,omitempty"`
+	Priority    int         `orm:"column(priority)" json:"priority,omitempty"`
 	Location    *Locations  `orm:"column(locations_id);rel(fk)" json:"location,omitempty"`
 	Service     *Services   `orm:"column(services_id);rel(fk)" json:"service,omitempty"`
 	Activity    *Activities `orm:"column(activities_id);rel(fk)" json:"activity,omitempty"`
@@ -184,7 +185,12 @@ func DeletePortfolios(id int, trash bool) (err error) {
 	}
 
 	if trash {
+
+		for _, image := range v.Images {
+			DeleteImages(image.ID, true)
+		}
 		_, err = o.Delete(&v)
+
 	} else {
 		v.DeletedAt = time.Now()
 		_, err = o.Update(&v)
@@ -209,8 +215,6 @@ func GetPortfoliosByCustomSearch(filters map[string]int, limit int, offset int) 
 	qb = qb.Select("portfolios.*")
 
 	var (
-		//internalFilters map[string]int
-
 		externalKeys []string
 		internalKeys []string
 	)
@@ -218,74 +222,50 @@ func GetPortfoliosByCustomSearch(filters map[string]int, limit int, offset int) 
 	externalFilters := make(map[string]int)
 
 	if countryID, ok := filters["countries"]; ok {
-
 		delete(filters, "countries")
-
 		if _, ok = filters["locations"]; !ok {
 			externalFilters["countries"] = countryID
 			externalKeys = append(externalKeys, "countries")
 		}
-
 	}
 
 	if sectorID, ok := filters["sectors"]; ok {
-
 		delete(filters, "sectors")
-
 		if _, ok = filters["activities"]; !ok {
 			externalFilters["sectors"] = sectorID
 			externalKeys = append(externalKeys, "sectors")
 		}
-
 	}
 
 	for filterKey := range filters {
 		internalKeys = append(internalKeys, filterKey)
 	}
-	/*
-		extraTables := ""
 
-		if len(internalKeys) > 0 {
-			extraTables = ", " + strings.Join(internalKeys, ",")
-		} */
-
-	qb = qb.From("portfolios" /*  + extraTables */)
-
-	////
+	qb = qb.From("portfolios")
 
 	for _, externalKey := range externalKeys {
 
 		var interTable string
 
 		if externalKey == "countries" {
-
 			interTable = "locations"
-
 		} else if externalKey == "sectors" {
-
 			interTable = "activities"
-
 		}
 
 		qb = qb.InnerJoin(interTable).On("portfolios." + interTable + "_id = " + interTable + ".id")
-
 		qb = qb.InnerJoin(externalKey).On(interTable + "." + externalKey + "_id = " + externalKey + ".id")
 	}
 
 	for _, internalKey := range internalKeys {
-
 		qb = qb.InnerJoin(internalKey).On("portfolios." + internalKey + "_id = " + internalKey + ".id")
-
 	}
 
 	////
-
 	var whereString string
-
 	for _, internalKey := range internalKeys {
 
 		id := strconv.Itoa(filters[internalKey])
-
 		whereString += internalKey + ".id = " + id
 
 		if internalKey != internalKeys[len(internalKeys)-1] {
@@ -294,15 +274,12 @@ func GetPortfoliosByCustomSearch(filters map[string]int, limit int, offset int) 
 	}
 
 	for _, externalKey := range externalKeys {
-
 		if whereString != "" {
 			whereString += " AND "
 		}
 
 		id := strconv.Itoa(externalFilters[externalKey])
-
 		whereString += externalKey + ".id = " + id
-
 	}
 
 	if whereString != "" {
@@ -321,8 +298,6 @@ func GetPortfoliosByCustomSearch(filters map[string]int, limit int, offset int) 
 
 	sql := qb.String()
 
-	fmt.Println(sql)
-
 	o := orm.NewOrm()
 
 	_, err = o.Raw(sql).QueryRows(&portfolios)
@@ -336,7 +311,6 @@ func GetPortfoliosByCustomSearch(filters map[string]int, limit int, offset int) 
 	}
 
 	for key := range portfolios {
-
 		searchFK(portfolios[key].TableName(), portfolios[key].ID).One(portfolios[key])
 		portfolios[key].loadRelations()
 	}
@@ -365,4 +339,32 @@ func GetPortfoliosFromTrash() (portfolios []*Portfolios, err error) {
 
 	return
 
+}
+
+func (t *Portfolios) OrderImagesByPriority() {
+
+	imagesPriority := map[int][]*Images{}
+
+	imagesPrioritykeys := []int{}
+
+	for _, image := range t.Images {
+		if _, ok := imagesPriority[image.Priority]; ok {
+			imagesPriority[image.Priority] = append(imagesPriority[image.Priority], image)
+			continue
+		}
+		imagesPriority[image.Priority] = []*Images{image}
+		imagesPrioritykeys = append(imagesPrioritykeys, image.Priority)
+	}
+
+	sort.Ints(imagesPrioritykeys)
+	t.Images = []*Images{}
+
+	for _, imagesPrioritykey := range imagesPrioritykeys {
+		imagePriority := imagesPriority[imagesPrioritykey]
+		for _, image := range imagePriority {
+			t.Images = append(t.Images, image)
+		}
+	}
+
+	return
 }

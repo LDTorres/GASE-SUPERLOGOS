@@ -66,7 +66,7 @@ func (c *PortfoliosController) Post() {
 		Name:        r.FormValue("name"),
 		Description: r.FormValue("description"),
 		Client:      r.FormValue("client"),
-		Priority:    int8(intValues["priority"]),
+		Priority:    intValues["priority"],
 		Service:     &models.Services{ID: intValues["service"]},
 		Location:    &models.Locations{ID: intValues["location"]},
 		Activity:    &models.Activities{ID: intValues["activity"]},
@@ -103,9 +103,7 @@ func (c *PortfoliosController) Post() {
 	var i []*models.Images
 
 	if c.Ctx.Input.IsUpload() {
-
 		images, err := c.GetFiles("images")
-
 		if err != nil && err != http.ErrMissingFile {
 
 			c.BadRequest(err)
@@ -113,28 +111,24 @@ func (c *PortfoliosController) Post() {
 		}
 
 		for _, fileHeader := range images {
-
 			image, err := addNewImage(fileHeader, &v)
 			if err != nil {
-
 				c.BadRequest(err)
 				return
 			}
-
 			err = generateImageURL(image)
-
 			if err != nil {
 				c.BadRequest(err)
 				return
 			}
-
 			i = append(i, image)
 		}
-
 	}
 
 	data := v
 	data.Images = i
+
+	data.OrderImagesByPriority()
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = data
@@ -174,6 +168,8 @@ func (c *PortfoliosController) GetOne() {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	v.OrderImagesByPriority()
 
 	c.Data["json"] = v
 	c.ServeJSON()
@@ -242,11 +238,11 @@ func (c *PortfoliosController) GetAll() {
 	for i, portfolio := range l {
 
 		p := portfolio.(models.Portfolios)
+		p.OrderImagesByPriority()
 
 		images := p.Images
 
 		for imageKey, image := range images {
-
 			err := generateImageURL(image)
 
 			if err != nil {
@@ -256,7 +252,6 @@ func (c *PortfoliosController) GetAll() {
 
 			l[i].(models.Portfolios).Images[imageKey] = image
 		}
-
 	}
 
 	c.Data["json"] = l
@@ -439,6 +434,10 @@ func (c *PortfoliosController) GetByCustomSearch() {
 		return
 	}
 
+	for _, portofolio := range v {
+		portofolio.OrderImagesByPriority()
+	}
+
 	c.Data["json"] = v
 
 	c.ServeJSON()
@@ -518,6 +517,10 @@ func (c *PortfoliosController) GetPortfoliosByCountry() {
 		return
 	}
 
+	for _, portofolio := range v {
+		portofolio.OrderImagesByPriority()
+	}
+
 	c.Data["json"] = v
 	c.ServeJSON()
 }
@@ -533,6 +536,10 @@ func (c *PortfoliosController) GetAllFromTrash() {
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
+	}
+
+	for _, portofolio := range v {
+		portofolio.OrderImagesByPriority()
 	}
 
 	c.Data["json"] = v
@@ -563,6 +570,8 @@ func (c *PortfoliosController) RestoreFromTrash() {
 		c.ServeErrorJSON(err)
 		return
 	}
+
+	v.OrderImagesByPriority()
 
 	c.Data["json"] = v
 	c.ServeJSON()

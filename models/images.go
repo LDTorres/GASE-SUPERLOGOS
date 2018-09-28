@@ -1,10 +1,12 @@
 package models
 
 import (
+	"GASE/controllers/services/statics"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"mime/multipart"
+	"os"
 	"reflect"
 	"strings"
 	"time"
@@ -16,7 +18,7 @@ import (
 //Images Model
 type Images struct {
 	ID        int         `orm:"column(id);pk" json:"id"`
-	Priority  int8        `orm:"column(priority)" json:"priority"`
+	Priority  int         `orm:"column(priority)" json:"priority,omitempty"`
 	Name      string      `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Slug      string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	UUID      string      `orm:"column(uuid);size(255)" json:"uuid,omitempty" valid:"Required"`
@@ -238,7 +240,14 @@ func DeleteImages(id int, trash bool) (err error) {
 	}
 
 	if trash {
+
 		_, err = o.Delete(&v)
+
+		if err == nil {
+			imagePath := statics.ImageFolderDir + "/" + v.UUID
+			os.Remove(imagePath)
+		}
+
 	} else {
 		v.DeletedAt = time.Now()
 		_, err = o.Update(&v)

@@ -3,13 +3,12 @@ package controllers
 import (
 	"errors"
 	"mime/multipart"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego/orm"
 
+	"GASE/controllers/services/statics"
 	"GASE/models"
 
 	"github.com/astaxie/beego"
@@ -31,15 +30,9 @@ type MessageResponse struct {
 	Error         string              `json:"error,omitempty"`
 }
 
-var (
-	rootDir, _      = filepath.Abs(beego.AppConfig.String("assets::jumps"))
-	imageFolderPath = beego.AppConfig.String("assets::imageFolderPath")
-	imageFolderDir  = rootDir + "/" + imageFolderPath
-)
-
 func init() {
 
-	checkOrCreateImagesFolder(imageFolderDir)
+	//checkOrCreateImagesFolder(imageFolderDir)
 
 	validation.SetDefaultMessage(map[string]string{
 		"Required":     "This field is required",
@@ -185,14 +178,12 @@ func (c *BaseController) BadRequestErrors(errors []*validation.Error, entity str
 func (c *BaseController) doForeignModelsValidation(foreignModels map[string]int) (resume bool) {
 
 	for foreignModelName, foreignModelID := range foreignModels {
-
 		exists := models.ValidateExists(foreignModelName, foreignModelID)
 
 		if !exists {
 			c.BadRequestDontExists(foreignModelName)
 			return
 		}
-
 	}
 
 	resume = true
@@ -206,7 +197,6 @@ func stringIsValidInt(stringIDs *map[string]string) (IDs map[string]int, err err
 	intIDs := make(map[string]int)
 
 	for key, id := range *stringIDs {
-
 		intID, err := strconv.Atoi(id)
 
 		if err != nil {
@@ -214,14 +204,13 @@ func stringIsValidInt(stringIDs *map[string]string) (IDs map[string]int, err err
 		}
 
 		intIDs[key] = intID
-
 	}
-
 	IDs = intIDs
 
 	return
 }
 
+/*
 func checkOrCreateImagesFolder(imageFolderDir string) (err error) {
 
 	if _, err := os.Stat(imageFolderDir); os.IsNotExist(err) {
@@ -232,7 +221,7 @@ func checkOrCreateImagesFolder(imageFolderDir string) (err error) {
 
 	return
 
-}
+} */
 
 func addNewImage(fh *multipart.FileHeader, v *models.Portfolios) (i *models.Images, err error) {
 
@@ -251,7 +240,7 @@ func addNewImage(fh *multipart.FileHeader, v *models.Portfolios) (i *models.Imag
 
 	i = &models.Images{Name: v.Name, Mimetype: fileType, Portfolio: v}
 
-	_, err = models.AddImages(i, fh, imageFolderDir)
+	_, err = models.AddImages(i, fh, statics.ImageFolderDir)
 
 	return
 

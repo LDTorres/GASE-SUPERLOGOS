@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GASE/controllers/services/statics"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -86,7 +87,7 @@ func (c *ImagesController) Post() {
 	}
 
 	v := &models.Images{
-		Priority:  int8(intValues["priority"]),
+		Priority:  intValues["priority"],
 		Portfolio: &models.Portfolios{ID: intValues["portfolio"]},
 	}
 
@@ -371,9 +372,9 @@ func (c *ImagesController) ServeImageBySlug() {
 		return
 	}
 
-	imageURL := imageFolderDir + "/" + v.UUID
+	imagePath := statics.ImageFolderDir + "/" + v.UUID
 
-	imageBytes, err := ioutil.ReadFile(imageURL)
+	imageBytes, err := ioutil.ReadFile(imagePath)
 
 	if err != nil {
 
