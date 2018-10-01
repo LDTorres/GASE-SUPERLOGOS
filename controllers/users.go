@@ -220,7 +220,7 @@ func (c *UsersController) Login() {
 	err = user.LoginUsers()
 
 	if err != nil {
-		c.BadRequest(errors.New("No hubo resultados"))
+		c.ServeErrorJSON(err)
 		return
 	}
 

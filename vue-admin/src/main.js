@@ -149,19 +149,17 @@ Vue.use(Vuetify, {
 
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('bazam-token')
-  if (token !== null && token !== undefined && token !== '') {
-    config.headers['Authorization'] = token
-  } else {
-    localStorage.removeItem('bazam-token')
-    location.href = '/'
+  if (location.pathname !== '/') {
+    const token = localStorage.getItem('bazam-token')
+    if (token !== null && token !== undefined && token !== '') {
+      config.headers['Authorization'] = token
+    } else {
+      localStorage.removeItem('bazam-token')
+      location.href = '/'
+    }
   }
   return config
-}, function (error) {
-  // Do something with request error
-  return Promise.reject(error)
-}
-)
+})
 
 instance.interceptors.response.use(function (response) {
   return response

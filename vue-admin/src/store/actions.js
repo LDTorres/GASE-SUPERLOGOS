@@ -2,93 +2,63 @@ import axios from '../axios.js'
 
 export default {
   async login ({ commit }, params) {
-    try {
-      let res = await axios.post('/users/login', params.item)
+    await axios.post('/users/login', params.item).then((res) => {
       params.res = res.data
       commit('LOGIN', params)
-    } catch (error) {
-      // // console.log(error)
-    }
+    }).catch(() => {})
   },
   async register ({ commit }, params) {
-    try {
-      let res = await axios.post('/users', params.item)
+    await axios.post('/users', params.item).then((res) => {
       params.res = res.data
       commit('LOGIN', params)
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   },
   async getAll ({ commit }, params) {
-    try {
-      let res = await axios.get('/' + params.state)
+    await axios.get('/' + params.state).then((res) => {
       params.res = res.data
       commit('GET_ALL', params)
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   },
   async getOne ({ commit }, params) {
-    try {
-      let res = await axios.get('/' + params.state + '/' + params.item.id)
+    await axios.get('/' + params.state + '/' + params.item.id).then((res) => {
       params.res = res.data
       commit('GET_ONE', params)
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   },
   async create ({ commit }, params) {
-    try {
-      let res = await axios.post('/' + params.state, params.item)
+    await axios.post('/' + params.state, params.item).then((res) => {
       params.res = res.data
       commit('CREATE', params)
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   },
   async updateOne ({ commit }, params) {
-    try {
-      let res = await axios.put('/' + params.state + '/' + params.item.id, params.item)
+    await axios.put('/' + params.state + '/' + params.item.id, params.item).then((res) => {
       params.res = res.data
       alert('El elemento fue actualizado')
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   },
   async deleteOne ({ commit }, params) {
-    try {
-      let res = await axios.delete('/' + params.state + '/' + params.item.id)
+    await axios.delete('/' + params.state + '/' + params.item.id).then((res) => {
       params.res = res.data
       commit('DELETE_ONE', params)
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   },
   async getAllTrashed ({ commit }, params) {
-    try {
-      let res = await axios.get('/' + params.state + '/trashed')
+    await axios.get('/' + params.state + '/trashed').then((res) => {
       params.res = res.data
       commit('GET_ALL_TRASHED', params)
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   },
   async restore ({ commit }, params) {
-    try {
-      let res = await axios.put('/' + params.state + '/' + params.item.id + '/restore')
+    await axios.put('/' + params.state + '/' + params.item.id + '/restore').then((res) => {
       params.res = res.data
       commit('RESTORE', params)
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   },
   async trash ({ commit }, params) {
-    try {
-      let res = await axios.delete('/' + params.state + '/' + params.item.id + '?trash=true')
+    await axios.delete('/' + params.state + '/' + params.item.id + '?trash=true').then((res) => {
       params.res = res.data
       commit('TRASH', params)
-    } catch (error) {
-      // console.log(error)
-    }
+    }).catch(() => {})
   }
 }

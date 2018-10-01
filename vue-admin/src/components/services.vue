@@ -150,10 +150,9 @@
 
         if (this.editedIndex > -1) {
           for (let i = 0; i < this.editedItem.prices.length; i++) {
-            const price = this.editedItem.prices[i];
-            price.value =  parseFloat(price.value)
+            const price = this.editedItem.prices[i]
+            price.value = parseFloat(price.value)
           }
-          
           this.$store.dispatch('updateOne', params)
         } else {
           this.editedItem.prices = []

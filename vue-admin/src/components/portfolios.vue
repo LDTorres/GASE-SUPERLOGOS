@@ -198,19 +198,6 @@
                 </v-card-actions>
               </v-card>
             </v-flex>
-
-            <!-- <v-flex xs12 d-flex justify-center align-center>
-              <input type="file" v-validate="'required|size:15000|mimes:image/*'" name="Imagenes" v-on:change="fileSelected">
-
-                <v-flex xs5 d-flex justify-center align-center>
-                  <v-text-field type="number" name="Prioridad" v-validate="'required|max:2'" v-model="props.item.priorityImage" label="Prioridad"></v-text-field>
-                  <v-btn outline small color="primary" :disabled="errors.count() > 0" @click="uploadImage(props.item)">
-                      GUARDAR
-                  </v-btn>
-                </v-flex>
-              <br>
-              <span v-show="errors.has('Imagenes')">{{ errors.first('Imagenes') }}</span>
-            </v-flex> -->
           </v-layout>
         </v-container>
       </template>
@@ -283,6 +270,7 @@
         } else {
           this.$store.dispatch('portfolios/create', params)
         }
+        this.imagePreviewUrl = ''
         this.close()
       },
       uploadImage (item) {
@@ -297,7 +285,6 @@
         this.$store.dispatch('portfolios/uploadImage', params)
       },
       imagePriority (img) {
-
         img.priority = parseInt(img.priority)
 
         let params = {
@@ -324,13 +311,13 @@
         var v = this
 
         if (files && files[0]) {
-          var reader = new FileReader();
+          var reader = new FileReader()
 
-          reader.onload = function(e) {
+          reader.onload = (e) => {
             v.imagePreviewUrl = e.target.result
           }
 
-          reader.readAsDataURL(files[0]);
+          reader.readAsDataURL(files[0])
         }
       }
     },

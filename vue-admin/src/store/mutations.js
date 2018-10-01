@@ -7,8 +7,9 @@ if (navigator.userAgent.indexOf('PhantomJS') > -1) {
 
 export const mutations = {
   LOGIN (state, data) {
+    localStorage.setItem('bazam-token', data.res.token)
+    delete data.res.token
     state.user = data.res
-    localStorage.setItem('bazam-token', state.user.token)
     localStorage.setItem('bazam-user', JSON.stringify(state.user))
     alert(data.message)
   },
