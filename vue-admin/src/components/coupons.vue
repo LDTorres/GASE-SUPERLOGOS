@@ -147,22 +147,22 @@
         this.$validator.validate().then(result => {
           if (!result) {
             alert('Llene los campos correctamente.')
+          } else {
+            this.editedItem.percentage = parseFloat(this.editedItem.percentage)
+
+            let params = {
+              state: this.viewName,
+              item: this.editedItem
+            }
+
+            if (this.editedIndex > -1) {
+              this.$store.dispatch('updateOne', params)
+            } else {
+              this.$store.dispatch('create', params)
+            }
+            this.close()
           }
         })
-
-        this.editedItem.percentage = parseFloat(this.editedItem.percentage)
-
-        let params = {
-          state: this.viewName,
-          item: this.editedItem
-        }
-
-        if (this.editedIndex > -1) {
-          this.$store.dispatch('updateOne', params)
-        } else {
-          this.$store.dispatch('create', params)
-        }
-        this.close()
       }
     },
     watch: {

@@ -131,20 +131,20 @@
         this.$validator.validate().then(result => {
           if (!result) {
             alert('Llene los campos correctamente.')
+          } else {
+            let params = {
+              state: this.viewName,
+              item: this.editedItem
+            }
+
+            if (this.editedIndex > -1) {
+              this.$store.dispatch('updateOne', params)
+            } else {
+              this.$store.dispatch('create', params)
+            }
+            this.close()
           }
         })
-
-        let params = {
-          state: this.viewName,
-          item: this.editedItem
-        }
-
-        if (this.editedIndex > -1) {
-          this.$store.dispatch('updateOne', params)
-        } else {
-          this.$store.dispatch('create', params)
-        }
-        this.close()
       }
     },
     watch: {
@@ -160,9 +160,7 @@
         return this.$store.getters.getAll('clients')
       },
       pages () {
-        if (this.pagination.rowsPerPage == null ||
-          this.pagination.totalItems == null
-        ) return 0
+        if (this.pagination.rowsPerPage == null || this.pagination.totalItems == null) return 0
 
         return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
       },

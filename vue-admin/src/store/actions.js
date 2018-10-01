@@ -7,14 +7,16 @@ export default {
       delete res.data.token
       state.user = res.data
       localStorage.setItem('bazam-user', JSON.stringify(res.data))
-      alert(params.message)
       location.reload()
     }).catch(() => {})
   },
-  async register ({ commit }, params) {
+  async register ({ state }, params) {
     await axios.post('/users', params.item).then((res) => {
-      params.res = res.data
-      commit('LOGIN', params)
+      localStorage.setItem('bazam-token', res.data.token)
+      delete res.data.token
+      state.user = res.data
+      localStorage.setItem('bazam-user', JSON.stringify(res.data))
+      location.reload()
     }).catch(() => {})
   },
   async getAll ({ commit }, params) {

@@ -75,11 +75,9 @@ export default {
     },
     CREATE (state, data) {
       state.all.push(data.res)
-      alert('El elemento fue creado')
     },
     UPDATE_ONE (state, data) {
       state.all[data.item.in] = data.item
-      alert('El elemento fue actualizado')
     },
     UPLOAD_IMAGE (state, data) {
       if (state.all[data.item.in].images !== undefined) {
@@ -88,11 +86,9 @@ export default {
         state.all[data.item.in].images = []
         state.all[data.item.in].images.push(data.res)
       }
-      alert('El elemento fue actualizado')
     },
     DELETE_IMAGE (state, data) {
       state.all[data.item.in].images.splice(data.indexImage, 1)
-      alert('El elemento fue eliminado')
     }
   },
   actions: {
@@ -137,9 +133,7 @@ export default {
       }).catch(() => {})
     },
     async imagePriority ({ commit }, params) {
-      await axios.put('/images/' + params.item.id, params.item).then((res) => {
-        alert('Se ha colocado la prioridad')
-      }).catch(() => {})
+      await axios.put('/images/' + params.item.id, params.item)
     }
   }
 }

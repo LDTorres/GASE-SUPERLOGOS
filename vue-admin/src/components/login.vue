@@ -94,8 +94,7 @@
             alert('Llene los campos correctamente.')
           } else {
             let params = {
-              item: this.login,
-              message: 'Has iniciado sesion'
+              item: this.login
             }
             this.$store.dispatch('login', params)
           }
@@ -107,8 +106,7 @@
             return alert('Llene los campos correctamente.')
           } else {
             let params = {
-              item: this.register,
-              message: 'Te has registrado con exito'
+              item: this.register
             }
             this.$store.dispatch('register', params)
           }
