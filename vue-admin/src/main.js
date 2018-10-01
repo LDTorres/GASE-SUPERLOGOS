@@ -149,7 +149,7 @@ Vue.use(Vuetify, {
 
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
-  if (location.pathname !== '/') {
+  if (location.hash !== '#/') {
     const token = localStorage.getItem('bazam-token')
     if (token !== null && token !== undefined && token !== '') {
       config.headers['Authorization'] = token
@@ -177,7 +177,11 @@ instance.interceptors.response.use(function (response) {
         alert('El elemento esta uso, por favor liberalo antes de eliminarlo')
         break
       default:
-        console.log('Server response: ', error.response.data.pretty_message)
+        if (location.hash === '#/') {
+          alert(error.response.data.pretty_message)
+        } else {
+          console.log('Server response: ', error.response.data.pretty_message)
+        }
         break
     }
   } else if (error.request) {

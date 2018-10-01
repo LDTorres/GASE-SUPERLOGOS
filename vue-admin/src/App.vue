@@ -50,7 +50,7 @@
 
 <script>
 export default {
-  beforeCreated () {
+  created () {
     if (!this.verifyUser) {
       this.$router.push('/')
     }
@@ -68,7 +68,7 @@ export default {
   methods: {
     logout () {
       localStorage.clear()
-      location.reload()
+      this.$router.push('/')
     }
   },
   computed: {
