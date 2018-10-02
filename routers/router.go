@@ -1,7 +1,8 @@
+package routers
+
 // @APIVersion 1.0.0
 // @Title GASE Api
 // @Description GASE autogenerate documents for your API
-package routers
 
 import (
 	"GASE/controllers"
@@ -12,7 +13,7 @@ import (
 
 func init() {
 
-	middlewares.LoadFilters()
+	middlewares.LoadMiddlewares()
 
 	ns := beego.NewNamespace("/v1",
 

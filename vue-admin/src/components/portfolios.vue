@@ -182,9 +182,9 @@
             <!-- prueba -->
             <v-flex xs3>
               <v-card>
-                <v-img
+                <v-img @click="triggerFileButton"
                   :src="imagePreviewUrl"
-                  height="200px"
+                  height="200px" :class="{ 'without-image' : imagePreviewUrl == ''}"
                 ></v-img>
                 <input type="file" class="input-file-preview" name="Imagenes" v-on:change="fileSelected">
                 <v-card-actions>
@@ -303,6 +303,9 @@
 
         this.$store.dispatch('portfolios/imageDelete', params)
       },
+      triggerFileButton () {
+       document.querySelector('.input-file-preview').click()
+      },
       fileSelected (e) {
         this.previewImage(e.target.files)
         this.editedItem['files'] = e.target.files
@@ -380,5 +383,12 @@
     width: 75%;
     left: 22%;
     top: 59%;
+    visibility: hidden;
+  }
+
+  .without-image{
+    background: url('../assets/add-circular-button.png');
+    background-repeat: no-repeat;
+    background-position: 50%;
   }
 </style>

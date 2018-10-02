@@ -2,142 +2,151 @@ package middlewares
 
 import (
 	"GASE/controllers"
-	"encoding/json"
+	"errors"
+	"strings"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )
 
-var (
-	//ControllersNames ...
-	ControllersNames = []string{
-		"portfolios", "activities", "carts", "clients", "countries", "coupons", "currencies", "gateways", "images", "locations", "orders", "prices", "sectors", "services", "briefs", "users",
-	}
-)
+//InsertMiddleware ...
+func InsertMiddleware(ctrlName string, url string, pattern string, users []string) {
 
-//DenyAccess =
-func DenyAccess(ctx *context.Context, err error) {
+	beego.InsertFilter(url, beego.BeforeRouter, Middleware(ctrlName, pattern, users))
 
-	ctx.Output.SetStatus(401)
-	ctx.Output.Header("Content-Type", "application/json")
-
-	message := controllers.MessageResponse{
-		Message:       "Permission Deny",
-		PrettyMessage: "Permiso Denegado",
-		Code:          002,
-		Error:         err.Error(),
-	}
-
-	res, _ := json.Marshal(message)
-
-	ctx.Output.Body([]byte(string(res)))
-	return
 }
 
-//GetURLMapping =
-func GetURLMapping(route string) (validation map[string][]string) {
+//LoadMiddlewares ...
+func LoadMiddlewares() {
+	for _, ctrlName := range ControllersNames {
+		for pattern, users := range GetURLMapping(ctrlName) {
+			if strings.Contains(pattern, ";") {
+				methods := strings.Split(pattern, ";")
 
-	carts := map[string][]string{
-		";GET":            {"Admin"},
-		"/:id;GET,DELETE": {"Admin"},
+				InsertMiddleware(ctrlName, "/*/"+ctrlName+methods[0], pattern, users)
+			} else {
+
+				InsertMiddleware(ctrlName, "/*/"+ctrlName+pattern, pattern, users)
+			}
+		}
 	}
+}
 
-	clients := map[string][]string{
-		";GET":              {"Admin"},
-		"/email/:email;GET": {"Admin", "Client"},
-		//"/:id;GET,PUT,DELETE": {"Client"},
+//Middleware ...
+func Middleware(controller string, pattern string, userTypes []string) func(ctx *context.Context) {
+
+	return func(ctx *context.Context) {
+
+		token := ctx.Input.Header("Authorization")
+
+		excludeUrls := []string{
+			"login", "carts", "change-password", "custom-search",
+		}
+
+		verifyToken := true
+
+		// If the url is a excluded url then dont verify the token
+		for _, excludeURL := range excludeUrls {
+			if strings.Contains(ctx.Input.URL(), excludeURL) {
+				verifyToken = false
+
+				//If is a optional method like carts
+				switch ctx.Input.Method() {
+				case "DELETE":
+					if excludeURL == "carts" {
+						verifyToken = true
+						break
+					}
+				case "GET":
+					if excludeURL == "carts" {
+						verifyToken = true
+						break
+					}
+				}
+				break
+			}
+		}
+
+		// Return middleware
+		if !verifyToken {
+			beego.Debug("Exclude Url: Dont verify token")
+			return
+		}
+
+		/* DEBUG */
+		/* beego.Debug("Url: ", controller, "| Pattern: ", pattern)
+		beego.Debug("Method: ", ctx.Input.Method())
+		beego.Debug("Allowed users: ", userTypes) */
+
+		// Verify global methods
+		methods := []string{
+			"POST", "DELETE", "PUT", "OPTIONS",
+		}
+
+		for _, method := range methods {
+			if ctx.Input.Method() == method {
+				if method == "OPTIONS" {
+					beego.Debug("OPTIONS METHOD: Dont verify token")
+					return
+				}
+
+				// Deny Access if the token is empty
+				if token == "" {
+					err := errors.New("Token No enviado")
+					DenyAccess(ctx, err)
+					return
+				}
+				_, err := controllers.VerifyToken(token, "Admin")
+
+				if err != nil {
+					beego.Debug("Invalid User Type in methods")
+					err := errors.New("Usuario Invalido")
+					DenyAccess(ctx, err)
+					return
+				}
+			}
+		}
+
+		// Verify custom validation
+		if strings.Contains(pattern, ";") {
+			urlMapping := GetURLMapping(controller)
+			splitted := strings.Split(pattern, ";")
+			methods := splitted[1]
+
+			if strings.Contains(methods, ctx.Input.Method()) {
+				userTypes = urlMapping[pattern]
+				beego.Debug("Allowed users after pattern: ", userTypes)
+			}
+		}
+
+		// If Usertype is Guest
+		if userTypes[0] == "Guest" {
+			return
+		}
+
+		// Deny Access By Default
+		denyAccess := true
+
+		// Deny Access if the token is empty
+		if token == "" {
+			err := errors.New("Token No enviado")
+			DenyAccess(ctx, err)
+			return
+		}
+
+		for _, userType := range userTypes {
+			user, _ := controllers.VerifyToken(token, userType)
+
+			if userType == user.Type {
+				denyAccess = false
+				break
+			}
+		}
+
+		if denyAccess {
+			beego.Debug("Invalid User Type in types")
+			err := errors.New("Usuario Invalido")
+			DenyAccess(ctx, err)
+		}
 	}
-
-	countries := map[string][]string{
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	coupons := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	currencies := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	gateways := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	images := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	locations := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	orders := map[string][]string{
-		";GET":            {"Admin"},
-		"/:id;PUT,DELETE": {"Client", "Admin"},
-	}
-
-	prices := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	sectors := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	services := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	briefs := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	activities := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	users := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	portfolios := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	payments := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	forms := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	validations := map[string]map[string][]string{
-		"carts":            carts,
-		"clients":          clients,
-		"countries":        countries,
-		"coupons":          coupons,
-		"currencies":       currencies,
-		"gateways":         gateways,
-		"images":           images,
-		"locations":        locations,
-		"orders":           orders,
-		"prices":           prices,
-		"sectors":          sectors,
-		"services":         services,
-		"briefs":           briefs,
-		"users":            users,
-		"portfolios":       portfolios,
-		"payments-methods": payments,
-		"forms":            forms,
-		"activities":       activities,
-	}
-
-	return validations[route]
 }
