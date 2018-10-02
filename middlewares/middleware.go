@@ -9,74 +9,54 @@ import (
 	"github.com/astaxie/beego/context"
 )
 
-//InsertMiddleware ...
-func InsertMiddleware(ctrlName string, url string, pattern string, users []string) {
-
-	beego.InsertFilter(url, beego.BeforeRouter, Middleware(ctrlName, pattern, users))
-
-}
-
 //LoadMiddlewares ...
 func LoadMiddlewares() {
-	for _, ctrlName := range ControllersNames {
-		for pattern, users := range GetURLMapping(ctrlName) {
-			if strings.Contains(pattern, ";") {
-				methods := strings.Split(pattern, ";")
+	for _, controllerName := range ControllersNames {
+		// Get MwPatterns
+		MwPatterns := GetControllerPatterns(controllerName)
 
-				InsertMiddleware(ctrlName, "/*/"+ctrlName+methods[0], pattern, users)
-			} else {
+		for _, MwPattern := range MwPatterns {
+			filterURL := controllerName + MwPattern.URL
 
-				InsertMiddleware(ctrlName, "/*/"+ctrlName+pattern, pattern, users)
-			}
+			beego.InsertFilter("/*/"+filterURL, beego.BeforeRouter, Middleware(controllerName, MwPattern))
 		}
 	}
 }
 
 //Middleware ...
-func Middleware(controller string, pattern string, userTypes []string) func(ctx *context.Context) {
+func Middleware(controllerName string, pattern *MwPattern) func(ctx *context.Context) {
 
 	return func(ctx *context.Context) {
 
 		token := ctx.Input.Header("Authorization")
 
-		excludeUrls := []string{
-			"login", "carts", "change-password", "custom-search",
-		}
-
 		verifyToken := true
-
 		// If the url is a excluded url then dont verify the token
-		for _, excludeURL := range excludeUrls {
+		for excludeURL, URLMethods := range ExcludeUrls {
 			if strings.Contains(ctx.Input.URL(), excludeURL) {
 				verifyToken = false
 
-				//If is a optional method like carts
-				switch ctx.Input.Method() {
-				case "DELETE":
-					if excludeURL == "carts" {
-						verifyToken = true
-						break
-					}
-				case "GET":
-					if excludeURL == "carts" {
+				for _, m := range URLMethods {
+					//If is a optional method like carts
+					method := ctx.Input.Method()
+					if method != m {
 						verifyToken = true
 						break
 					}
 				}
-				break
 			}
 		}
 
 		// Return middleware
 		if !verifyToken {
-			beego.Debug("Exclude Url: Dont verify token")
+			// beego.Debug("Exclude Url: Dont verify token")
 			return
 		}
 
 		/* DEBUG */
-		/* beego.Debug("Url: ", controller, "| Pattern: ", pattern)
+		beego.Debug("Url: ", controllerName, "| Pattern: ", pattern.URL)
 		beego.Debug("Method: ", ctx.Input.Method())
-		beego.Debug("Allowed users: ", userTypes) */
+		beego.Debug("Allowed users: ", pattern.UserTypes)
 
 		// Verify global methods
 		methods := []string{
@@ -96,10 +76,17 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 					DenyAccess(ctx, err)
 					return
 				}
+
 				_, err := controllers.VerifyToken(token, "Admin")
 
 				if err != nil {
-					beego.Debug("Invalid User Type in methods")
+					// beego.Debug("Token error in methods")
+					if err.Error() != "Invalid User" {
+						err := errors.New("Token Invalido")
+						DenyAccess(ctx, err)
+						return
+					}
+
 					err := errors.New("Usuario Invalido")
 					DenyAccess(ctx, err)
 					return
@@ -107,20 +94,8 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 			}
 		}
 
-		// Verify custom validation
-		if strings.Contains(pattern, ";") {
-			urlMapping := GetURLMapping(controller)
-			splitted := strings.Split(pattern, ";")
-			methods := splitted[1]
-
-			if strings.Contains(methods, ctx.Input.Method()) {
-				userTypes = urlMapping[pattern]
-				beego.Debug("Allowed users after pattern: ", userTypes)
-			}
-		}
-
 		// If Usertype is Guest
-		if userTypes[0] == "Guest" {
+		if pattern.UserTypes[0] == "Guest" {
 			return
 		}
 
@@ -134,17 +109,25 @@ func Middleware(controller string, pattern string, userTypes []string) func(ctx 
 			return
 		}
 
-		for _, userType := range userTypes {
-			user, _ := controllers.VerifyToken(token, userType)
+		for _, userType := range pattern.UserTypes {
+			user, err := controllers.VerifyToken(token, userType)
 
-			if userType == user.Type {
-				denyAccess = false
-				break
+			if err == nil {
+				if userType == user.Type {
+					denyAccess = false
+					break
+				}
+			}
+
+			if err.Error() != "Invalid User" {
+				err := errors.New("Token Invalido")
+				DenyAccess(ctx, err)
+				return
 			}
 		}
 
 		if denyAccess {
-			beego.Debug("Invalid User Type in types")
+			// beego.Debug("Invalid User Type in types")
 			err := errors.New("Usuario Invalido")
 			DenyAccess(ctx, err)
 		}

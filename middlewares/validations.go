@@ -12,6 +12,13 @@ var (
 	ControllersNames = []string{
 		"portfolios", "activities", "carts", "clients", "countries", "coupons", "currencies", "gateways", "images", "locations", "orders", "prices", "sectors", "services", "briefs", "users",
 	}
+	// ExcludeUrls ...
+	ExcludeUrls = map[string][]string{
+		"login":           {"POST"},
+		"carts":           {"POST", "PUT"},
+		"change-password": {"POST"},
+		"custom-search":   {"GET"},
+	}
 )
 
 // DenyAccess ...
@@ -33,123 +40,141 @@ func DenyAccess(ctx *context.Context, err error) {
 	return
 }
 
-// GetURLMapping ...
-func GetURLMapping(route string) (validation map[string][]string) {
+// MwPattern ...
+type MwPattern struct {
+	URL       string
+	Methods   []string
+	UserTypes []string
+}
 
-	/*
-	**          Validation example
-	** "/route;methods...": {"usertypes"...}
-	**/
+// GetControllerPatterns ...
+func GetControllerPatterns(route string) []*MwPattern {
 
-	carts := map[string][]string{
-		";GET":            {"Admin"},
-		"/:id;GET,DELETE": {"Admin"},
+	AccessGetAll := []*MwPattern{
+		{
+			URL:       "/",
+			Methods:   []string{"GET"},
+			UserTypes: []string{"Guest"},
+		},
+		{
+			URL:       "/:id",
+			Methods:   []string{"All"},
+			UserTypes: []string{"Admin"},
+		},
 	}
 
-	clients := map[string][]string{
-		";GET":                {"Admin"},
-		"/email/:email;GET":   {"Admin", "Client"},
-		"/:id;GET,PUT,DELETE": {"Client"},
+	OnlyAdmin := []*MwPattern{
+		{
+			URL:       "/",
+			Methods:   []string{"GET"},
+			UserTypes: []string{"Admin"},
+		},
+		{
+			URL:       "/:id",
+			Methods:   []string{"All"},
+			UserTypes: []string{"Admin"},
+		},
 	}
 
-	countries := map[string][]string{
-		";GET":                {"Guest"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
+	/** Only Get All **/
+
+	countries := AccessGetAll
+
+	coupons := AccessGetAll
+
+	currencies := AccessGetAll
+
+	gateways := AccessGetAll
+
+	locations := AccessGetAll
+
+	sectors := AccessGetAll
+
+	services := AccessGetAll
+
+	portfolios := AccessGetAll
+
+	activities := AccessGetAll
+
+	/** Only Admin **/
+
+	prices := OnlyAdmin
+
+	images := OnlyAdmin
+
+	users := OnlyAdmin
+
+	/** Custom **/
+
+	clients := []*MwPattern{
+		{
+			URL:       "/",
+			Methods:   []string{"GET"},
+			UserTypes: []string{"Admin"},
+		},
+		{
+			URL:       "/:id",
+			Methods:   []string{"GET", "DELETE", "PUT"},
+			UserTypes: []string{"Admin", "Client"},
+		},
+		{
+			URL:       "/email/:email",
+			Methods:   []string{"GET"},
+			UserTypes: []string{"Admin", "Client"},
+		},
 	}
 
-	coupons := map[string][]string{
-		";GET":                {"Guest"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
+	carts := []*MwPattern{
+		{
+			URL:       "/",
+			Methods:   []string{"GET"},
+			UserTypes: []string{"Admin"},
+		},
+		{
+			URL:       "/:id",
+			Methods:   []string{"GET", "DELETE"},
+			UserTypes: []string{"Admin"},
+		},
 	}
 
-	currencies := map[string][]string{
-		";GET":            {"Guest"},
-		"/:id;PUT,DELETE": {"Admin"},
+	orders := []*MwPattern{
+		{
+			URL:       "/",
+			Methods:   []string{"GET"},
+			UserTypes: []string{"Admin"},
+		},
+		{
+			URL:       "/:id",
+			Methods:   []string{"GET", "PUT", "DELETE"},
+			UserTypes: []string{"Client", "Admin"},
+		},
 	}
 
-	gateways := map[string][]string{
-		";GET":            {"Guest"},
-		"/:id;PUT,DELETE": {"Admin"},
+	briefs := []*MwPattern{
+		{
+			URL:       "/:id",
+			Methods:   []string{"PUT", "DELETE"},
+			UserTypes: []string{"Admin"},
+		},
 	}
 
-	images := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	locations := map[string][]string{
-		";GET":            {"Guest"},
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	orders := map[string][]string{
-		";GET":            {"Admin"},
-		"/:id;PUT,DELETE": {"Client", "Admin"},
-	}
-
-	prices := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	sectors := map[string][]string{
-		";GET":            {"Guest"},
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	services := map[string][]string{
-		";GET":            {"Guest"},
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	briefs := map[string][]string{
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	activities := map[string][]string{
-		";GET":            {"Guest"},
-		"/:id;PUT,DELETE": {"Admin"},
-	}
-
-	users := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	portfolios := map[string][]string{
-		";GET":                 {"Guest"},
-		"/:id;POST,PUT,DELETE": {"Admin"},
-	}
-
-	payments := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	forms := map[string][]string{
-		";GET":                {"Admin"},
-		"/:id;GET,PUT,DELETE": {"Admin"},
-	}
-
-	validations := map[string]map[string][]string{
-		"carts":            carts,
-		"clients":          clients,
-		"countries":        countries,
-		"coupons":          coupons,
-		"currencies":       currencies,
-		"gateways":         gateways,
-		"images":           images,
-		"locations":        locations,
-		"orders":           orders,
-		"prices":           prices,
-		"sectors":          sectors,
-		"services":         services,
-		"briefs":           briefs,
-		"users":            users,
-		"portfolios":       portfolios,
-		"payments-methods": payments,
-		"forms":            forms,
-		"activities":       activities,
+	validations := map[string][]*MwPattern{
+		"carts":      carts,
+		"clients":    clients,
+		"countries":  countries,
+		"coupons":    coupons,
+		"currencies": currencies,
+		"gateways":   gateways,
+		"images":     images,
+		"locations":  locations,
+		"orders":     orders,
+		"prices":     prices,
+		"sectors":    sectors,
+		"services":   services,
+		"briefs":     briefs,
+		"users":      users,
+		"portfolios": portfolios,
+		"activities": activities,
 	}
 
 	return validations[route]
