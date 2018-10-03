@@ -59,7 +59,7 @@ func AddImages(m *Images, fh *multipart.FileHeader, folderPath string) (id int64
 		return 0, err
 	}
 
-	_, err = o.Insert(m)
+	id, err = o.Insert(m)
 
 	if err != nil {
 
@@ -71,6 +71,8 @@ func AddImages(m *Images, fh *multipart.FileHeader, folderPath string) (id int64
 
 		return 0, err
 	}
+
+	m.ID = int(id)
 
 	f, err := fh.Open()
 
@@ -112,13 +114,13 @@ func AddImages(m *Images, fh *multipart.FileHeader, folderPath string) (id int64
 			return 0, errRoll
 		}
 
-		return 0, err
+		return
 	}
 
 	err = o.Commit()
 
 	if err != nil {
-		return 0, err
+		return
 	}
 
 	//r := bufio.NewReader(*f)
