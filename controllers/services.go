@@ -133,7 +133,14 @@ func (c *ServicesController) Post() {
 		pricesToAdd = append(pricesToAdd, &priceToAdd)
 	}
 
-	prices, err = models.AddManyPrices(pricesToAdd)
+	// prices, err = models.AddManyPrices(pricesToAdd)
+	for _, priceToAdd := range pricesToAdd {
+		_, err = models.AddPrices(priceToAdd)
+
+		if err != nil {
+			return
+		}
+	}
 
 	if err != nil {
 		c.BadRequest(err)
@@ -141,7 +148,7 @@ func (c *ServicesController) Post() {
 	}
 
 	newService := v
-	newService.Prices = prices
+	newService.Prices = pricesToAdd
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = newService
@@ -290,6 +297,13 @@ func (c *ServicesController) Put() {
 
 	if err != nil {
 		c.BadRequest(err)
+		return
+	}
+
+	err = models.UpdateManyPricesByID(v.Prices)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
 		return
 	}
 

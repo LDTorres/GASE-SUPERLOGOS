@@ -182,7 +182,7 @@ func (u *User) LoginUsers() (err error) {
 
 //AddDefaultDataUsers ...
 func AddDefaultDataUsers() (id *bson.ObjectId, err error) {
-	u := User{ID: bson.NewObjectId(), Email: "admin@logo.pro", Password: "123456"}
+	u := User{ID: bson.NewObjectId(), Name: "Liderlogo", Email: "admin@liderlogo.com", Password: "12345678"}
 
 	err = u.Insert()
 

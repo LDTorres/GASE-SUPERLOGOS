@@ -141,6 +141,7 @@ func (c *BaseController) ServeErrorJSON(err error) {
 			Message:       "No results",
 			Code:          8,
 			PrettyMessage: "No se encontraron resultados",
+			Error:         err.Error(),
 		}
 	}
 
@@ -223,7 +224,7 @@ func checkOrCreateImagesFolder(imageFolderDir string) (err error) {
 
 } */
 
-func addNewImage(fh *multipart.FileHeader, v *models.Portfolios) (i *models.Images, err error) {
+func addNewImage(fh *multipart.FileHeader, v *models.Portfolios, priority int) (i *models.Images, err error) {
 
 	if v.ID == 0 || v.Name == "" {
 		err = errors.New("Parent Portfolio ID or Name is empty")
@@ -238,12 +239,11 @@ func addNewImage(fh *multipart.FileHeader, v *models.Portfolios) (i *models.Imag
 		return
 	}
 
-	i = &models.Images{Name: v.Name, Mimetype: fileType, Portfolio: v}
+	i = &models.Images{Name: v.Name, Mimetype: fileType, Portfolio: v, Priority: priority}
 
 	_, err = models.AddImages(i, fh, statics.ImageFolderDir)
 
 	return
-
 }
 
 func generateImageURL(v *models.Images) (err error) {

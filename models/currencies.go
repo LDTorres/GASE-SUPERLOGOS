@@ -284,6 +284,7 @@ func GetCurrenciesFromTrash() (currencies []*Currencies, err error) {
 
 }
 
+//GetMissingCurrencies ...
 func GetMissingCurrencies(currenciesIDs ...int) (currencies []*Currencies, err error) {
 
 	o := orm.NewOrm()

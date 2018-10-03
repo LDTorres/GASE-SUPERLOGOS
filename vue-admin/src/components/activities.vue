@@ -23,7 +23,6 @@
                     v-model="editedItem.sector"
                     :items="sectors"
                     item-text="name"
-                    item-value="in"
                     :error-messages="selectErrors"
                     return-object
                     label="Sectors"
@@ -41,16 +40,6 @@
                     v-model="editedItem.description"
                   ></v-textarea>
                   <span v-show="errors.has('Descripción')">{{ errors.first('Descripción') }}</span>
-                </v-flex>
-                <v-flex xs12 sm6 md12 v-if="editedItem.sector">
-                  <p>
-                    <b>Sector:</b> 
-                    <span v-text="editedItem.sector.name"></span>
-                  </p>
-                  <p>
-                    <b>Portfolios:</b> 
-                    <span v-text="editedItem.portfolios.length"></span>
-                  </p>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -136,7 +125,6 @@
     methods: {
       editItem (item) {
         this.editedIndex = this.list.indexOf(item)
-        console.log(this.editedIndex)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
@@ -156,24 +144,24 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {         
+      save () {
         this.$validator.validate().then(result => {
           if (!result) {
             alert('Llene los campos correctamente.')
+          } else {
+            let params = {
+              state: this.viewName,
+              item: this.editedItem
+            }
+
+            if (this.editedIndex > -1) {
+              this.$store.dispatch('updateOne', params)
+            } else {
+              this.$store.dispatch('create', params)
+            }
+            this.close()
           }
         })
-
-        let params = {
-          state: this.viewName,
-          item: this.editedItem
-        }
-
-        if (this.editedIndex > -1) {
-          this.$store.dispatch('updateOne', params)
-        } else {
-          this.$store.dispatch('create', params)
-        }
-        this.close()
       }
     },
     watch: {

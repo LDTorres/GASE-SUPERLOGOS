@@ -23,7 +23,7 @@
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field type="password" name="Contrasena" v-validate="'required|min:8|alpha_dash'" v-model="editedItem.password" label="Contraseña"></v-text-field>
-                  <span v-show="errors.has('Contraseña')">{{ errors.first('Contraseña') }}</span>
+                  <span v-show="errors.has('Contrasena')">{{ errors.first('Contrasena') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -126,23 +126,23 @@
         }, 300)
       },
       save () {
-        let params = {
-          state: this.viewName,
-          item: this.editedItem
-        }
-
         this.$validator.validate().then(result => {
           if (!result) {
             alert('Llene los campos correctamente.')
+          } else {
+            let params = {
+              state: this.viewName,
+              item: this.editedItem
+            }
+
+            if (this.editedIndex > -1) {
+              this.$store.dispatch('updateOne', params)
+            } else {
+              this.$store.dispatch('create', params)
+            }
+            this.close()
           }
         })
-
-        if (this.editedIndex > -1) {
-          this.$store.dispatch('updateOne', params)
-        } else {
-          this.$store.dispatch('create', params)
-        }
-        this.close()
       }
     },
     watch: {

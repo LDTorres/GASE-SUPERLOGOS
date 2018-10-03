@@ -18,19 +18,16 @@ func main() {
 
 	//CORS
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowOrigins:     []string{"*"},
+		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "Access-Control-Allow-Origin", "Country-Iso", "authorization"},
 		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin"},
 		AllowCredentials: true,
 	}))
 
-	beego.BConfig.WebConfig.ViewsPath = "public"
-	beego.BConfig.ServerName = "liderlogo"
+	/* beego.BConfig.ServerName = "liderlogo"
 	beego.BConfig.WebConfig.FlashName = "LIDERLOGO_FLASH"
-	beego.BConfig.Listen.ServerTimeOut = 60
-
-	beego.SetStaticPath("/assets", "public/assets/")
+	beego.BConfig.Listen.ServerTimeOut = 60 */
 
 	beego.Run()
 }

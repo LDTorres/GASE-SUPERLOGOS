@@ -110,8 +110,8 @@ func (c *PortfoliosController) Post() {
 			return
 		}
 
-		for _, fileHeader := range images {
-			image, err := addNewImage(fileHeader, &v)
+		for index, fileHeader := range images {
+			image, err := addNewImage(fileHeader, &v, index)
 			if err != nil {
 				c.BadRequest(err)
 				return

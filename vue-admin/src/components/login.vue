@@ -21,13 +21,13 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" v-on:click="showRegister = !showRegister">Registro</v-btn>
+            <!-- <v-btn color="primary" v-on:click="showRegister = !showRegister">Registro</v-btn> -->
             <v-spacer></v-spacer>
-            <v-btn color="primary" v-on:click="singIn">Inicio de Sesion</v-btn>
+            <v-btn color="primary" v-on:click="singIn" :disabled="errors.count() > 0">Inicio de Sesion</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
-      <v-flex xs12 sm8 md4 v-show="showRegister">
+      <!-- <v-flex xs12 sm8 md4 v-show="showRegister">
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
             <v-toolbar-title>Registro</v-toolbar-title>
@@ -53,10 +53,10 @@
           <v-card-actions>
             <v-btn color="primary" v-on:click="showRegister = !showRegister">Inicio de Sesion</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" v-on:click="singUp">Registro</v-btn>
+            <v-btn color="primary" v-on:click="singUp" :disabled="errors.count() > 0">Registro</v-btn>
           </v-card-actions>
         </v-card>
-      </v-flex>
+      </v-flex> -->
     </v-layout>
   </v-container>
 </template>
@@ -89,22 +89,28 @@
     },
     methods: {
       singIn () {
-        if (this.login.email !== '' && this.login.password !== '') {
-          let params = {
-            item: this.login,
-            message: 'Has iniciado sesion'
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          } else {
+            let params = {
+              item: this.login
+            }
+            this.$store.dispatch('login', params)
           }
-          this.$store.dispatch('login', params)
-        }
+        })
       },
       singUp () {
-        if (this.register.username !== '' && this.register.password !== '' && this.register.email !== '') {
-          let params = {
-            item: this.register,
-            message: 'Te has registrado con exito'
+        this.$validator.validate().then(result => {
+          if (!result) {
+            return alert('Llene los campos correctamente.')
+          } else {
+            let params = {
+              item: this.register
+            }
+            this.$store.dispatch('register', params)
           }
-          this.$store.dispatch('register', params)
-        }
+        })
       }
     },
     computed: {

@@ -37,7 +37,6 @@
                         v-model="editedItem.location"
                         :items="locations"
                         item-text="name"
-                        item-value="in"
                         :error-messages="selectErrors"
                         return-object
                         label="Locacion"
@@ -52,7 +51,6 @@
                         v-model="editedItem.service"
                         :items="services"
                         item-text="name"
-                        item-value="in"
                         :error-messages="selectErrors"
                         return-object
                         label="Servicio"
@@ -67,7 +65,6 @@
                         v-model="editedItem.activity"
                         :items="activities"
                         item-text="name"
-                        item-value="in"
                         :error-messages="selectErrors"
                         return-object
                         label="Actividad"
@@ -159,7 +156,7 @@
         <v-container grid-list-md text-xs-center>
           <v-layout row wrap>
             <v-flex
-               v-for="img in props.item.images" :key="img.name"
+               v-for="(img, i) in props.item.images" :key="img.name + i"
                xs3
             >
               <v-card>
@@ -168,15 +165,35 @@
                   height="200px"
                 ></v-img>
                 <v-card-actions>
+                  <v-flex>
+                      <v-text-field type="number" name="Prioridad" v-model="img.priority" label="Prioridad"></v-text-field>
+                  </v-flex>
+                  <v-btn icon @click="imagePriority(img, i)">
+                    <v-icon>save</v-icon>
+                  </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn icon @click="imagePriority(img, 1)">
-                    <v-icon>favorite</v-icon>
-                  </v-btn>
-                  <v-btn icon @click="imagePriority(img, 0)">
-                    <v-icon>favorite_border</v-icon>
-                  </v-btn>
-                  <v-btn icon @click="deleteImage(img)">
+                  <v-btn icon @click="deleteImage(img, props.item, i)">
                     <v-icon>delete</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-flex>
+
+            <!-- prueba -->
+            <v-flex xs3>
+              <v-card>
+                <v-img @click="triggerFileButton"
+                  :src="imagePreviewUrl"
+                  height="200px" :class="{ 'without-image' : imagePreviewUrl == ''}"
+                ></v-img>
+                <input type="file" class="input-file-preview" name="Imagenes" v-on:change="fileSelected">
+                <v-card-actions>
+                  <v-flex>
+                      <v-text-field type="number" name="prioridadnueva" v-validate="'required|max:2'" v-model="props.item.priorityImage" label="Prioridad"></v-text-field>
+                  </v-flex>
+                  <v-spacer></v-spacer>
+                  <v-btn icon :disabled="errors.first('prioridadnueva')" @click="uploadImage(props.item)">
+                      <v-icon>save</v-icon>
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -204,12 +221,14 @@
     },
     data () {
       return {
-        urlHosting: 'http://localhost:9090',
+        // Cambiar dependiendo del enviroment
+        urlHosting: process.env.NODE_ENV === 'development' ? 'http://localhost:9090' : 'http://api.liderlogos.com',
         selectErrors: [],
         pagination: {},
         dialog: false,
         editedIndex: -1,
-        viewNameESP: 'Portafolios'
+        viewNameESP: 'Portafolios',
+        imagePreviewUrl: ''
       }
     },
     methods: {
@@ -234,31 +253,75 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {         
-        this.$validator.validate().then(result => {           
-          if (!result) {             
-            alert('Llene los campos correctamente.')          
-          }         
+      save () {
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          } else {
+            let params = {
+              state: this.viewName,
+              item: this.editedItem
+            }
+
+            if (this.editedIndex > -1) {
+              this.$store.dispatch('portfolios/updateOne', params)
+            } else {
+              this.$store.dispatch('portfolios/create', params)
+            }
+            this.imagePreviewUrl = ''
+            this.close()
+          }
         })
+      },
+      uploadImage (item) {
+        item['files'] = this.editedItem['files']
 
         let params = {
           state: this.viewName,
-          item: this.editedItem
+          item: item
         }
 
-        if (this.editedIndex > -1) {
-          this.$store.dispatch('portfolios/updateOne', params)
-        } else {
-          this.$store.dispatch('portfolios/create', params)
+        this.imagePreviewUrl = ''
+        this.$store.dispatch('portfolios/uploadImage', params)
+      },
+      imagePriority (img) {
+        img.priority = parseInt(img.priority)
+
+        let params = {
+          state: this.viewName,
+          item: img
         }
-        this.close()
+
+        this.$store.dispatch('portfolios/imagePriority', params)
       },
-      imagePriority () {
+      deleteImage (img, item, i) {
+        let params = {
+          state: this.viewName,
+          item: item,
+          indexImage: i
+        }
+
+        this.$store.dispatch('portfolios/imageDelete', params)
       },
-      deleteImage () {
+      triggerFileButton () {
+       document.querySelector('.input-file-preview').click()
       },
       fileSelected (e) {
+        this.previewImage(e.target.files)
         this.editedItem['files'] = e.target.files
+      },
+      previewImage (files) {
+        var v = this
+
+        if (files && files[0]) {
+          var reader = new FileReader()
+
+          reader.onload = (e) => {
+            v.imagePreviewUrl = e.target.result
+          }
+
+          reader.readAsDataURL(files[0])
+        }
       }
     },
     watch: {
@@ -311,3 +374,21 @@
     }
 }
 </script>
+
+<style scoped>
+  input.input-file-preview {
+    color: transparent;
+    position: absolute;
+    left: 0;
+    width: 75%;
+    left: 22%;
+    top: 59%;
+    visibility: hidden;
+  }
+
+  .without-image{
+    background: url('../assets/add-circular-button.png');
+    background-repeat: no-repeat;
+    background-position: 50%;
+  }
+</style>

@@ -951,12 +951,4 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ViewController"] = append(beego.GlobalControllerRouter["GASE/controllers:ViewController"],
-		beego.ControllerComments{
-			Method: "Main",
-			Router: `/`,
-			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
-
 }

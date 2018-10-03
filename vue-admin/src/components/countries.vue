@@ -38,7 +38,6 @@
                     v-model="editedItem.currency"
                     :items="currencies"
                     item-text="name"
-                    item-value="in"
                     :error-messages="selectErrors"
                     return-object
                     label="Monedas"
@@ -154,24 +153,24 @@
           this.editedIndex = -1
         }, 300)
       },
-      save () {         
-        this.$validator.validate().then(result => {           
-          if (!result) {             
-            alert('Llene los campos correctamente.')           
-          }         
+      save () {
+        this.$validator.validate().then(result => {
+          if (!result) {
+            alert('Llene los campos correctamente.')
+          } else {
+            let params = {
+              state: this.viewName,
+              item: this.editedItem
+            }
+
+            if (this.editedIndex > -1) {
+              this.$store.dispatch('updateOne', params)
+            } else {
+              this.$store.dispatch('create', params)
+            }
+            this.close()
+          }
         })
-
-        let params = {
-          state: this.viewName,
-          item: this.editedItem
-        }
-
-        if (this.editedIndex > -1) {
-          this.$store.dispatch('updateOne', params)
-        } else {
-          this.$store.dispatch('create', params)
-        }
-        this.close()
       }
     },
     watch: {

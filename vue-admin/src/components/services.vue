@@ -31,7 +31,7 @@
 
                 <!-- Si es editado -->
                 <v-flex v-if="editedIndex !== -1" xs3 v-for="(price) in editedItem.prices" :key="price.id">
-                  <v-text-field type="text" v-validate="'required|max:6'" v-model="price.value" :label="price.currency.name"></v-text-field>
+                  <v-text-field type="text" v-validate="'required|max:6'" v-model="price.value" :label="price.currency.iso"></v-text-field>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -138,38 +138,41 @@
         this.$validator.validate().then(result => {
           if (!result) {
             alert('Llene los campos correctamente.')
-          }
-        })
+          } else {
+            this.editedItem.percentage = parseFloat(this.editedItem.percentage)
 
-        this.editedItem.percentage = parseFloat(this.editedItem.percentage)
-
-        let params = {
-          state: this.viewName,
-          item: this.editedItem
-        }
-
-        if (this.editedIndex > -1) {
-          this.$store.dispatch('updateOne', params)
-        } else {
-
-          this.editedItem.prices = []
-
-          this.currencies.forEach(currency => {
-            let price = {
-              currency: {
-                id: currency.id
-              },
-              value: parseFloat(currency.price)
+            let params = {
+              state: this.viewName,
+              item: this.editedItem
             }
 
-            this.editedItem.prices.push(price)
-          })
+            if (this.editedIndex > -1) {
+              for (let i = 0; i < this.editedItem.prices.length; i++) {
+                const price = this.editedItem.prices[i]
+                price.value = parseFloat(price.value)
+              }
+              this.$store.dispatch('updateOne', params)
+            } else {
+              this.editedItem.prices = []
 
-          params.editedItem = this.editedItem
+              this.currencies.forEach(currency => {
+                let price = {
+                  currency: {
+                    id: currency.id
+                  },
+                  value: parseFloat(currency.price)
+                }
 
-          this.$store.dispatch('create', params)
-        }
-        this.close()
+                this.editedItem.prices.push(price)
+              })
+
+              params.editedItem = this.editedItem
+
+              this.$store.dispatch('create', params)
+            }
+            this.close()
+          }
+        })
       }
     },
     watch: {

@@ -149,25 +149,56 @@ Vue.use(Vuetify, {
 
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('bazam-token')
-  if (token !== null && token !== undefined && token !== '') {
-    config.headers['Authorization'] = token
-  } else {
-    localStorage.removeItem('bazam-token')
-    location.href = '/'
+  document.querySelector('.loader.http').style.display = 'block'
+
+  if (location.hash !== '#/') {
+    const token = localStorage.getItem('bazam-token')
+    if (token !== null && token !== undefined && token !== '') {
+      config.headers['Authorization'] = token
+    } else {
+      localStorage.removeItem('bazam-token')
+      location.href = '/'
+    }
   }
   return config
-}, function (error) {
-  // Do something with request error
-  return Promise.reject(error)
-}
-)
+})
 
 instance.interceptors.response.use(function (response) {
+  let message = document.querySelector('.loader.http h3')
+  let config = response.config
+
+  switch (config.method) {
+    case 'post':
+      if (config.baseURL + '/users/login' === config.url) {
+        message.innerHTML = 'Has iniciado Sesion'
+      } else if (config.baseURL + '/users/register' === config.url) {
+        message.innerHTML = 'Te has registrado con exito'
+      } else {
+        message.innerHTML = 'Elemento Creado'
+      }
+      break
+    case 'put':
+      message.innerHTML = 'Elemento Actualizado'
+      break
+    case 'delete':
+      message.innerHTML = 'Elemento Eliminado'
+      break
+    default:
+      message.innerHTML = 'Datos Encontrados'
+      break
+  }
+
+  setTimeout(() => {
+    document.querySelector('.loader.http').style.display = 'none'
+    message.innerHTML = 'Cargando...'
+  }, 2000)
+
   return response
 }, function (error) {
+  let message = document.querySelector('.loader.http h3')
+
   if (error.response) {
-    // console.log(error.response.data);
+    // console.log(error.response)
     // console.log(error.response.status);
     // console.log(error.response.headers);
     switch (error.response.status) {
@@ -175,15 +206,24 @@ instance.interceptors.response.use(function (response) {
         localStorage.clear()
         location.reload()
         break
+      case 409:
+        message.innerHTML = 'El elemento esta uso, por favor liberalo antes de eliminarlo'
+        break
       default:
-        console.log('Server response: ', error.response.data.pretty_message)
+        // console.log('Server response: ', error.response.data.pretty_message)
+        message.innerHTML = error.response.data.pretty_message
         break
     }
   } else if (error.request) {
-    console.log('Request error: ', error.request)
+    // console.log('Request error: ', error.request)
   } else {
-    console.log('Error', error.message)
+    // console.log('Error', error.message)
   }
+
+  setTimeout(() => {
+    document.querySelector('.loader.http').style.display = 'none'
+    message.innerHTML = 'Cargando...'
+  }, 2000)
 })
 
 Vue.config.productionTip = false

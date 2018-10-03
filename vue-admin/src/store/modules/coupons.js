@@ -8,6 +8,7 @@ const route = '/coupons'
 var struct = [
   { text: 'Id', align: 'left', sortable: true, value: 'id' },
   { text: 'Porcentage', value: 'percentage' },
+  { text: 'Codigo', value: 'code' },
   { text: 'Estado', value: 'status' },
   { text: 'Acciones', align: 'center', value: '' }
 ]
