@@ -6,7 +6,6 @@ import Router from 'vue-router'
  */
 
 import login from '@/components/login'
-import home from '@/components/home'
 import orders from '@/components/orders'
 import activities from '@/components/activities'
 import briefs from '@/components/briefs'
@@ -31,11 +30,6 @@ var instance = new Router({
       path: '/',
       name: 'login',
       component: login
-    },
-    {
-      path: '/home',
-      name: 'home',
-      component: home
     },
     {
       path: '/orders',
@@ -126,6 +120,10 @@ var instance = new Router({
       name: 'trashed',
       component: trashed,
       props: (route) => ({ model: route.query.m, search: route.query.q })
+    },
+    {
+      path: '*',
+      redirect: '/orders'
     }
   ]
 })

@@ -25,7 +25,14 @@ var getForm = (data) => {
   } else if (data.file) {
     images = data.file
   }
-  let length = images.length
+  // Set Images
+  if (images) {
+    let length = images.length
+    for (let i = 0; i < length; i++) {
+      const element = images[i]
+      formData.append('images', element)
+    }
+  }
 
   formData.append('name', data.name)
   formData.append('description', data.description)
@@ -34,12 +41,6 @@ var getForm = (data) => {
   formData.append('location[id]', data.location.id)
   formData.append('service[id]', data.service.id)
   formData.append('activity[id]', data.activity.id)
-
-  // Set Images
-  for (let i = 0; i < length; i++) {
-    const element = images[i]
-    formData.append('images', element)
-  }
 
   return formData
 }
@@ -52,16 +53,17 @@ var getFormUploadImage = (data) => {
   } else if (data.file) {
     images = data.file
   }
-  let length = images.length
+  // Set Images
+  if (images) {
+    let length = images.length
+    for (let i = 0; i < length; i++) {
+      const element = images[i]
+      formData.append('images', element)
+    }
+  }
 
   formData.append('priority', data.priorityImage)
   formData.append('portfolio[id]', data.id)
-
-  // Set Images
-  for (let i = 0; i < length; i++) {
-    const element = images[i]
-    formData.append('images', element)
-  }
 
   return formData
 }
@@ -110,12 +112,19 @@ export default {
       }).catch(() => {})
     },
     async updateOne ({ commit }, params) {
-      let formData = getForm(params.item)
+      if (!params.edited) {
+        let formData = getForm(params.item)
 
-      await axios.put('/' + params.state + '/' + params.item.id, formData, options).then((res) => {
-        params.res = res.data
-        commit('UPDATE_ONE', params)
-      }).catch(() => {})
+        await axios.put('/' + params.state + '/' + params.item.id, formData, options).then((res) => {
+          params.res = res.data
+          commit('UPDATE_ONE', params)
+        }).catch(() => {})
+      } else {
+        await axios.put('/' + params.state + '/' + params.item.id, params.item).then((res) => {
+          params.res = res.data
+          commit('UPDATE_ONE', params)
+        }).catch(() => {})
+      }
     },
     async uploadImage ({ commit }, params) {
       let formData = getFormUploadImage(params.item)

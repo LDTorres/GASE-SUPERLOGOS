@@ -85,7 +85,7 @@
                       ></v-textarea>
                       <span v-show="errors.has('Descripción')">{{ errors.first('Descripción') }}</span>
                   </v-flex>
-                <v-flex xs6>
+                <v-flex xs6 v-if="editedIndex == -1">
                   <p >Cargar Imagenes Jpg o Png:</p>
                   <input type="file" v-validate="'required|size:15000|mimes:image/*'" name="Imagenes" v-on:change="fileSelected" multiple>
                   <br>
@@ -186,10 +186,10 @@
                   :src="imagePreviewUrl"
                   height="200px" :class="{ 'without-image' : imagePreviewUrl == ''}"
                 ></v-img>
-                <input type="file" class="input-file-preview" name="Imagenes" v-on:change="fileSelected">
+                <input type="file" class="input-file-preview" name="Imagenes" v-on:change="fileSelectedAddNew">
                 <v-card-actions>
                   <v-flex>
-                      <v-text-field type="number" name="prioridadnueva" v-validate="'required|max:2'" v-model="props.item.priorityImage" label="Prioridad"></v-text-field>
+                      <v-text-field type="number" name="prioridadnueva" v-validate="'max:2'" :value="'1'" v-model="priorityImage" label="Prioridad"></v-text-field>
                   </v-flex>
                   <v-spacer></v-spacer>
                   <v-btn icon :disabled="errors.first('prioridadnueva')" @click="uploadImage(props.item)">
@@ -228,7 +228,9 @@
         dialog: false,
         editedIndex: -1,
         viewNameESP: 'Portafolios',
-        imagePreviewUrl: ''
+        imagePreviewUrl: '',
+        priorityImage: 0,
+        selectedImage: ''
       }
     },
     methods: {
@@ -264,6 +266,7 @@
             }
 
             if (this.editedIndex > -1) {
+              params.edited = true
               this.$store.dispatch('portfolios/updateOne', params)
             } else {
               this.$store.dispatch('portfolios/create', params)
@@ -274,8 +277,8 @@
         })
       },
       uploadImage (item) {
-        item['files'] = this.editedItem['files']
-
+        item['files'] = this.selectedImage
+        item.priorityImage = this.priorityImage
         let params = {
           state: this.viewName,
           item: item
@@ -304,10 +307,13 @@
         this.$store.dispatch('portfolios/imageDelete', params)
       },
       triggerFileButton () {
-       document.querySelector('.input-file-preview').click()
+        document.querySelector('.input-file-preview').click()
+      },
+      fileSelectedAddNew (e) {
+        this.previewImage(e.target.files)
+        this.selectedImage = e.target.files
       },
       fileSelected (e) {
-        this.previewImage(e.target.files)
         this.editedItem['files'] = e.target.files
       },
       previewImage (files) {
@@ -377,12 +383,10 @@
 
 <style scoped>
   input.input-file-preview {
-    color: transparent;
     position: absolute;
+    width: 0;
     left: 0;
-    width: 75%;
-    left: 22%;
-    top: 59%;
+    top: 0;
     visibility: hidden;
   }
 

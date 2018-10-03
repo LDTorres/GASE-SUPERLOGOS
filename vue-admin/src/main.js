@@ -149,7 +149,9 @@ Vue.use(Vuetify, {
 
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
+  document.querySelector('html').style.overflowY = 'hidden'
   document.querySelector('.loader.http').style.display = 'block'
+  window.scrollTo(0, 0)
 
   if (location.hash !== '#/') {
     const token = localStorage.getItem('bazam-token')
@@ -190,6 +192,7 @@ instance.interceptors.response.use(function (response) {
 
   setTimeout(() => {
     document.querySelector('.loader.http').style.display = 'none'
+    document.querySelector('html').style.overflowY = 'scroll'
     message.innerHTML = 'Cargando...'
   }, 2000)
 
@@ -222,6 +225,7 @@ instance.interceptors.response.use(function (response) {
 
   setTimeout(() => {
     document.querySelector('.loader.http').style.display = 'none'
+    document.querySelector('html').style.overflowY = 'scroll'
     message.innerHTML = 'Cargando...'
   }, 2000)
 })

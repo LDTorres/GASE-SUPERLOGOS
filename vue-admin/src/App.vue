@@ -117,15 +117,15 @@ main.no-padding.v-content {
 
 section.loader {
     position: absolute;
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
     display: none;
     z-index: 999;
 }
 
 .loaders {
-    width: 100%;
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     display: -webkit-box;
