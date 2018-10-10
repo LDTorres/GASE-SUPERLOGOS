@@ -83,7 +83,7 @@
                         v-validate="'required'"
                         v-model="editedItem.description"
                       ></v-textarea>
-                      <span v-show="errors.has('Descripción')">{{ errors.first('Descripción') }}</span>
+                      <span v-show="errors.has('Descripcion')">{{ errors.first('Descripcion') }}</span>
                   </v-flex>
                 <v-flex xs6 v-if="editedIndex == -1">
                   <p >Cargar Imagenes Jpg o Png:</p>

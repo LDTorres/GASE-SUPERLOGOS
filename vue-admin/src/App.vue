@@ -40,7 +40,10 @@
       <v-toolbar-title v-text="title">
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn @click="logout()" flat class="mb-2">SALIR</v-btn>
+      <v-btn @click="logout()" flat class="mb-2">
+        <v-icon>supervised_user_circle</v-icon>
+        <h4 class="ml-2">SALIR</h4>
+      </v-btn>
     </v-toolbar>
     <v-content v-bind:class="{ 'no-padding': !verifyUser }">
       <router-view/>
@@ -96,11 +99,7 @@ export default {
       }
     },
     verifyUser () {
-      if (
-        this.$store.state.token !== null &&
-        this.$store.state.token !== undefined &&
-        this.$store.state.token !== ''
-      ) {
+      if (this.$store.state.token) {
         return true
       }
       return false

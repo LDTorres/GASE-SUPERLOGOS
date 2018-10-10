@@ -39,7 +39,7 @@
                     v-validate="'required'"
                     v-model="editedItem.description"
                   ></v-textarea>
-                  <span v-show="errors.has('Descripción')">{{ errors.first('Descripción') }}</span>
+                  <span v-show="errors.has('Descripcion')">{{ errors.first('Descripcion') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>

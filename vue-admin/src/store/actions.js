@@ -40,6 +40,7 @@ export default {
   async updateOne ({ commit }, params) {
     await axios.put('/' + params.state + '/' + params.item.id, params.item).then((res) => {
       params.res = res.data
+      commit('UPDATE_ONE', params)
     }).catch(() => {})
   },
   async deleteOne ({ commit }, params) {

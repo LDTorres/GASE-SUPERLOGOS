@@ -115,13 +115,13 @@
     },
     computed: {
       verifyUser () {
-        if (this.$store.state.token !== null && this.$store.state.token !== undefined && this.$store.state.token !== '') {
+        if (this.$store.state.token) {
           return true
         }
         return false
       }
     }
-}
+  }
 </script>
 
 <style scoped lang="css">

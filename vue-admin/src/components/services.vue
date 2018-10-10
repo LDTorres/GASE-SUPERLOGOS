@@ -24,9 +24,9 @@
                 </v-flex>
 
                 <!-- Si es nuevo -->
-                <v-flex v-if="editedIndex === -1" xs3 v-for="(currency, i) in currencies" :key="currency.id">
-                  <v-text-field type="number" :name="currency + i" v-validate="'required|numeric|max:6'" v-model="currency.price" :label="currency.iso"></v-text-field>
-                  <span v-show="errors.has(currency + i)">{{ errors.first(currency + i) }}</span>
+                <v-flex v-if="editedIndex === -1" xs3 v-for="(currency) in currencies" :key="currency.id">
+                  <v-text-field type="number" :name="currency.iso" v-validate="'required|numeric|max:6'" v-model="currency.price" :label="currency.iso"></v-text-field>
+                  <span v-show="errors.has(currency.iso)">{{ errors.first(currency.iso) }}</span>
                 </v-flex>
 
                 <!-- Si es editado -->

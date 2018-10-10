@@ -128,4 +128,14 @@ var instance = new Router({
   ]
 })
 
+instance.beforeEach((to, from, next) => {
+  let token = localStorage.getItem('bazam-token')
+  if (token) {
+    this.name = to.params.name
+    next()
+  } else {
+    next()
+  }
+})
+
 export default instance

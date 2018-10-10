@@ -136,10 +136,10 @@ Vue.use(Vuetify, {
     resize: resize
   },
   theme: {
-    primary: '#3D5AFE',
+    primary: '#03A9F4',
     secondary: '#FAFAFA',
     accent: '#F4511E',
-    error: '#D50000',
+    error: '#752c15',
     warning: '#ffeb3b',
     info: '#2196f3',
     success: '#4caf50',

@@ -23,7 +23,7 @@
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field type="tel" name="Telefono" v-validate="'required|numeric'" v-model="editedItem.phone" label="Teléfono"></v-text-field>
-                  <span v-show="errors.has('Teléfono')">{{ errors.first('Teléfono') }}</span>
+                  <span v-show="errors.has('Telefono')">{{ errors.first('Telefono') }}</span>
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field type="email" name="Email" v-validate="'required|email'" v-model="editedItem.email" label="Email"></v-text-field>
