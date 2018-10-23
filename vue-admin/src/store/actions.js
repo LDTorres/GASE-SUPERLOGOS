@@ -20,7 +20,7 @@ export default {
     }).catch(() => {})
   },
   async getAll ({ commit }, params) {
-    await axios.get('/' + params.state).then((res) => {
+    await axios.get('/' + params.state + '?limit=1000').then((res) => {
       params.res = res.data
       commit('GET_ALL', params)
     }).catch(() => {})
