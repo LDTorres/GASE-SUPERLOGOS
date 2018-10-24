@@ -8,7 +8,8 @@ const route = '/services'
 var struct = [
   { text: 'Id', align: 'left', sortable: true, value: 'id' },
   { text: 'Nombre', value: 'name' },
-  { text: 'Porcentage', value: 'percentage' },
+  { text: 'Slug', value: 'slug' },
+  { text: 'Porcentaje', value: 'percentage' },
   {text: 'Acciones', align: 'center', value: ''}
 ]
 

@@ -70,6 +70,7 @@
       <template slot="items" slot-scope="props">
         <td>{{ props.item.id }}</td>
         <td >{{ props.item.name }}</td>
+        <td >{{ props.item.slug }}</td>
         <td >{{ props.item.percentage }}</td>
         <td class="justify-center layout px-0">
           <v-icon
