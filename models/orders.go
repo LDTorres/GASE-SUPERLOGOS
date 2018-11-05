@@ -17,6 +17,7 @@ type Orders struct {
 	FinalValue   float32    `orm:"column(final_value)" json:"final_value,omitempty" valid:"Required"`
 	Discount     float32    `orm:"column(discount)" json:"discount,omitempty"`
 	Status       string     `orm:"column(status)" json:"status,omitempty" valid:"Required; Alpha"`
+	BriefCookie  string     `orm:"column(brief_cookie);null" json:"brief_cookie,omitempty"`
 	Client       *Clients   `orm:"column(clients_id);rel(fk)" json:"clients,omitempty" valid:"Required;"`
 	Gateway      *Gateways  `orm:"column(gateways_id);rel(fk)" json:"gateways,omitempty" valid:"Required;"`
 	Prices       []*Prices  `orm:"rel(m2m)" json:"prices,omitempty"`
