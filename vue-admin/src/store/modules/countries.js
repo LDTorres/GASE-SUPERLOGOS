@@ -11,6 +11,7 @@ var struct = [
   { text: 'Iso', value: 'iso' },
   { text: 'Teléfono', value: 'phone' },
   { text: 'Correo', value: 'email' },
+  { text: 'Iva', value: 'tax' },
   { text: 'Skype', value: 'skype' },
   { text: 'Modena', value: 'currency.iso' },
   {text: 'Acciones', align: 'center', value: ''}

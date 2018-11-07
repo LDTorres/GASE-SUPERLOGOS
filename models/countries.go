@@ -20,7 +20,7 @@ type Countries struct {
 	Email     string       `orm:"column(email);size(45);null" json:"email,omitempty" valid:"Email"`
 	Skype     string       `orm:"column(skype);size(45);null" json:"skype,omitempty"`
 	Slug      string       `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
-	Tax       float32      `orm:"column(tax)" json:"tax,omitempty"`
+	Tax       float32      `orm:"column(tax)" json:"tax"`
 	Currency  *Currencies  `orm:"column(currency_id);rel(fk)" json:"currency,omitempty"`
 	Locations []*Locations `orm:"reverse(many)" json:"locations,omitempty"`
 	CreatedAt time.Time    `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
