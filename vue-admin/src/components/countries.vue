@@ -26,7 +26,7 @@
                   <span v-show="errors.has('Telefono')">{{ errors.first('Telefono') }}</span>
                 </v-flex>
                 <v-flex xs12>
-                  <v-text-field type="text" name="Iva" v-validate="'required|decimal:3'" v-model="editedItem.tax" label="Iva"></v-text-field>
+                  <v-text-field type="text" name="Iva" v-validate="'required|decimal:3'" v-model.number="editedItem.tax" label="Iva"></v-text-field>
                   <span v-show="errors.has('Iva')">{{ errors.first('Iva') }}</span>
                 </v-flex>
                 <v-flex xs12>
