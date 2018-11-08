@@ -100,11 +100,26 @@ func GetControllerPatterns(route string) []*MwPattern {
 
 	prices := OnlyAdmin
 
-	images := OnlyAdmin
-
 	users := OnlyAdmin
 
 	/** Custom **/
+	images := []*MwPattern{
+		{
+			URL:       "/",
+			Methods:   []string{"GET"},
+			UserTypes: []string{"Admin"},
+		},
+		{
+			URL:       "/:id",
+			Methods:   []string{"GET", "DELETE", "PUT"},
+			UserTypes: []string{"Admin"},
+		},
+		{
+			URL:       "/slug/:slug",
+			Methods:   []string{"GET"},
+			UserTypes: []string{"Guest"},
+		},
+	}
 
 	clients := []*MwPattern{
 		{
