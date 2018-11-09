@@ -25,7 +25,7 @@
                       <span v-show="errors.has('Cliente')">{{ errors.first('Cliente') }}</span>
                     </v-flex>
                     <v-flex xs12>
-                      <v-text-field type="number" name="Prioridad" v-validate="'required|numeric|max:2'" v-model="editedItem.priority" label="Prioridad"></v-text-field>
+                      <v-text-field type="number" name="Prioridad" v-validate="'required|numeric|max:2'" v-model.number="editedItem.priority" label="Prioridad"></v-text-field>
                       <span v-show="errors.has('Prioridad')">{{ errors.first('Prioridad') }}</span>
                     </v-flex>
                   </v-layout>
@@ -166,7 +166,7 @@
                 ></v-img>
                 <v-card-actions>
                   <v-flex>
-                      <v-text-field type="number" name="Prioridad" v-model="img.priority" label="Prioridad"></v-text-field>
+                      <v-text-field type="number" name="Prioridad" v-model.number="img.priority" label="Prioridad"></v-text-field>
                   </v-flex>
                   <v-btn icon @click="imagePriority(img, i)">
                     <v-icon>save</v-icon>
@@ -288,8 +288,6 @@
         this.$store.dispatch('portfolios/uploadImage', params)
       },
       imagePriority (img) {
-        img.priority = parseInt(img.priority)
-
         let params = {
           state: this.viewName,
           item: img
