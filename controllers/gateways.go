@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/astaxie/beego"
-
 	"github.com/astaxie/beego/validation"
 )
 
@@ -227,9 +225,6 @@ func (c *GatewaysController) Put() {
 		}
 
 		gateway, _ := models.GetGatewaysByID(v.ID)
-
-		beego.Debug(gateway)
-
 		exists = false
 
 		for _, tCurrency := range gateway.Currencies {
