@@ -27,6 +27,10 @@ func LoadMiddlewares() {
 func Middleware(controllerName string, pattern *MwPattern) func(ctx *context.Context) {
 
 	return func(ctx *context.Context) {
+		if ctx.Input.Method() == "OPTIONS" {
+			beego.Debug("Entro al options")
+			return
+		}
 
 		token := ctx.Input.Header("Authorization")
 
@@ -63,11 +67,6 @@ func Middleware(controllerName string, pattern *MwPattern) func(ctx *context.Con
 
 		for _, method := range methods {
 			if ctx.Input.Method() == method {
-				if method == "OPTIONS" {
-					beego.Debug("OPTIONS METHOD: Dont verify token")
-					return
-				}
-
 				// Deny Access if the token is empty
 				if token == "" {
 					err := errors.New("Token No enviado")
@@ -75,7 +74,13 @@ func Middleware(controllerName string, pattern *MwPattern) func(ctx *context.Con
 					return
 				}
 
-				_, err := controllers.VerifyToken(token, "Admin")
+				userValid := "Admin"
+
+				if strings.Contains(ctx.Input.URL(), "orders") {
+					userValid = "Client"
+				}
+
+				_, err := controllers.VerifyToken(token, userValid)
 
 				if err != nil {
 					// beego.Debug("Token error in methods")
