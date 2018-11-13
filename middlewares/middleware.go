@@ -38,7 +38,7 @@ func Middleware(controllerName string, pattern *MwPattern) func(ctx *context.Con
 					//If is a optional method like carts
 					method := ctx.Input.Method()
 					if method == m {
-						verifyToken = true
+						verifyToken = false
 						break
 					}
 				}
