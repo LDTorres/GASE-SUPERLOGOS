@@ -28,16 +28,69 @@
         :search="search"
       >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.id }}</td>
-        <td >{{ props.item.cookie }}</td>
-        <td class="justify-center layout px-0">
-          <v-icon
-            title
-            @click="deleteItem(props.item)" color="error"
-          >
-            delete
-          </v-icon>
-        </td>
+        <tr @click="props.expanded = !props.expanded">
+          <td>{{ props.item.data.information.names.value }}</td>
+          <td>{{ props.item.data.service.name }}</td>
+          <td>{{ props.item.data.information.company.value }}</td>
+          <td>{{ props.item.data.information.phone.value }}</td>
+          <td>{{ props.item.data.information.email.value }}</td>
+          <td class="justify-center layout px-0">
+            <v-icon
+              title
+              @click="deleteItem(props.item)" color="error"
+            >
+              delete
+            </v-icon>
+          </td>
+        </tr>
+      </template>
+      <template slot="expand" slot-scope="props">
+        <v-container grid-list-md text-xs-center>
+          <!-- props.item -->
+          <v-layout row wrap>
+              <!-- {{props.item}} -->
+              <table>
+                <thead>
+                  <tr>
+                    <th colspan="3">
+                      <b>Cliente</b>
+                    </th>
+                    <th colspan="4">
+                      <b>Informacion</b>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="3" class="text-xs-left">
+                      <tr v-for="(item, i) in props.item.client" :key="i">
+                        <td class="text-xs-left"><b class="text-capitalize">{{i}}: </b> {{item}}</td>
+                      </tr>
+                    </td>
+                    <td colspan="4">
+                      <tr v-for="(item, i) in props.item.data.information" :key="i">
+                        <td class="text-xs-left"><b>{{item.label}}: </b> {{item.value}}</td>
+                      </tr>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th colspan="2">Colores: </th>
+                    <th colspan="2">Diseños</th>
+                    <th colspan="2">Estilos</th>
+                  </tr>
+                  <tr>
+                    <td colspan="2">{{props.item.data.colors}}</td>
+                    <td colspan="2">{{props.item.data.designs}}</td>
+                    <td colspan="2">
+                      <div class="mb-3" v-for="(style, i) in props.item.data.styles" :key="i">
+                        <b class="text-capitalize">{{i}}: </b> {{style}}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          </v-layout>
+        </v-container>
       </template>
     </v-data-table>
     </v-card>
@@ -118,3 +171,11 @@
     }
 }
 </script>
+
+<style scoped>
+
+.theme--light.v-table th {
+    color: rgb(0, 0, 0);
+}
+
+</style>
