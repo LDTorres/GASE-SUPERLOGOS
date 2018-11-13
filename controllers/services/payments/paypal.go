@@ -5,13 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/astaxie/beego"
 )
 
 //PAYPAL API DATA
 var paypal = struct {
 	APIKey string
 }{
-	APIKey: "sfsdf",
+	APIKey: beego.AppConfig.String("paypal::apiKey"),
 }
 
 type paypalResponseToken struct {
