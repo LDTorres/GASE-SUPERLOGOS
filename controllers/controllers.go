@@ -2,7 +2,10 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"mime/multipart"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -263,4 +266,47 @@ func generateImageURL(v *models.Images) (err error) {
 
 	return
 
+}
+
+func addNewAttachment(fh *multipart.FileHeader) (url string, err error) {
+
+	file, err := fh.Open()
+
+	if err != nil {
+		err = errors.New("Image unavailable")
+		return
+	}
+
+	fileBytes, err := ioutil.ReadAll(file)
+
+	if err != nil {
+		err = errors.New("Image not read")
+		return
+	}
+
+	fileType := http.DetectContentType(fileBytes)
+
+	//tiff, bmp, word, rtf, powerpoint
+
+	/* validMIMEs := []string{
+		"application/octet-stream",
+		"image/jpeg",
+		"image/png",
+		"image/bmp",
+		"text/rtf",
+		"image/tiff",
+		"application/pdf",
+		"application/msword",
+		"application/vnd.ms-powerpoint",
+	}
+
+	if fileType !=   && fileType !=  && fileType !=  && fileType != "" && fileType !=  && fileType !=  && file != {
+		err = errors.New("Incorrect file type")
+		return
+	} */
+
+	fmt.Println(fileType)
+	//i = &models.Images{Name: v.Name, Mimetype: fileType, Portfolio: v, Priority: priority}
+
+	return
 }
