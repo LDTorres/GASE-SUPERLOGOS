@@ -10,6 +10,7 @@ var struct = [
   { text: 'Nombre', value: 'name' },
   { text: 'Iso', value: 'iso' },
   { text: 'Teléfono', value: 'phone' },
+  { text: 'Iva', value: 'tax' },
   { text: 'Correo', value: 'email' },
   { text: 'Skype', value: 'skype' },
   { text: 'Modena', value: 'currency.iso' },

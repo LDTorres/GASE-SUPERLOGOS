@@ -26,6 +26,10 @@
                   <span v-show="errors.has('Telefono')">{{ errors.first('Telefono') }}</span>
                 </v-flex>
                 <v-flex xs12>
+                  <v-text-field type="text" name="Iva" v-validate="'required|decimal:3'" v-model.number="editedItem.tax" label="Iva"></v-text-field>
+                  <span v-show="errors.has('Iva')">{{ errors.first('Iva') }}</span>
+                </v-flex>
+                <v-flex xs12>
                   <v-text-field type="email" name="Email" v-validate="'required|email'" v-model="editedItem.email" label="Email"></v-text-field>
                   <span v-show="errors.has('Email')">{{ errors.first('Email') }}</span>
                 </v-flex>
@@ -86,6 +90,7 @@
         <td >{{ props.item.name }}</td>
         <td >{{ props.item.iso }}</td>
         <td >{{ props.item.phone }}</td>
+        <td >{{ props.item.tax }}</td>
         <td >{{ props.item.email }}</td>
         <td >{{ props.item.skype }}</td>
         <td >{{ props.item.currency.iso }}</td>

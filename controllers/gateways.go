@@ -212,7 +212,40 @@ func (c *GatewaysController) Put() {
 		return
 	}
 
+	// Validate currencies exists
+	var relationsIDs []int
+
+	for _, el := range v.Currencies {
+
+		exists := models.ValidateExists("currencies", el.ID)
+
+		if !exists {
+			c.BadRequestDontExists("currenccy")
+			return
+		}
+
+		gateway, _ := models.GetGatewaysByID(v.ID)
+		exists = false
+
+		for _, tCurrency := range gateway.Currencies {
+			if el.ID == tCurrency.ID {
+				exists = true
+			}
+		}
+
+		if !exists {
+			relationsIDs = append(relationsIDs, el.ID)
+		}
+	}
+
 	err = models.UpdateGatewaysByID(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	_, err = models.RelationsM2M("INSERT", "gateways", v.ID, "currencies", relationsIDs)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
