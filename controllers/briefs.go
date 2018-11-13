@@ -4,8 +4,9 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"net/http"
+	"strconv"
 
-	"github.com/astaxie/beego/validation"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -28,27 +29,63 @@ func (c *BriefsController) URLMapping() {
 // @router / [post]
 func (c *BriefsController) Post() {
 
-	var v models.Briefs
+	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	if err != nil {
+		c.Ctx.Output.SetStatus(413)
+		c.ServeJSON()
+		return
+	}
+
+	var r = c.Ctx.Request
+
+	//Validate Client
+	decodedToken, err := VerifyToken(c.Ctx.Input.Header("Authorization"), "Client")
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
-	// Validate context body
+	clientID, err := strconv.Atoi(decodedToken.ID)
 
-	valid := validation.Validation{}
-
-	b, err := valid.Valid(&v)
-
-	if !b {
-		c.BadRequestErrors(valid.Errors, "Briefs")
+	if err != nil {
+		c.BadRequest(err)
 		return
 	}
 
-	v.ID = bson.NewObjectId()
+	client, err := models.GetClientsByID(clientID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	dataBrief := &map[string]interface{}{}
+
+	err = json.Unmarshal([]byte(r.FormValue("data")), dataBrief)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v := models.Briefs{
+		ID:     bson.NewObjectId(),
+		Client: client,
+		Data:   *dataBrief,
+	}
+
+	//imagesURLs := []string{}
+
+	if c.Ctx.Input.IsUpload() {
+		_, err := c.GetFiles("files")
+		if err != nil && err != http.ErrMissingFile {
+			c.BadRequest(err)
+			return
+		}
+
+	}
 
 	err = v.Insert()
 
