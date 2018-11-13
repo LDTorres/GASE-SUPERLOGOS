@@ -36,8 +36,8 @@ func (c *OrdersController) URLMapping() {
 func (c *OrdersController) Post() {
 
 	var orderPayment struct {
-		Payment map[string]interface{}
-		Order   *models.Orders
+		Payment map[string]interface{} `json:"payment"`
+		Order   *models.Orders         `json:"order"`
 	}
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &orderPayment)
