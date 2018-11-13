@@ -34,12 +34,10 @@ func Middleware(controllerName string, pattern *MwPattern) func(ctx *context.Con
 		// If the url is a excluded url then dont verify the token
 		for excludeURL, URLMethods := range ExcludeUrls {
 			if strings.Contains(ctx.Input.URL(), excludeURL) {
-				verifyToken = false
-
 				for _, m := range URLMethods {
 					//If is a optional method like carts
 					method := ctx.Input.Method()
-					if method != m {
+					if method == m {
 						verifyToken = true
 						break
 					}
