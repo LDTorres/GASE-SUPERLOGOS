@@ -140,6 +140,7 @@ func (c *BaseController) ServeErrorJSON(err error) {
 				Message:       "An error has ocurred",
 				Code:          driverErr.Number,
 				PrettyMessage: "Un error ha ocurrido",
+				Error:         err.Error(),
 			}
 		}
 	} else {

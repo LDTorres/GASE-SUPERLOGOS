@@ -87,13 +87,29 @@ func (c *OrdersController) Post() {
 		return
 	}
 
-	client := models.Clients{ID: Token}
-	Order.Client = &client
+	client := &models.Clients{ID: Token}
+	Order.Client = client
+	Order.Country = country
 
 	// Validate Gateway
-	valid := validation.Validation{}
+	if Order.Gateway == nil || Order.Gateway.ID == 0 {
+		err := errors.New("Gateway data is empty")
+		c.BadRequest(err)
+		return
+	}
 
-	b, err := valid.Valid(Order.Gateway)
+	gateway, err := models.GetGatewaysByID(Order.Gateway.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	Order.Gateway = gateway
+
+	/*valid := validation.Validation{}
+
+	 b, err := valid.Valid(Order.Gateway)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -102,7 +118,7 @@ func (c *OrdersController) Post() {
 	if !b {
 		c.BadRequestErrors(valid.Errors, Order.Gateway.TableName())
 		return
-	}
+	} */
 
 	//Get cart
 	cart, err := models.GetOrCreateCartsByCookie(cookie, country.Iso)
