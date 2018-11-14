@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/astaxie/beego"
 )
@@ -12,8 +14,10 @@ import (
 //PAYPAL API DATA
 var paypal = struct {
 	APIKey string
+	Secret string
 }{
 	APIKey: beego.AppConfig.String("paypal::apiKey"),
+	Secret: beego.AppConfig.String("paypal::secret"),
 }
 
 type paypalResponseToken struct {
@@ -30,21 +34,32 @@ type paypalResponseToken struct {
 ////////////////////////////////////////////////
 
 func getPaypalBearerToken() (bearerToken string, err error) {
-	req, err := http.NewRequest("GET", "https://api.sandbox.paypal.com/v1/oauth2/token", bytes.NewReader([]byte{}))
+
+	data := url.Values{}
+	data.Set("grant_type", "client_credentials")
+	requestBodyData := data.Encode()
+
+	req, err := http.NewRequest("POST", "https://api.sandbox.paypal.com/v1/oauth2/token", strings.NewReader(requestBodyData))
 
 	if err != nil {
 		return
 	}
 
-	req.Header.Add("client_id", paypal.APIKey)
+	req.SetBasicAuth(paypal.APIKey, paypal.Secret)
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Accept-Language", "en_US")
 	req.Header.Add("grant_type", "client_credentials")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
 	res, err := client.Do(req)
 
 	if err != nil {
+		return
+	}
+
+	if res.StatusCode != 200 {
+		err = errors.New("Error with token request")
 		return
 	}
 
@@ -72,7 +87,13 @@ func (wcp *WebCheckoutPayment) ButtonCheckoutPaypal() (err error) {
 
 	client := &http.Client{}
 
-	req, err := http.NewRequest("POST", "https://api.sandbox.paypal.com/v1/payments/payment/"+wcp.ID, bytes.NewReader([]byte{}))
+	requestBodyData := &struct {
+		PayerID string `json:"payer_id"`
+	}{PayerID: wcp.PayerID}
+
+	requestBodyBytes, _ := json.Marshal(requestBodyData)
+
+	req, err := http.NewRequest("POST", "https://api.sandbox.paypal.com/v1/payments/payment/"+wcp.ID+"/execute", bytes.NewReader(requestBodyBytes))
 
 	if err != nil {
 		return
@@ -93,9 +114,9 @@ func (wcp *WebCheckoutPayment) ButtonCheckoutPaypal() (err error) {
 		return
 	}
 
-	var executedData map[string]interface{}
+	executedData := map[string]interface{}{}
 
-	err = json.NewDecoder(res.Body).Decode(executedData)
+	err = json.NewDecoder(res.Body).Decode(&executedData)
 
 	if err != nil {
 		return
@@ -106,8 +127,8 @@ func (wcp *WebCheckoutPayment) ButtonCheckoutPaypal() (err error) {
 		err = errors.New("Payment execution failed")
 		return
 	} */
-
-	wcp.ID = executedData["id"].(string)
+	//TODO: arreglar index
+	//wcp.ID = executedData["id"].(string)
 
 	return
 

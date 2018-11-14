@@ -36,5 +36,6 @@ type CreditCardPayment struct {
 //WebCheckoutPayment defines a struct to WebChekcouts Payments
 type WebCheckoutPayment struct {
 	Payment
-	Status string
+	Status  string
+	PayerID string
 }

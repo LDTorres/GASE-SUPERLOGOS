@@ -107,19 +107,6 @@ func (c *OrdersController) Post() {
 
 	Order.Gateway = gateway
 
-	/*valid := validation.Validation{}
-
-	 b, err := valid.Valid(Order.Gateway)
-
-	if err != nil {
-		c.BadRequest(err)
-	}
-
-	if !b {
-		c.BadRequestErrors(valid.Errors, Order.Gateway.TableName())
-		return
-	} */
-
 	//Get cart
 	cart, err := models.GetOrCreateCartsByCookie(cookie, country.Iso)
 
@@ -193,6 +180,7 @@ func (c *OrdersController) Post() {
 	}
 
 	Order.PaymentID = paymentID
+	Order.Status = "COMPLETED"
 
 	models.UpdateOrdersByID(Order)
 

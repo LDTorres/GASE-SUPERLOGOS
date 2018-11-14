@@ -421,18 +421,27 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 	case "01": //paypal [paypal checkout with button]
 
-		if value, ok := paymentData["id"]; !ok || value.(string) == "" {
+		if IDValue, ok := paymentData["id"]; !ok || IDValue.(string) == "" {
 
 			err = errors.New("payment id is missing")
 
 			return
 		}
 
+		if payerIDValue, ok := paymentData["payer_id"]; !ok || payerIDValue.(string) == "" {
+
+			err = errors.New("payer_id is missing")
+
+			return
+		}
+
 		paypalID := paymentData["id"].(string)
+		payerID := paymentData["payer_id"].(string)
 
 		payment := &payments.WebCheckoutPayment{}
 
 		payment.ID = paypalID
+		payment.PayerID = payerID
 
 		err = payment.ButtonCheckoutPaypal()
 
