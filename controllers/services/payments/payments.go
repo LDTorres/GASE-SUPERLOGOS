@@ -1,10 +1,5 @@
 package payments
 
-import (
-	"github.com/stripe/stripe-go"
-)
-
-
 //Payment define a basic payment struct
 type Payment struct {
 	ID        string
