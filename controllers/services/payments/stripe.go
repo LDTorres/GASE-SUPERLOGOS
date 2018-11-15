@@ -32,7 +32,7 @@ func (ccp *CreditCardPayment) CreditCardStripe() (err error) {
 
 	params := &stripe.ChargeParams{
 		Amount:      stripe.Int64(int64(paymentAmount)),
-		Currency:    stripe.String(currency),
+		Currency:    stripe.String(strings.ToLower(currency)),
 		Description: stripe.String("XXXXXXXXXX"), //TODO: get services description
 	}
 

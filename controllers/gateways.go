@@ -465,6 +465,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 		payment := &payments.CreditCardPayment{}
 		payment.Token = tokenStripe
+		payment.Currency = countries.Currency.Iso
 
 		err = payment.CreditCardStripe()
 
