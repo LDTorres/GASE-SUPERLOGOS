@@ -4,9 +4,16 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/astaxie/beego"
 	stripe "github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/charge"
 )
+
+func init() {
+
+	//Stripe API KEY
+	stripe.Key = beego.AppConfig.String("stripe::apiKey")
+}
 
 //CreditCardStripe Generate a charge to a Credit Card
 func (ccp *CreditCardPayment) CreditCardStripe() (err error) {

@@ -4,11 +4,6 @@ import (
 	"github.com/stripe/stripe-go"
 )
 
-func init() {
-
-	//Stripe API KEY
-	stripe.Key = "sk_test_qv51kU2YKjb94IC8gdBPemu4"
-}
 
 //Payment define a basic payment struct
 type Payment struct {
