@@ -415,7 +415,7 @@ func (c *GatewaysController) DeleteCurrencies() {
 /////////PAYMENT HANDLER///////////
 ///////////////////////////////////
 
-func paymentsHandler(orderID int, gateway *models.Gateways, price float32, countries *models.Countries, paymentData map[string]interface{}) (redirect string, paymentID string, err error) {
+func paymentsHandler(orderID int, gateway *models.Gateways, price float32, countries *models.Countries, paymentData map[string]interface{}) (paid bool, redirect string, paymentID string, err error) {
 
 	switch gateway.Code {
 
@@ -450,7 +450,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		}
 
 		paymentID = payment.ID
-		break
+		paid = true
 
 	case "02": //stripe [credit card with element.js]
 
@@ -474,39 +474,14 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		}
 
 		paymentID = payment.ID
-		break
+		paid = true
 
-	case "03": //payU
+	case "03"://transferencia bancaria
+		paid = false
 
-		//TODO: Validar campos
-
-		if tokenValue, ok := paymentData["token"]; !ok || tokenValue.(string) == "" {
-
-			/* 	if  tokenValue, ok := paymentData["token"];
-
-			 */
-
-			return
-		}
-
-		tokenPayu := paymentData["token"].(string)
-
-		payment := &payments.CreditCardPayment{}
-		payment.Token = tokenPayu
-
-		payment.ExtraData = paymentData
-
-		err = payment.PayuCreditCard()
-
-		if err != nil {
-			return
-		}
-
-		paymentID = payment.ID
-
-		break
-	case "04":
-
+	default:
+		err = errors.New("Invalid Gateway code")
+		return
 	}
 
 	return

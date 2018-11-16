@@ -172,17 +172,18 @@ func (c *OrdersController) Post() {
 
 	paymentAmount := Order.InitialValue - Order.Discount
 
-	_, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment)
+	paid, _, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment)
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
-	Order.PaymentID = paymentID
-	Order.Status = "COMPLETED"
-
-	models.UpdateOrdersByID(Order)
+	if paid {
+		Order.PaymentID = paymentID
+		Order.Status = "COMPLETED"
+		models.UpdateOrdersByID(Order)
+	}
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = Order
