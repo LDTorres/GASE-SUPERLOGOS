@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GASE/controllers/services/files"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -70,10 +71,28 @@ func (c *BriefsController) Post() {
 		return
 	}
 
+	filesUUIDs := []string{}
+
+	_, fileFh, err := c.GetFile("files")
+
+	if err == nil {
+
+		fileUUID, _, err := files.CreateFile(fileFh, "briefs")
+
+		if err != nil {
+			c.BadRequest(err)
+			return
+		}
+
+		filesUUIDs = append(filesUUIDs, fileUUID)
+
+	}
+
 	v := models.Briefs{
-		ID:     bson.NewObjectId(),
-		Client: client,
-		Data:   *dataBrief,
+		ID:          bson.NewObjectId(),
+		Client:      client,
+		Data:        *dataBrief,
+		Attachments: filesUUIDs,
 	}
 
 	//imagesURLs := []string{}
@@ -203,4 +222,30 @@ func (c *BriefsController) GetOneByCookie() {
 
 	c.Data["json"] = v
 	c.ServeJSON()
+}
+
+// GetImageByUUID ...
+// @Title Get  By UUID
+// @Description Get file By UUID
+// @router /image/:uuid [get]
+func (c *BriefsController) GetImageByUUID() {
+
+	uuid := c.Ctx.Input.Param(":uuid")
+	if uuid == "" {
+		c.Ctx.Output.SetStatus(400)
+		c.Ctx.Output.Body([]byte{})
+		return
+	}
+
+	imageBytes, mimeType, err := files.GetFile(uuid, "briefs")
+	if err != nil {
+		c.Ctx.Output.SetStatus(404)
+		c.Ctx.Output.Body([]byte{})
+		return
+	}
+
+	c.Ctx.Output.Header("Content-Type", mimeType)
+	c.Ctx.Output.SetStatus(200)
+	c.Ctx.Output.Body(imageBytes)
+
 }
