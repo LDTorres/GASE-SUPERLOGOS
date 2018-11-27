@@ -12,14 +12,16 @@ import (
 
 //Gateways Model
 type Gateways struct {
-	ID         int           `orm:"column(id);auto" json:"id"`
-	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
-	Code       string        `orm:"column(code);size(255)" json:"code,omitempty" valid:"Required; AlphaNumeric"`
-	Currencies []*Currencies `orm:"rel(m2m)" json:"currencies,omitempty"`
-	Orders     []*Orders     `orm:"reverse(many)" json:"orders,omitempty"`
-	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt  time.Time     `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	ID           int           `orm:"column(id);auto" json:"id"`
+	Name         string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Description  string        `orm:"column(description)" json:"description,omitempty" valid:"Required"`
+	Instructions string        `orm:"column(instructions)" json:"instructions,omitempty" valid:"Required"`
+	Code         string        `orm:"column(code);size(255)" json:"code,omitempty" valid:"Required; AlphaNumeric"`
+	Currencies   []*Currencies `orm:"rel(m2m)" json:"currencies,omitempty"`
+	Orders       []*Orders     `orm:"reverse(many)" json:"orders,omitempty"`
+	CreatedAt    time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt    time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt    time.Time     `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
 //TableName =

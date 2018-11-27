@@ -4,7 +4,7 @@
       <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
-      <v-dialog v-model="dialog" max-width="500px">
+      <v-dialog v-model="dialog" max-width="800px">
         <v-btn slot="activator" color="primary" flat class="mb-2">Nuevas {{ viewNameESP }}</v-btn>
         <v-card>
           <v-card-title>
@@ -14,15 +14,15 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs12>
+                <v-flex xs4>
                   <v-text-field type="text" name="Nombre" v-validate="'required'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
                   <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs4>
                   <v-text-field type="text" name="Codigo" v-validate="'required'" v-model="editedItem.code" label="Codigo"></v-text-field>
                   <span v-show="errors.has('Codigo')">{{ errors.first('Codigo') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs4>
                   <v-select
                     multiple
                     v-model="editedItem.currencies"
@@ -36,6 +36,24 @@
                     v-validate="'required'"
                   ></v-select>
                   <span v-show="errors.has('Estado')">{{ errors.first('Estado') }}</span>
+                </v-flex>
+                <v-flex xs12>
+                  <v-textarea
+                    name="Descripcion"
+                    label="Descripción"
+                    v-model="editedItem.description"
+                    v-validate="'required'"
+                  ></v-textarea>
+                  <span v-show="errors.has('Descripcion')">{{ errors.first('Descripcion') }}</span>
+                </v-flex>
+                <v-flex xs12>
+                  <v-textarea
+                    name="Instruciones"
+                    label="Instrucciones"
+                    v-model="editedItem.instructions"
+                    v-validate="'required'"
+                  ></v-textarea>
+                  <span v-show="errors.has('Instruciones')">{{ errors.first('Instruciones') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -75,6 +93,8 @@
         <td>{{ props.item.id }}</td>
         <td >{{ props.item.name }}</td>
         <td >{{ props.item.code }}</td>
+        <td >{{ props.item.description }}</td>
+        <td >{{ props.item.instructions }}</td>
         <td >
           <span v-for="currency in props.item.currencies" :key="currency.iso">
             {{ currency.iso }} 

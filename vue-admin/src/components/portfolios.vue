@@ -77,12 +77,12 @@
                   </v-layout>
                 </v-flex>
                 <v-flex xs6>
-                    <v-textarea
-                      name="Descripcion"
-                      label="Descripción"
-                      v-model="editedItem.description"
-                    ></v-textarea>
-                  </v-flex>
+                  <v-textarea
+                    name="Descripcion"
+                    label="Descripción"
+                    v-model="editedItem.description"
+                  ></v-textarea>
+                </v-flex>
                 <v-flex xs6 v-if="editedIndex == -1">
                   <p >Cargar Imagenes Jpg o Png:</p>
                   <input type="file" v-validate="'required|size:15000|mimes:image/*'" name="Imagenes" v-on:change="fileSelected" multiple>

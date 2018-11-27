@@ -201,14 +201,7 @@ instance.interceptors.response.use(function (response) {
   let message = document.querySelector('.loader.http h3')
 
   if (error.response) {
-    // console.log(error.response)
-    // console.log(error.response.status);
-    // console.log(error.response.headers);
     switch (error.response.status) {
-      case 401:
-        localStorage.clear()
-        location.reload()
-        break
       case 409:
         message.innerHTML = 'El elemento esta uso, por favor liberalo antes de eliminarlo'
         break
@@ -217,10 +210,10 @@ instance.interceptors.response.use(function (response) {
         message.innerHTML = error.response.data.pretty_message
         break
     }
-  } else if (error.request) {
-    // console.log('Request error: ', error.request)
   } else {
-    // console.log('Error', error.message)
+    localStorage.clear()
+    location.reload()
+    return
   }
 
   setTimeout(() => {

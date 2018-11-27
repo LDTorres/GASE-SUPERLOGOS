@@ -4,7 +4,7 @@
       <v-toolbar-title class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
-      <v-dialog v-model="dialog" max-width="500px">
+      <v-dialog v-model="dialog" max-width="800px">
         <v-btn slot="activator" color="primary" flat class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
         <v-card>
           <v-card-title>
@@ -13,31 +13,31 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-text-field type="text" name="Nombre" v-validate="'required'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
                   <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-text-field type="text" name="Iso" v-validate="'required|max:2'" v-model="editedItem.iso" label="Iso"></v-text-field>
                   <span v-show="errors.has('Iso')">{{ errors.first('Iso') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-text-field type="tel" name="Telefono" v-validate="'required|numeric'" v-model="editedItem.phone" label="Teléfono"></v-text-field>
                   <span v-show="errors.has('Telefono')">{{ errors.first('Telefono') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-text-field type="text" name="Iva" v-validate="'required|decimal:3'" v-model.number="editedItem.tax" label="Iva"></v-text-field>
                   <span v-show="errors.has('Iva')">{{ errors.first('Iva') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-text-field type="email" name="Email" v-validate="'required|email'" v-model="editedItem.email" label="Email"></v-text-field>
                   <span v-show="errors.has('Email')">{{ errors.first('Email') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-text-field type="text" name="skype" v-validate="'required'" v-model="editedItem.skype" label="Skype"></v-text-field>
                   <span v-show="errors.has('skype')">{{ errors.first('skype') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-select
                     v-model="editedItem.currency"
                     :items="currencies"
@@ -50,6 +50,12 @@
                     v-validate="'required'"
                   ></v-select>
                   <span v-show="errors.has('Modena')">{{ errors.first('Modena') }}</span>
+                </v-flex>
+                <v-flex xs6>
+                  <v-checkbox
+                    label="Mostrar en listado de portafolios"
+                    v-model="editedItem.show_portfolios"
+                  ></v-checkbox>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -139,7 +145,10 @@
     methods: {
       editItem (item) {
         this.editedIndex = this.list.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.editedItem = Object.assign({}, item || {
+          show_portfolios: true
+        })
+        console.log( this.editedItem )
         this.dialog = true
       },
       deleteItem (item) {

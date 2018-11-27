@@ -13,19 +13,20 @@ import (
 
 //Countries Model
 type Countries struct {
-	ID        int          `orm:"column(id);auto" json:"id"`
-	Name      string       `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
-	Iso       string       `orm:"column(iso);size(2)" json:"iso,omitempty" valid:"Required; Length(2); Alpha"`
-	Phone     string       `orm:"column(phone);size(45)" json:"phone,omitempty"`
-	Email     string       `orm:"column(email);size(45);null" json:"email,omitempty" valid:"Email"`
-	Skype     string       `orm:"column(skype);size(45);null" json:"skype,omitempty"`
-	Slug      string       `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
-	Tax       float32      `orm:"column(tax)" json:"tax"`
-	Currency  *Currencies  `orm:"column(currency_id);rel(fk)" json:"currency,omitempty"`
-	Locations []*Locations `orm:"reverse(many)" json:"locations,omitempty"`
-	CreatedAt time.Time    `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time    `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time    `orm:"column(deleted_at);type(datetime);null"  json:"-"`
+	ID             int          `orm:"column(id);auto" json:"id"`
+	Name           string       `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Iso            string       `orm:"column(iso);size(2)" json:"iso,omitempty" valid:"Required; Length(2); Alpha"`
+	Phone          string       `orm:"column(phone);size(45)" json:"phone,omitempty"`
+	Email          string       `orm:"column(email);size(45);null" json:"email,omitempty" valid:"Email"`
+	Skype          string       `orm:"column(skype);size(45);null" json:"skype,omitempty"`
+	Slug           string       `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
+	Tax            float32      `orm:"column(tax)" json:"tax"`
+	ShowPortfolios bool         `orm:"column(show_portfolios);type(boolean);1" json:"show_portfolios" valid:"Required"`
+	Currency       *Currencies  `orm:"column(currency_id);rel(fk)" json:"currency,omitempty"`
+	Locations      []*Locations `orm:"reverse(many)" json:"locations,omitempty"`
+	CreatedAt      time.Time    `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt      time.Time    `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt      time.Time    `orm:"column(deleted_at);type(datetime);null"  json:"-"`
 }
 
 // TODO: Error al traer las ordenes
