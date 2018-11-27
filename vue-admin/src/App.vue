@@ -215,6 +215,13 @@ section.loader {
   animation-fill-mode: both;
   display: inline-block;
 }
+
+
+.sticky-nav{
+  position: sticky;
+  top: 0px;
+  z-index: 999;
+}
 </style>
 
 

@@ -1,6 +1,6 @@
 <template class="users">
 <div>
-  <v-toolbar flat color="white">
+  <v-toolbar flat color="white" class="sticky-nav">
       <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="500px">

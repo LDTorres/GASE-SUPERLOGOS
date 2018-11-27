@@ -1,6 +1,6 @@
 <template class="briefs">
 <div>
-  <v-toolbar flat color="white">
+  <v-toolbar flat color="white" class="sticky-nav">
     <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
@@ -56,20 +56,35 @@
                       <b>Cliente</b>
                     </th>
                     <th colspan="4">
-                      <b>Informacion</b>
+                      <b>Informacion del brief</b>
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td colspan="3" class="text-xs-left">
-                      <tr v-for="(item, i) in props.item.client" :key="i">
-                        <td class="text-xs-left"><b class="text-capitalize">{{i}}: </b> {{item}}</td>
+                    <td colspan=3 class="text-xs-left">
+                      <tr>
+                        <td class="text-xs-left"><b>Nombre: </b> {{props.item.client.name}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-xs-left"><b>Email: </b> {{props.item.client.email}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-xs-left"><b>Compañia: </b> {{props.item.client.company}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-xs-left"><b>Teléfono: </b> {{props.item.client.phone}}</td>
                       </tr>
                     </td>
                     <td colspan="4">
-                      <tr v-for="(item, i) in props.item.data.information" :key="i">
-                        <td class="text-xs-left"><b>{{item.label}}: </b> {{item.value}}</td>
+                      <tr v-for="(item, i) in props.item.data.information" :key="i" v-if="item.value != [] && item.value != '' && item.value">
+                        <td class="text-xs-left" v-if="!Array.isArray(item.value)">
+                          <b>{{item.label}}: </b> {{item.value}}
+                        </td>
+                        <td class="text-xs-left" v-if="Array.isArray(item.value)">
+                          <b>{{item.label}}:</b> 
+                          <span v-for="(subitem, oi) in item.value" :key="oi">{{subitem}}</span>
+                        </td>
                       </tr>
                     </td>
                   </tr>

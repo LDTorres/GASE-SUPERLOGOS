@@ -1,6 +1,6 @@
 <template class="portfolios">
 <div>
-  <v-toolbar flat color="white">
+  <v-toolbar flat color="white" class="sticky-nav">
       <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
@@ -39,12 +39,12 @@
                         item-text="name"
                         :error-messages="selectErrors"
                         return-object
-                        label="Locacion"
+                        label="Pais"
                         required
-                        name="Locacion" 
+                        name="Pais" 
                         v-validate="'required'"
                       ></v-select>
-                      <span v-show="errors.has('Locacion')">{{ errors.first('Locacion') }}</span>
+                      <span v-show="errors.has('Pais')">{{ errors.first('Pais') }}</span>
                     </v-flex>
                     <v-flex xs12>
                       <v-select
@@ -67,7 +67,7 @@
                         item-text="name"
                         :error-messages="selectErrors"
                         return-object
-                        label="Actividad"
+                        label="Sector o Actividades"
                         required
                         name="Actividad" 
                         v-validate="'required'"
@@ -77,13 +77,11 @@
                   </v-layout>
                 </v-flex>
                 <v-flex xs6>
-                      <v-textarea
-                        name="Descripcion"
-                        label="Descripción"
-                        v-validate="'required'"
-                        v-model="editedItem.description"
-                      ></v-textarea>
-                      <span v-show="errors.has('Descripcion')">{{ errors.first('Descripcion') }}</span>
+                    <v-textarea
+                      name="Descripcion"
+                      label="Descripción"
+                      v-model="editedItem.description"
+                    ></v-textarea>
                   </v-flex>
                 <v-flex xs6 v-if="editedIndex == -1">
                   <p >Cargar Imagenes Jpg o Png:</p>
@@ -250,10 +248,8 @@
       },
       close () {
         this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
       },
       save () {
         this.$validator.validate().then(result => {
