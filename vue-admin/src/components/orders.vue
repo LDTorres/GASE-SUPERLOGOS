@@ -75,6 +75,14 @@
           <v-icon
             title
             class="mr-2" color="primary"
+            @click="viewBrief(props.item.brief_cookie)"
+            v-if="props.item.brief_cookie"
+          >
+            remove_red_eye
+          </v-icon>
+          <v-icon
+            title
+            class="mr-2" color="primary"
             @click="editItem(props.item)"
           >
             edit
@@ -131,6 +139,9 @@
         }
 
         confirm('Esta seguro que desea eliminar este elemento?') && this.$store.dispatch('deleteOne', params)
+      },
+      viewBrief (cookie) {
+        this.$router.push('briefs?q=' + cookie)
       },
       close () {
         this.dialog = false

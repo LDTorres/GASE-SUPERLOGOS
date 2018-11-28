@@ -3,9 +3,9 @@ import axios from 'axios'
 var headers = {}
 const token = localStorage.getItem('bazam-token')
 
-var baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:9090/v1' : 'http://api.liderlogos.com/v1'
+// var baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:9090/v1' : 'http://api.liderlogos.com/v1'
 
-// var baseUrl = 'http://api.liderlogos.com/v1'
+var baseUrl = 'http://api.liderlogos.com/v1'
 
 if (token !== null && token !== undefined && token !== '') {
   headers['Authorization'] = token

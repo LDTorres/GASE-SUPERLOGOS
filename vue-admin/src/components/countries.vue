@@ -148,7 +148,6 @@
         this.editedItem = Object.assign({}, item || {
           show_portfolios: true
         })
-        console.log( this.editedItem )
         this.dialog = true
       },
       deleteItem (item) {

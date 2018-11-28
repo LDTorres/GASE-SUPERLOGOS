@@ -7,7 +7,7 @@ import axios from '../../axios.js'
 const route = '/briefs'
 
 var struct = [
-  { text: 'Id', align: 'left', sortable: true, value: 'data.information.names.value' },
+  { text: 'Cookie', align: 'left', sortable: true, value: 'cookie' },
   { text: 'Servicio', align: 'left', value: 'data.service.name' },
   { text: 'Compañia', align: 'left', sortable: true, value: 'data.information.company.value' },
   { text: 'Teléfono', value: 'data.information.phone.value' },
