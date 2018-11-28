@@ -56,7 +56,7 @@ func (c *BaseController) GenerateToken(userType string, id string, timeArgs ...i
 
 	now := time.Now()
 
-	timeValues := []int{0, 0, 0}
+	timeValues := []int{14, 0, 0}
 
 	for key, timeArg := range timeArgs {
 		timeValues[key] = timeArg

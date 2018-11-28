@@ -15,6 +15,7 @@ var (
 	// ExcludeUrls ...
 	ExcludeUrls = map[string][]string{
 		"login":           {"POST"},
+		"clients":         {"POST"},
 		"carts":           {"POST", "PUT"},
 		"orders":          {"POST"},
 		"change-password": {"POST"},
