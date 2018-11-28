@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 
+	"github.com/astaxie/beego/validation"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -40,22 +40,20 @@ func (c *BriefsController) Post() {
 
 	var r = c.Ctx.Request
 
-	//Validate Client
-	decodedToken, err := VerifyToken(c.Ctx.Input.Header("Authorization"), "Client")
+	client := &models.Clients{}
 
-	if err != nil {
-		c.BadRequest(err)
+	err = json.Unmarshal([]byte(r.FormValue("client")), client)
+
+	valid := validation.Validation{}
+
+	b, _ := valid.Valid(client)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, "Clients")
 		return
 	}
 
-	clientID, err := strconv.Atoi(decodedToken.ID)
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	client, err := models.GetClientsByID(clientID)
+	_, err = models.CreateOrUpdateUser(client)
 
 	if err != nil {
 		c.ServeErrorJSON(err)

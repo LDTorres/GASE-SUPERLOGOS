@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/sethvargo/go-password/password"
 )
 
 //Clients Model
@@ -17,7 +18,7 @@ type Clients struct {
 	Email     string    `orm:"column(email);size(255)" json:"email,omitempty" valid:"Required; Email"`
 	Password  string    `orm:"column(password);size(255)" json:"password,omitempty" valid:"Required; MinSize(8); MaxSize(20); AlphaDash"`
 	Phone     string    `orm:"column(phone);size(255)" json:"phone,omitempty" valid:"Required"`
-	Company     string    `orm:"column(company);size(255)" json:"company,omitempty" valid:"Required"`
+	Company   string    `orm:"column(company);size(255)" json:"company,omitempty" valid:"Required"`
 	Orders    []*Orders `orm:"reverse(many)" json:"orders,omitempty"`
 	Token     string    `orm:"-" json:"token,omitempty"`
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
@@ -85,6 +86,36 @@ func LoginClients(m *Clients) (id int, err error) {
 	}
 
 	m.Password = ""
+
+	return m.ID, err
+}
+
+// CreateOrUpdateUser login a Clients, returns
+// if Exists.
+func CreateOrUpdateUser(m *Clients) (id int, err error) {
+	o := orm.NewOrm()
+
+	params := orm.Params{"name": m.Name, "company": m.Company, "phone": m.Phone}
+
+	query := o.QueryTable(m.TableName()).Filter("deleted_at__isnull", true).Filter("email", m.Email)
+	err = query.One(m)
+
+	if err == nil {
+		query.Update(params)
+
+		err = query.One(m)
+		return m.ID, err
+	} else {
+		password, err := password.Generate(5, 3, 0, false, false)
+		m.Password = password
+
+		id, err := o.Insert(m)
+
+		if err == nil {
+			m.ID = int(id)
+			return m.ID, err
+		}
+	}
 
 	return m.ID, err
 }
