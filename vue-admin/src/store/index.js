@@ -15,7 +15,6 @@ import coupons from './modules/coupons'
 import currencies from './modules/currencies'
 import gateways from './modules/gateways'
 import locations from './modules/locations'
-import mails from './modules/mails'
 import orders from './modules/orders'
 import sectors from './modules/sectors'
 import services from './modules/services'
@@ -59,7 +58,6 @@ export default new Vuex.Store({
     currencies: currencies,
     gateways: gateways,
     locations: locations,
-    mails: mails,
     orders: orders,
     sectors: sectors,
     services: services,
