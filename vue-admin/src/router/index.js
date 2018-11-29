@@ -15,7 +15,6 @@ import coupons from '@/components/coupons'
 import currencies from '@/components/currencies'
 import gateways from '@/components/gateways'
 import locations from '@/components/locations'
-import mails from '@/components/mails'
 import sectors from '@/components/sectors'
 import services from '@/components/services'
 import users from '@/components/users'
@@ -83,12 +82,6 @@ var instance = new Router({
       path: '/locations',
       name: 'locations',
       component: locations,
-      props: (route) => ({ search: route.query.q })
-    },
-    {
-      path: '/mails',
-      name: 'mails',
-      component: mails,
       props: (route) => ({ search: route.query.q })
     },
     {
