@@ -116,6 +116,26 @@
     methods: {
       editItem (item) {
         this.editedIndex = this.list.indexOf(item)
+
+        let copyCurrencies = JSON.parse(JSON.stringify(this.currencies))
+
+        if (copyCurrencies.length) {
+          item.prices.forEach(price => {
+            copyCurrencies.forEach((currency, i) => {
+              if (currency.iso === price.currency.iso) {
+                copyCurrencies.splice(i, 1)
+              }
+            })
+          })
+
+          copyCurrencies.forEach(currency => {
+            item.prices.push({
+              currency: currency,
+              value: 0
+            })
+          })
+        }
+
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },

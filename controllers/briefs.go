@@ -7,7 +7,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/astaxie/beego/validation"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -44,23 +43,14 @@ func (c *BriefsController) Post() {
 
 	err = json.Unmarshal([]byte(r.FormValue("client")), client)
 
-	valid := validation.Validation{}
-
-	b, _ := valid.Valid(client)
-
-	if !b {
-		c.BadRequestErrors(valid.Errors, "Clients")
-		return
-	}
-
-	_, err = models.CreateOrUpdateUser(client)
+	clientID, err := models.CreateOrUpdateUser(client)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
 	}
 
-	client.Token, err = c.GenerateToken("Client", string(client.ID))
+	client.Token, err = c.GenerateToken("Client", string(clientID))
 
 	if err != nil {
 		c.BadRequest(err)

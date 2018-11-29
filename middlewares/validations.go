@@ -17,6 +17,7 @@ var (
 		"login":           {"POST"},
 		"clients":         {"POST"},
 		"carts":           {"POST", "PUT"},
+		"brief":           {"POST", "PUT"},
 		"orders":          {"POST"},
 		"change-password": {"POST"},
 		"custom-search":   {"GET"},
