@@ -60,7 +60,7 @@ func (c *BriefsController) Post() {
 		return
 	}
 
-	client.Token, err = c.GenerateToken("Client", client.ID)
+	client.Token, err = c.GenerateToken("Client", string(client.ID))
 
 	if err != nil {
 		c.BadRequest(err)
