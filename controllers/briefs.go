@@ -60,6 +60,13 @@ func (c *BriefsController) Post() {
 		return
 	}
 
+	client.Token, err = c.GenerateToken("Client", client.ID)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
 	dataBrief := &map[string]interface{}{}
 
 	err = json.Unmarshal([]byte(r.FormValue("data")), dataBrief)
