@@ -78,11 +78,6 @@ const app = {
         route: 'users'
       }]
     }
-    /* ,{
-      icon: 'mail_outline',
-      title: 'Plantillas de Emails',
-      route: 'mails'
-    } */
   ]
 }
 

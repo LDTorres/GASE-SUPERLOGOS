@@ -191,7 +191,7 @@
       },
       formTitle () {
         var title = this.editedIndex === -1 ? 'Nueva ' : 'Editar '
-        return title + this.viewNameESP
+        return title + 'Actividad'
       },
       defaultItem () {
         return this.$store.state[this.viewName].defaultItem

@@ -1,11 +1,11 @@
 <template class="services">
 <div>
   <v-toolbar flat color="white" class="sticky-nav">
-      <v-toolbar-title hidden-md-and-down class="text-capitalize">{{ viewNameESP }}</v-toolbar-title>
+      <v-toolbar-title hidden-md-and-down class="text-capitalize">Servicios</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
-      <v-dialog v-model="dialog" max-width="500px">
-        <v-btn slot="activator" color="primary" flat class="mb-2">Nuevos {{ viewNameESP }}</v-btn>
+      <v-dialog v-model="dialog" max-width="800px">
+        <v-btn slot="activator" color="primary" flat class="mb-2">Nuevo Servicio</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>
@@ -14,23 +14,24 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-text-field type="text" name="Nombre" v-validate="'required'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
                   <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs6>
                   <v-text-field type="number" name="Porcentage" v-validate="'required|numeric|max:2'" v-model="editedItem.percentage" label="Porcentage"></v-text-field>
                   <span v-show="errors.has('Porcentage')">{{ errors.first('Porcentage') }}</span>
                 </v-flex>
 
+                <v-flex xs12 class="mt-3"><p>Precios</p></v-flex>
                 <!-- Si es nuevo -->
-                <v-flex v-if="editedIndex === -1" xs3 v-for="(currency) in currencies" :key="currency.id">
+                <v-flex v-if="editedIndex === -1" xs2 v-for="(currency) in currencies" :key="currency.id">
                   <v-text-field type="number" :name="currency.iso" v-validate="'required|numeric|max:6'" v-model="currency.price" :label="currency.iso"></v-text-field>
                   <span v-show="errors.has(currency.iso)">{{ errors.first(currency.iso) }}</span>
                 </v-flex>
 
                 <!-- Si es editado -->
-                <v-flex v-if="editedIndex !== -1" xs3 v-for="(price) in editedItem.prices" :key="price.id">
+                <v-flex v-if="editedIndex !== -1" xs2 v-for="(price) in editedItem.prices" :key="price.id">
                   <v-text-field type="text" v-validate="'required|max:6'" v-model="price.value" :label="price.currency.iso"></v-text-field>
                 </v-flex>
               </v-layout>
@@ -109,8 +110,7 @@
         selectErrors: [],
         pagination: {},
         dialog: false,
-        editedIndex: -1,
-        viewNameESP: 'Servicios'
+        editedIndex: -1
       }
     },
     methods: {
@@ -223,7 +223,7 @@
       },
       formTitle () {
         var title = this.editedIndex === -1 ? 'Nuevo ' : 'Editar '
-        return title + this.viewNameESP
+        return title + 'Servicio'
       },
       defaultItem () {
         return this.$store.state[this.viewName].defaultItem
