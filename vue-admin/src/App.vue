@@ -51,7 +51,7 @@
     <section class="loader http">
       <div class="loaders">
         <div class="loader">
-          <h3 class="display-1" style="margin-bottom: 20px">Cargango...</h3>
+          <h3 class="display-1" style="margin-bottom: 20px">Cargando...</h3>
           <div class="loader-inner ball-pulse">
             <div></div>
             <div></div>

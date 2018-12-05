@@ -5,6 +5,7 @@ import Router from 'vue-router'
  * Components
  */
 
+import analytics from '@/components/analytics'
 import login from '@/components/login'
 import orders from '@/components/orders'
 import activities from '@/components/activities'
@@ -25,6 +26,11 @@ Vue.use(Router)
 
 var instance = new Router({
   routes: [
+    {
+      path: '/analytics',
+      name: 'analytics',
+      component: analytics
+    },
     {
       path: '/',
       name: 'login',

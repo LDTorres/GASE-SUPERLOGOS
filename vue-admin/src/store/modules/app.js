@@ -2,6 +2,14 @@ const app = {
   sidemenu:
   [
     {
+      title: 'Estudio de datos',
+      routes: [{
+        icon: 'assessment',
+        title: 'Reportes',
+        route: 'analytics'
+      }]
+    },
+    {
       title: 'Ubicaciones',
       routes: [{
         icon: 'outlined_flag',
