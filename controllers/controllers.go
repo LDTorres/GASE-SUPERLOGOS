@@ -42,7 +42,7 @@ func init() {
 		"Min":          "The min length requred is %d",
 		"Max":          "The max length requred is %d",
 		"Range":        "The range of the values is %d до %d",
-		"MinSize":      "Longitud mínima permitida %d",
+		"MinSize":      "Minimum length allowed %d",
 		"MaxSize":      "Minimum length allowed %d",
 		"Length":       "The length should be equal to %d",
 		"Alpha":        "Must consist of letters",
@@ -241,7 +241,7 @@ func addNewImage(fh *multipart.FileHeader, v *models.Portfolios, priority int) (
 
 	fileType := fh.Header["Content-Type"][0]
 
-	if fileType != "image/jpeg" && fileType != "image/png" {
+	if fileType != "image/jpeg" && fileType != "image/png" && fileType != "image/gif" {
 
 		err = errors.New("Incorrect file type, expected 'image/jpeg' or 'image/png', '" + fileType + "' type was given")
 		return
