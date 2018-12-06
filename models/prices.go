@@ -164,7 +164,7 @@ func UpdatePricesByID(m *Prices) (err error) {
 }
 
 //UpdateManyPricesByID updates Prices by Id and returns error if the record to be updated doesn't exist
-func UpdateManyPricesByID(prices []*Prices) (err error) {
+func UpdateManyPricesByID(service *Services) (err error) {
 	o := orm.NewOrm()
 	err = o.Begin()
 
@@ -172,7 +172,7 @@ func UpdateManyPricesByID(prices []*Prices) (err error) {
 		return err
 	}
 
-	for _, price := range prices {
+	for _, price := range service.Prices {
 		v := Prices{ID: price.ID}
 
 		err = o.Read(&v)
@@ -186,6 +186,17 @@ func UpdateManyPricesByID(prices []*Prices) (err error) {
 				}
 				return err
 			}
+		} else {
+			p := &Prices{
+				Value:    price.Value,
+				Currency: price.Currency,
+				Service:  service,
+			}
+
+			id, _ := o.Insert(p)
+			p.ID = int(id)
+
+			service.Prices = append(service.Prices, p)
 		}
 	}
 

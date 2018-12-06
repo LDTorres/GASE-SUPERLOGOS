@@ -2,6 +2,14 @@ const app = {
   sidemenu:
   [
     {
+      title: 'Estudio de datos',
+      routes: [{
+        icon: 'assessment',
+        title: 'Reportes',
+        route: 'analytics'
+      }]
+    },
+    {
       title: 'Ubicaciones',
       routes: [{
         icon: 'outlined_flag',
@@ -78,11 +86,6 @@ const app = {
         route: 'users'
       }]
     }
-    /* ,{
-      icon: 'mail_outline',
-      title: 'Plantillas de Emails',
-      route: 'mails'
-    } */
   ]
 }
 

@@ -185,6 +185,20 @@ func (c *OrdersController) Post() {
 		models.UpdateOrdersByID(Order)
 	}
 
+	/* Set used to true */
+	for _, el := range Order.Coupons {
+		coupon, _ := models.GetCouponsByID(el.ID)
+
+		coupon.Used = true
+
+		err := models.UpdateCouponsByID(coupon)
+
+		if err != nil {
+			c.ServeErrorJSON(err)
+			return
+		}
+	}
+
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = Order
 

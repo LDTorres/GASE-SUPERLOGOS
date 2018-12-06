@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/validation"
+	"github.com/sethvargo/go-password/password"
 )
 
 // ClientsController operations for Clients
@@ -70,7 +71,8 @@ func (c *ClientsController) Post() {
 		return
 	}
 
-	v.Password = "bazam12345"
+	password, err := password.Generate(64, 10, 10, false, false)
+	v.Password = password
 
 	// Validate context body
 
@@ -314,16 +316,12 @@ func (c *ClientsController) Login() {
 
 	valid := validation.Validation{}
 
-	valid.Required(v.Email, "email")
-	//valid.Required(v.Password, "password")
+	b, _ := valid.Valid(&v)
 
-	if valid.HasErrors() {
+	if !b {
 		c.BadRequestErrors(valid.Errors, v.TableName())
 		return
 	}
-
-	// TODO: Change
-	v.Password = "bazam12345"
 
 	id, err := models.LoginClients(&v)
 

@@ -29,7 +29,7 @@
       >
       <template slot="items" slot-scope="props">
         <tr @click="props.expanded = !props.expanded">
-          <td>{{ props.item.data.information.names.value }}</td>
+          <td>{{ props.item.cookie }}</td>
           <td>{{ props.item.data.service.name }}</td>
           <td>{{ props.item.data.information.company.value }}</td>
           <td>{{ props.item.data.information.phone.value }}</td>
@@ -53,7 +53,7 @@
                 <thead>
                   <tr>
                     <th colspan="3">
-                      <b>Cliente</b>
+                      <b>Datos del cliente</b>
                     </th>
                     <th colspan="4">
                       <b>Informacion del brief</b>
@@ -77,6 +77,9 @@
                       </tr>
                     </td>
                     <td colspan="4">
+                      <tr>
+                        <td class="text-xs-left"><b>Servicio:</b> {{props.item.data.service.name}} </td>
+                      </tr>
                       <tr v-for="(item, i) in props.item.data.information" :key="i" v-if="item.value != [] && item.value != '' && item.value">
                         <td class="text-xs-left" v-if="!Array.isArray(item.value)">
                           <b>{{item.label}}: </b> {{item.value}}
@@ -94,11 +97,23 @@
                     <th colspan="2">Estilos</th>
                   </tr>
                   <tr>
-                    <td colspan="2">{{props.item.data.colors}}</td>
-                    <td colspan="2">{{props.item.data.designs}}</td>
+                    <td colspan="2" v-if="props.item.data.colors.length">
+                      <span v-for="color in props.item.data.colors" :key="color" class="mr-2">
+                        <img width="30px" :src="'/static/colors/' + color + '.png'">
+                      </span>
+                    </td>
+                    <td colspan="2" v-if="!props.item.data.colors.length">No seleccionó colores</td>
+
+                    <td colspan="2" v-if="props.item.data.designs.length">
+                      <span v-for="design in props.item.data.designs" :key="design">{{design}}  </span>
+                    </td>
+                    <td colspan="2" v-if="!props.item.data.designs.length">No seleccionó diseños</td>
+
                     <td colspan="2">
-                      <div class="mb-3" v-for="(style, i) in props.item.data.styles" :key="i">
-                        <b class="text-capitalize">{{i}}: </b> {{style}}
+                      <div class="mb-3 style-range" v-for="(style, i) in props.item.data.styles" :key="i">
+                        <b>{{espStyles[i][0]}}</b>
+                        <b class="mx-3">{{style}}</b>
+                        <b>{{espStyles[i][1]}}</b> 
                       </div>
                     </td>
                   </tr>
@@ -128,7 +143,16 @@
         pagination: {},
         dialog: false,
         editedIndex: -1,
-        viewNameESP: 'Briefs'
+        viewNameESP: 'Briefs',
+        espStyles: {
+          'clasic_modern': ['Clásico', 'Moderno'],
+          'mature_youthful': ['Adulto', 'Juvenil'],
+          'abstract_literal': ['Abstracto', 'Literal'],
+          'geometric_organic': ['Geométrico', 'Orgánico'],
+          'feminine_masculine': ['Femenino', 'Masculino'],
+          'playful_sophisticated': ['Juguetón', 'Sofisticado'],
+          'economical_luxurious': ['Económico', 'Lujoso']
+        }
       }
     },
     methods: {
@@ -192,5 +216,8 @@
 .theme--light.v-table th {
     color: rgb(0, 0, 0);
 }
+
+.style-range{ display:flex; justify-content: space-around; }
+.style-range > :first-child, .style-range > :last-child { width: 100px; }
 
 </style>

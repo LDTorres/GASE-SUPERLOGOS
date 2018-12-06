@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/globalsign/mgo/bson"
 )
@@ -40,25 +39,21 @@ func (c *BriefsController) Post() {
 
 	var r = c.Ctx.Request
 
-	//Validate Client
-	decodedToken, err := VerifyToken(c.Ctx.Input.Header("Authorization"), "Client")
+	client := &models.Clients{}
 
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
+	err = json.Unmarshal([]byte(r.FormValue("client")), client)
 
-	clientID, err := strconv.Atoi(decodedToken.ID)
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	client, err := models.GetClientsByID(clientID)
+	clientID, err := models.CreateOrUpdateUser(client)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
+		return
+	}
+
+	client.Token, err = c.GenerateToken("Client", string(clientID))
+
+	if err != nil {
+		c.BadRequest(err)
 		return
 	}
 

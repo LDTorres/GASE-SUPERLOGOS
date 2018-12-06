@@ -300,7 +300,7 @@ func (c *ServicesController) Put() {
 		return
 	}
 
-	err = models.UpdateManyPricesByID(v.Prices)
+	err = models.UpdateManyPricesByID(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
