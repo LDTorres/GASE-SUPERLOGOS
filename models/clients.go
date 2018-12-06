@@ -20,6 +20,7 @@ type Clients struct {
 	Phone     string    `orm:"column(phone);size(255)" json:"phone,omitempty" valid:"Required"`
 	Company   string    `orm:"column(company);size(255)" json:"company,omitempty" valid:"Required"`
 	Orders    []*Orders `orm:"reverse(many)" json:"orders,omitempty"`
+	Projects    []*Projects `orm:"reverse(many)" json:"projects,omitempty"`
 	Token     string    `orm:"-" json:"token,omitempty"`
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
