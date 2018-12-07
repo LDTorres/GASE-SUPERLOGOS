@@ -177,7 +177,6 @@
               </v-card>
             </v-flex>
 
-            <!-- prueba -->
             <v-flex xs3>
               <v-card>
                 <v-img @click="triggerFileButton"
