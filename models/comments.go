@@ -1,27 +1,27 @@
 package models
 
 import (
-	"time"
-	"strings"
 	"errors"
-	"reflect"
 	"fmt"
+	"reflect"
+	"strings"
+	"time"
+
 	"github.com/astaxie/beego/orm"
 )
 
 //Comments Model
 type Comments struct {
-	ID        int         `orm:"column(id);auto" json:"id"`
-	AttachmentMime        string         `orm:"column(attachment_mime);" json:"attachment_mime,omitempty"`
-	AttachmentUUID        string         `orm:"column(attachment_uuid);" json:"attachment_uuid,omitempty"`
-	Description        string         `orm:"column(description);" json:"description,omitempty"`
-	Type string  `orm:"column(type);" json:"type,omitempty"`
-	Sketch  *Sketchs `orm:"column(sketchs_id);rel(fk)" json:"sketch,omitempty"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID             int       `orm:"column(id);auto" json:"id"`
+	AttachmentMime string    `orm:"column(attachment_mime);" json:"attachment_mime,omitempty"`
+	AttachmentUUID string    `orm:"column(attachment_uuid);" json:"attachment_uuid,omitempty"`
+	Description    string    `orm:"column(description);" json:"description,omitempty"`
+	Type           string    `orm:"column(type);" json:"type,omitempty"`
+	Sketch         *Sketchs  `orm:"column(sketchs_id);rel(fk)" json:"sketch,omitempty"`
+	CreatedAt      time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt      time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt      time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
-
 
 //TableName define Name
 func (t *Comments) TableName() string {
@@ -41,7 +41,6 @@ func (t *Comments) loadRelations() {
 	return
 
 }
-
 
 // AddComments insert a new Comments into database and returns last inserted Id on success.
 func AddComments(m *Comments) (id int64, err error) {
@@ -65,7 +64,6 @@ func GetCommentsByID(id int) (v *Comments, err error) {
 
 	return
 }
-
 
 //GetAllComments retrieves all Comments matches certain condition. Returns empty list if no records exist
 func GetAllComments(query map[string]string, fields []string, sortby []string, order []string,

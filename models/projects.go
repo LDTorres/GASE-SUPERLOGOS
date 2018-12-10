@@ -18,9 +18,8 @@ type Projects struct {
 	AgileID            string         `orm:"column(agile_id);" json:"agile_id,omitempty"`
 	NotificationsEmail string         `orm:"column(notifications_email);" json:"notifications_email,omitempty" valid:"Required;"`
 	Client             *Clients       `orm:"column(clients_id);rel(fk)" json:"currency,omitempty"`
-	Services           []*Services       `orm:"column(services);rel(m2m)" json:"services,omitempty"`
+	Services           []*Services    `orm:"column(services);rel(m2m)" json:"services,omitempty"`
 	Attachments        []*Attachments `orm:"reverse(many)" json:"attachments,omitempty"`
-	Comments           []*Comments    `orm:"reverse(many)" json:"comments,omitempty"`
 	Token              string         `orm:"-" json:"token,omitempty"`
 	CreatedAt          time.Time      `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt          time.Time      `orm:"column(updated_at);type(datetime);null" json:"-"`
