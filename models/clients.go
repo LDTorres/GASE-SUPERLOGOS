@@ -106,19 +106,16 @@ func CreateOrUpdateUser(m *Clients) (id int, err error) {
 
 		err = query.One(m)
 		return m.ID, err
-	} else {
-		password, err := password.Generate(5, 3, 0, false, false)
-		m.Password = password
-
-		id, err := o.Insert(m)
-
-		if err == nil {
-			m.ID = int(id)
-			return m.ID, err
-		}
 	}
 
+	password, err := password.Generate(5, 3, 0, false, false)
+	m.Password = password
+
+	newID, err := o.Insert(m)
+	m.ID = int(newID)
+
 	return m.ID, err
+
 }
 
 // GetClientsByID retrieves Clients by Id. Returns error if

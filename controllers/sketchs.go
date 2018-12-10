@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"GASE/models"
-	"GASE/controllers/services/token"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -11,33 +10,42 @@ import (
 	"github.com/astaxie/beego/validation"
 )
 
-// ProjectsController operations for Prices
-type ProjectsController struct {
+// SketchsController operations for Prices
+type SketchsController struct {
 	BaseController
 }
 
 // URLMapping ...
-func (c *ProjectsController) URLMapping() {
+func (c *SketchsController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-	c.Mapping("GenerateUploadToken", c.GenerateUploadToken)
-	c.Mapping("VerifyUploadToken", c.VerifyUploadToken)
 }
 
 // Post ...
 // @Title Post
-// @Description create Projects
-// @Param	body		body 	models.Projects	true		"body for Projects content"
-// @Success 201 {object} models.Projects
+// @Description create Sketchs
+// @Param	body		body 	models.Sketchs	true		"body for Sketchs content"
+// @Success 201 {object} models.Sketchs
 // @Failure 400 body is empty
 // @router / [post]
-func (c *ProjectsController) Post() {
-	var v models.Projects
+func (c *SketchsController) Post() {
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
+
+	if err != nil {
+		c.Ctx.Output.SetStatus(413)
+		c.ServeJSON()
+		return
+	}
+
+	var r = c.Ctx.Request
+
+	var v models.Sketchs
+
+	err = json.Unmarshal([]byte(r.FormValue("sketchs")), &v)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -53,18 +61,18 @@ func (c *ProjectsController) Post() {
 		return
 	}
 
-	/* foreignsModels := map[string]int{
-		"Currencies": v.Currency.ID,
-		"Services":   v.Service.ID,
+	foreignsModels := map[string]int{
+		"Projects": v.Project.ID,
+		"Services": v.Service.ID,
 	}
 
 	resume := c.doForeignModelsValidation(foreignsModels)
 
 	if !resume {
 		return
-	} */
+	}
 
-	_, err = models.AddProjects(&v)
+	_, err = models.AddSketchs(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -79,12 +87,12 @@ func (c *ProjectsController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Projects by id
+// @Description get Sketchs by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Projects
+// @Success 200 {object} models.Sketchs
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c ProjectsController) GetOne() {
+func (c SketchsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -93,81 +101,22 @@ func (c ProjectsController) GetOne() {
 		return
 	}
 
-	v, err := models.GetProjectsByID(id)
+	v, err := models.GetSketchsByID(id)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
 	}
 
 	c.Data["json"] = v
-	c.ServeJSON()
-}
-
-// GenerateUploadToken ...
-// @Title Generate Upload Token
-// @Success 200 {object} models.Projects
-// @Failure 403 :id is empty
-// @router /:id/token [post]
-func (c ProjectsController) GenerateUploadToken() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, err := strconv.Atoi(idStr)
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	v, err := models.GetProjectsByID(id)
-	if err != nil {
-		c.ServeErrorJSON(err)
-		return
-	}
-
-	token, err := token.GenerateTimeToken(v.ID, "project", 1)
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	v.Token = token
-
-	c.Data["json"] = v
-	c.ServeJSON()
-}
-
-// VerifyUploadToken ...
-// @Title Verify Upload Token
-// @Success 200 {object} models.Projects
-// @Failure 403 :id is empty
-// @router /token/:token [get]
-func (c ProjectsController) VerifyUploadToken() {
-
-	tokenString := c.Ctx.Input.Param(":token")
-	
-	_, err := token.ValidateTimeToken(tokenString, "project")
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
 	c.ServeJSON()
 }
 
 // GetAll ...
 // @Title Get All
-// @Description get Projects
-// @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
-// @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
-// @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
-// @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.Prices
+// @Success 200 {array} models.Sketchs
 // @Failure 403
 // @router / [get]
-func (c *ProjectsController) GetAll() {
+func (c *SketchsController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -209,7 +158,7 @@ func (c *ProjectsController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllProjects(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllSketchs(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -221,13 +170,10 @@ func (c *ProjectsController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the Projects
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Projects	true		"body for Projects content"
-// @Success 200 {object} models.Projects
-// @Failure 403 :id is not int
+// @Success 200 {object} models.Sketchs
+// @Failure 400 :id is not int
 // @router /:id [put]
-func (c *ProjectsController) Put() {
+func (c *SketchsController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -236,7 +182,7 @@ func (c *ProjectsController) Put() {
 		return
 	}
 
-	v := models.Projects{ID: id}
+	v := models.Sketchs{ID: id}
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -253,18 +199,7 @@ func (c *ProjectsController) Put() {
 		return
 	}
 
-	/* foreignsModels := map[string]int{
-		"Currencies": v.Currency.ID,
-		"Services":   v.Service.ID,
-	}
-
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
-		return
-	} */
-
-	err = models.UpdateProjectsByID(&v)
+	err = models.UpdateSketchsByID(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -281,12 +216,11 @@ func (c *ProjectsController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the Projects
-// @Param	id		path 	string	true		"The id you want to delete"
+// @Description delete the Sketchs
 // @Success 200 {string} delete success!
-// @Failure 403 id is empty
+// @Failure 400 id is empty
 // @router /:id [delete]
-func (c *ProjectsController) Delete() {
+func (c *SketchsController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -301,7 +235,7 @@ func (c *ProjectsController) Delete() {
 		trash = true
 	}
 
-	err = models.DeleteProjects(id, trash)
+	err = models.DeleteSketchs(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)

@@ -1,32 +1,30 @@
 package models
 
 import (
-	"time"
-	"strings"
 	"errors"
-	"reflect"
 	"fmt"
+	"reflect"
+	"strings"
+	"time"
+
 	"github.com/astaxie/beego/orm"
 )
 
 //Projects Model
 type Projects struct {
-	ID        int         `orm:"column(id);auto" json:"id"`
-	Name        string         `orm:"column(name);" json:"name,omitempty"`
-	Email        string         `orm:"column(email);" json:"email,omitempty"`
-	Closed        bool         `orm:"column(closed);" json:"closed,omitempty"`
-	Public        bool         `orm:"column(public);" json:"public,omitempty"`
-	AgileID string `orm:"column(agile_id);" json:"agile_id,omitempty"`
-	NotificationsEmail string `orm:"column(notifications_email);" json:"notifications_email,omitempty"`
-	Client  *Clients `orm:"column(clients_id);rel(fk)" json:"currency,omitempty"`
-	Services  *Clients `orm:"column(services);rel(m2m)" json:"services,omitempty"`
-	Attachments    []*Attachments   `orm:"reverse(many)" json:"attachments,omitempty"`
-	Comments    []*Comments   `orm:"reverse(many)" json:"comments,omitempty"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID                 int            `orm:"column(id);auto" json:"id"`
+	Name               string         `orm:"column(name);" json:"name,omitempty" valid:"Required;"`
+	Closed             bool           `orm:"column(closed);" json:"closed,omitempty" valid:"Required;"`
+	AgileID            string         `orm:"column(agile_id);" json:"agile_id,omitempty"`
+	NotificationsEmail string         `orm:"column(notifications_email);" json:"notifications_email,omitempty" valid:"Required;"`
+	Client             *Clients       `orm:"column(clients_id);rel(fk)" json:"currency,omitempty"`
+	Services           []*Services    `orm:"column(services);rel(m2m)" json:"services,omitempty"`
+	Attachments        []*Attachments `orm:"reverse(many)" json:"attachments,omitempty"`
+	Token              string         `orm:"-" json:"token,omitempty"`
+	CreatedAt          time.Time      `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt          time.Time      `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt          time.Time      `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
-
 
 //TableName define Name
 func (t *Projects) TableName() string {
@@ -46,7 +44,6 @@ func (t *Projects) loadRelations() {
 	return
 
 }
-
 
 // AddProjects insert a new Projects into database and returns last inserted Id on success.
 func AddProjects(m *Projects) (id int64, err error) {
@@ -70,7 +67,6 @@ func GetProjectsByID(id int) (v *Projects, err error) {
 
 	return
 }
-
 
 //GetAllProjects retrieves all Projects matches certain condition. Returns empty list if no records exist
 func GetAllProjects(query map[string]string, fields []string, sortby []string, order []string,

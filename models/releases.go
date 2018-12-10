@@ -1,42 +1,36 @@
 package models
 
 import (
-	"errors"
-	"fmt"
-	"reflect"
-	"strings"
 	"time"
-
+	"strings"
+	"errors"
+	"reflect"
+	"fmt"
 	"github.com/astaxie/beego/orm"
 )
 
-//Sketchs Model
-type Sketchs struct {
-	ID          int       `orm:"column(id);auto" json:"id"`
-	Version     int       `orm:"column(version);" json:"version,omitempty"`
-	Description string    `orm:"column(description);" json:"description,omitempty"`
-	Approved    string    `orm:"column(approved);" json:"approved,omitempty"`
-	Selected    string    `orm:"column(selected);" json:"selected,omitempty"`
-	Recommended string    `orm:"column(recommended);" json:"recommended,omitempty"`
-	Inks        int       `orm:"column(inks);" json:"inks,omitempty"`
-	Author      string    `orm:"column(author);" json:"author,omitempty"`
-	Project     *Projects `orm:"column(projects_id);rel(fk)" json:"project,omitempty"`
-	Service     *Services `orm:"column(services_id);rel(fk)" json:"service,omitempty"`
-	CreatedAt   time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt   time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt   time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
+//Releases Model
+type Releases struct {
+	ID int `orm:"column(id);auto" json:"id"`
+	Name string `orm:"column(name);" json:"name,omitempty"`
+	URL string `orm:"column(url);" json:"url,omitempty"`
+	Project  *Projects `orm:"column(projects_id);rel(fk)" json:"project,omitempty"`
+	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
+
 
 //TableName define Name
-func (t *Sketchs) TableName() string {
-	return "sketchs"
+func (t *Releases) TableName() string {
+	return "releases"
 }
 
-func (t *Sketchs) loadRelations() {
+func (t *Releases) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"sketchs_files"}
+	relations := []string{}
 
 	for _, relation := range relations {
 		o.LoadRelated(t, relation)
@@ -46,17 +40,18 @@ func (t *Sketchs) loadRelations() {
 
 }
 
-// AddSketchs insert a new Sketchs into database and returns last inserted Id on success.
-func AddSketchs(m *Sketchs) (id int64, err error) {
+
+// AddReleases insert a new Releases into database and returns last inserted Id on success.
+func AddReleases(m *Releases) (id int64, err error) {
 	o := orm.NewOrm()
 
 	id, err = o.Insert(m)
 	return
 }
 
-//GetSketchsByID retrieves Sketchs by Id. Returns error if Id doesn't exist
-func GetSketchsByID(id int) (v *Sketchs, err error) {
-	v = &Sketchs{ID: id}
+//GetReleasesByID retrieves Releases by Id. Returns error if Id doesn't exist
+func GetReleasesByID(id int) (v *Releases, err error) {
+	v = &Releases{ID: id}
 
 	err = searchFK(v.TableName(), v.ID).One(v)
 
@@ -69,11 +64,12 @@ func GetSketchsByID(id int) (v *Sketchs, err error) {
 	return
 }
 
-//GetAllSketchs retrieves all Sketchs matches certain condition. Returns empty list if no records exist
-func GetAllSketchs(query map[string]string, fields []string, sortby []string, order []string,
+
+//GetAllReleases retrieves all Releases matches certain condition. Returns empty list if no records exist
+func GetAllReleases(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Sketchs))
+	qs := o.QueryTable(new(Releases))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -123,7 +119,7 @@ func GetAllSketchs(query map[string]string, fields []string, sortby []string, or
 		}
 	}
 
-	var l []Sketchs
+	var l []Releases
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).Filter("deleted_at__isnull", true).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -148,10 +144,10 @@ func GetAllSketchs(query map[string]string, fields []string, sortby []string, or
 	return nil, err
 }
 
-//UpdateSketchsByID updates Sketchs by Id and returns error if the record to be updated doesn't exist
-func UpdateSketchsByID(m *Sketchs) (err error) {
+//UpdateReleasesByID updates Releases by Id and returns error if the record to be updated doesn't exist
+func UpdateReleasesByID(m *Releases) (err error) {
 	o := orm.NewOrm()
-	v := Sketchs{ID: m.ID}
+	v := Releases{ID: m.ID}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -162,10 +158,10 @@ func UpdateSketchsByID(m *Sketchs) (err error) {
 	return
 }
 
-//DeleteSketchs deletes Sketchs by Id and returns error if the record to be deleted doesn't exist
-func DeleteSketchs(id int, trash bool) (err error) {
+//DeleteReleases deletes Releases by Id and returns error if the record to be deleted doesn't exist
+func DeleteReleases(id int, trash bool) (err error) {
 	o := orm.NewOrm()
-	v := Sketchs{ID: id}
+	v := Releases{ID: id}
 	// ascertain id exists in the database
 	err = o.Read(&v)
 
