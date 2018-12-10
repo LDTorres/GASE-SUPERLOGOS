@@ -7,7 +7,7 @@ import axios from '../../axios.js'
 const route = '/projects'
 var struct = [
   { text: 'Id', align: 'left', sortable: true, value: 'id' },
-  { text: 'Nombre', value: 'name' },
+  { text: 'Nombre del proyecto', value: 'name' },
   { text: 'Cliente', value: 'client.name' },
   { text: 'Estado', value: 'closed' },
   { text: 'Email de Notificación', value: 'email_notifications' },
