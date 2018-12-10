@@ -43,7 +43,7 @@ func init() {
 		"Max":          "The max length requred is %d",
 		"Range":        "The range of the values is %d до %d",
 		"MinSize":      "Longitud mínima permitida %d",
-		"MaxSize":      "Minimum length allowed %d",
+		"MaxSize":      "Max length allowed %d",
 		"Length":       "The length should be equal to %d",
 		"Alpha":        "Must consist of letters",
 		"Numeric":      "Must consist of numbers",
