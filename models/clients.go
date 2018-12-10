@@ -13,18 +13,18 @@ import (
 
 //Clients Model
 type Clients struct {
-	ID        int       `orm:"column(id);auto" json:"id"`
-	Name      string    `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
-	Email     string    `orm:"column(email);size(255)" json:"email,omitempty" valid:"Required; Email"`
-	Password  string    `orm:"column(password);size(255)" json:"password,omitempty" valid:"Required; MinSize(8); MaxSize(20); AlphaDash"`
-	Phone     string    `orm:"column(phone);size(255)" json:"phone,omitempty" valid:"Required"`
-	Company   string    `orm:"column(company);size(255)" json:"company,omitempty" valid:"Required"`
-	Orders    []*Orders `orm:"reverse(many)" json:"orders,omitempty"`
-	Projects    []*Projects `orm:"reverse(many)" json:"projects,omitempty"`
-	Token     string    `orm:"-" json:"token,omitempty"`
-	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID        int         `orm:"column(id);auto" json:"id"`
+	Name      string      `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Email     string      `orm:"column(email);size(255)" json:"email,omitempty" valid:"Required; Email"`
+	Password  string      `orm:"column(password);size(255)" json:"password,omitempty" valid:"Required; MinSize(8); MaxSize(20); AlphaDash"`
+	Phone     string      `orm:"column(phone);size(255)" json:"phone,omitempty" valid:"Required"`
+	Company   string      `orm:"column(company);size(255)" json:"company,omitempty" valid:"Required"`
+	Orders    []*Orders   `orm:"reverse(many)" json:"orders,omitempty"`
+	Projects  []*Projects `orm:"reverse(many)" json:"projects,omitempty"`
+	Token     string      `orm:"-" json:"token,omitempty"`
+	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName =
@@ -106,19 +106,16 @@ func CreateOrUpdateUser(m *Clients) (id int, err error) {
 
 		err = query.One(m)
 		return m.ID, err
-	} else {
-		password, err := password.Generate(5, 3, 0, false, false)
-		m.Password = password
-
-		id, err := o.Insert(m)
-
-		if err == nil {
-			m.ID = int(id)
-			return m.ID, err
-		}
 	}
 
+	password, err := password.Generate(5, 3, 0, false, false)
+	m.Password = password
+
+	newID, err := o.Insert(m)
+	m.ID = int(newID)
+
 	return m.ID, err
+
 }
 
 // GetClientsByID retrieves Clients by Id. Returns error if

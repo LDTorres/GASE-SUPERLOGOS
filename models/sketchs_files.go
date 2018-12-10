@@ -1,25 +1,25 @@
 package models
 
 import (
-	"time"
-	"strings"
 	"errors"
-	"reflect"
 	"fmt"
+	"reflect"
+	"strings"
+	"time"
+
 	"github.com/astaxie/beego/orm"
 )
 
 //SketchsFiles Model
 type SketchsFiles struct {
-	ID        int         `orm:"column(id);auto" json:"id"`
-	UUID	  string      `orm:"column(uuid);" json:"uuid,omitempty"`
-	Mimetype  string      `orm:"column(mimetype);" json:"mime_type,omitempty"`
-	Sketch  *Sketchs      `orm:"column(Skecths_id);rel(fk)" json:"skecth,omitempty"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID        int       `orm:"column(id);auto" json:"id"`
+	UUID      string    `orm:"column(uuid);" json:"uuid,omitempty"`
+	Mimetype  string    `orm:"column(mimetype);" json:"mime_type,omitempty"`
+	Sketch    *Sketchs  `orm:"column(Skecths_id);rel(fk)" json:"skecth,omitempty"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
-
 
 //TableName define Name
 func (t *SketchsFiles) TableName() string {
@@ -39,7 +39,6 @@ func (t *SketchsFiles) loadRelations() {
 	return
 
 }
-
 
 // AddSketchsFiles insert a new SketchsFiles into database and returns last inserted Id on success.
 func AddSketchsFiles(m *SketchsFiles) (id int64, err error) {
@@ -63,7 +62,6 @@ func GetSketchsFilesByID(id int) (v *SketchsFiles, err error) {
 
 	return
 }
-
 
 //GetAllSketchsFiles retrieves all SketchsFiles matches certain condition. Returns empty list if no records exist
 func GetAllSketchsFiles(query map[string]string, fields []string, sortby []string, order []string,
