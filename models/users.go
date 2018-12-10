@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 
+	"github.com/astaxie/beego"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -14,6 +15,12 @@ type User struct {
 	Password string        `orm:"-" bson:"password" json:"password,omitempty" valid:"Required"`
 	Token    string        `orm:"-" json:"token,omitempty"`
 }
+
+var (
+	defaultMail     = beego.AppConfig.String("default_user::mail")
+	defaultUsername = beego.AppConfig.String("default_user::name")
+	defaultPassword = beego.AppConfig.String("default_user::password")
+)
 
 //TableName define Name
 func (u *User) TableName() string {
@@ -165,7 +172,7 @@ func (u *User) LoginUsers() (err error) {
 	mConn := Conn()
 	defer mConn.Close()
 
-	c := mConn.DB("liderlogo_site").C(u.TableName())
+	c := mConn.DB("").C(u.TableName())
 
 	u.Password = GetMD5Hash(u.Password)
 
@@ -182,7 +189,7 @@ func (u *User) LoginUsers() (err error) {
 
 //AddDefaultDataUsers ...
 func AddDefaultDataUsers() (id *bson.ObjectId, err error) {
-	u := User{ID: bson.NewObjectId(), Name: "Liderlogo", Email: "admin@liderlogo.com", Password: "12345678"}
+	u := User{ID: bson.NewObjectId(), Name: defaultUsername, Email: defaultMail, Password: defaultPassword}
 
 	err = u.Insert()
 

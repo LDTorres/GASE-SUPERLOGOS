@@ -314,14 +314,16 @@ func (c *ClientsController) Login() {
 
 	// Validate context body
 
-	valid := validation.Validation{}
+	/*
+		valid := validation.Validation{}
 
-	b, _ := valid.Valid(&v)
+		b, _ := valid.Valid(&v)
 
-	if !b {
-		c.BadRequestErrors(valid.Errors, v.TableName())
-		return
-	}
+		if !b {
+			c.BadRequestErrors(valid.Errors, v.TableName())
+			return
+		}
+	*/
 
 	id, err := models.LoginClients(&v)
 
