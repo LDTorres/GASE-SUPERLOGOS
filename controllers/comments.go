@@ -287,3 +287,29 @@ func (c *CommentsController) Delete() {
 
 	c.ServeJSON()
 }
+
+// GetAttachmentsByUUID ...
+// @Title Get  By UUID
+// @Description Get file By UUID
+// @router /attachment/:uuid [get]
+func (c *CommentsController) GetAttachmentsByUUID() {
+
+	uuid := c.Ctx.Input.Param(":uuid")
+	if uuid == "" {
+		c.Ctx.Output.SetStatus(400)
+		c.Ctx.Output.Body([]byte{})
+		return
+	}
+
+	imageBytes, mimeType, err := files.GetFile(uuid, "project_comments")
+	if err != nil {
+		c.Ctx.Output.SetStatus(404)
+		c.Ctx.Output.Body([]byte{})
+		return
+	}
+
+	c.Ctx.Output.Header("Content-Type", mimeType)
+	c.Ctx.Output.SetStatus(200)
+	c.Ctx.Output.Body(imageBytes)
+
+}

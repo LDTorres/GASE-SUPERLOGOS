@@ -85,7 +85,7 @@ func (c *SketchsController) Post() {
 
 	for _, fileFh := range filesFh {
 
-		fileUUID, fileMime, err := files.CreateFile(fileFh, "sketchs_files")
+		fileUUID, fileMime, err := files.CreateFile(fileFh, "sketch_files")
 
 		if err != nil {
 			c.BadRequest(err)
