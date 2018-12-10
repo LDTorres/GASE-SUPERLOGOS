@@ -10,6 +10,14 @@ const app = {
       }]
     },
     {
+      title: 'Proyectos',
+      routes: [{
+        icon: 'style',
+        title: 'Listado',
+        route: 'projects'
+      }]
+    },
+    {
       title: 'Ubicaciones',
       routes: [{
         icon: 'outlined_flag',

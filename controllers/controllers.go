@@ -241,7 +241,7 @@ func addNewImage(fh *multipart.FileHeader, v *models.Portfolios, priority int) (
 
 	fileType := fh.Header["Content-Type"][0]
 
-	if fileType != "image/jpeg" && fileType != "image/png" {
+	if fileType != "image/jpeg" && fileType != "image/png" && fileType != "image/gif" {
 
 		err = errors.New("Incorrect file type, expected 'image/jpeg' or 'image/png', '" + fileType + "' type was given")
 		return

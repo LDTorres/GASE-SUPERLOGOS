@@ -32,9 +32,20 @@ func (c *SketchsController) URLMapping() {
 // @Failure 400 body is empty
 // @router / [post]
 func (c *SketchsController) Post() {
+
+	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
+
+	if err != nil {
+		c.Ctx.Output.SetStatus(413)
+		c.ServeJSON()
+		return
+	}
+
+	var r = c.Ctx.Request
+
 	var v models.Sketchs
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	err = json.Unmarshal([]byte(r.FormValue("sketchs")), &v)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -50,16 +61,16 @@ func (c *SketchsController) Post() {
 		return
 	}
 
-	/* foreignsModels := map[string]int{
-		"Currencies": v.Currency.ID,
-		"Services":   v.Service.ID,
+	foreignsModels := map[string]int{
+		"Projects": v.Project.ID,
+		"Services": v.Service.ID,
 	}
 
 	resume := c.doForeignModelsValidation(foreignsModels)
 
 	if !resume {
 		return
-	} */
+	}
 
 	_, err = models.AddSketchs(&v)
 

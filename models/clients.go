@@ -16,7 +16,7 @@ type Clients struct {
 	ID        int         `orm:"column(id);auto" json:"id"`
 	Name      string      `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Email     string      `orm:"column(email);size(255)" json:"email,omitempty" valid:"Required; Email"`
-	Password  string      `orm:"column(password);size(255)" json:"password,omitempty" valid:"Required; MinSize(8); MaxSize(20); AlphaDash"`
+	Password  string      `orm:"column(password);size(255)" json:"password,omitempty" valid:"Required"`
 	Phone     string      `orm:"column(phone);size(255)" json:"phone,omitempty" valid:"Required"`
 	Company   string      `orm:"column(company);size(255)" json:"company,omitempty" valid:"Required"`
 	Orders    []*Orders   `orm:"reverse(many)" json:"orders,omitempty"`
