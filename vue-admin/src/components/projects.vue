@@ -14,38 +14,17 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs12 md6>
-                  <v-layout wrap>
-                    <v-flex xs12>
-                      <v-text-field
-                        type="text"
-                        name="Nombre"
-                        v-validate="'required'"
-                        v-model="editedItem.name"
-                        label="Nombre del Portafolio"
-                      ></v-text-field>
-                      <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
-                    </v-flex>
-                    <v-flex xs12 v-if="editedIndex != -1">
-                      <v-checkbox
-                        label="Cerrado"
-                        v-model="editedItem.closed"
-                        name="Cerrado"
-                        v-validate="'required'"
-                      ></v-checkbox>
-                      <span v-show="errors.has('Cerrado')">{{ errors.first('Cerrado') }}</span>
-                    </v-flex>
-                    <v-flex xs12 v-if="editedIndex != -1">
-                      <v-checkbox
-                        label="Publico"
-                        v-model="editedItem.closed"
-                        name="Publico"
-                        v-validate="'required'"
-                      ></v-checkbox>
-                      <span v-show="errors.has('Publico')">{{ errors.first('Publico') }}</span>
-                    </v-flex>
-                  </v-layout>
+                <v-flex xs6>
+                  <v-text-field
+                    type="text"
+                    name="Nombre"
+                    v-validate="'required'"
+                    v-model="editedItem.name"
+                    label="Nombre del Portafolio"
+                  ></v-text-field>
+                  <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
+
                 <v-flex xs12 md6>
                   <v-layout wrap>
                     <v-flex xs12>
@@ -63,6 +42,47 @@
                       <span v-show="errors.has('Cliente')">{{ errors.first('Cliente') }}</span>
                     </v-flex>
                   </v-layout>
+                </v-flex>
+
+                <v-flex xs6>
+                  <v-text-field
+                    type="text"
+                    name="notifications_email"
+                    v-validate="'required'"
+                    v-model="editedItem.notifications_email"
+                    label="Email de notificaciones"
+                  ></v-text-field>
+                  <span v-show="errors.has('notifications_email')">{{ errors.first('notifications_email') }}</span>
+                </v-flex>
+                  
+                <v-flex xs6>
+                  <v-text-field
+                    type="text"
+                    name="agile_id"
+                    v-validate="'required'"
+                    v-model="editedItem.agile_id"
+                    label="Agile ID"
+                  ></v-text-field>
+                  <span v-show="errors.has('agile_id')">{{ errors.first('agile_id') }}</span>
+                </v-flex>
+
+                 <v-flex xs12 v-if="editedIndex == -1">
+                  <v-checkbox
+                    label="Cerrado"
+                    v-model="editedItem.closed"
+                    name="Cerrado"
+                    v-validate="'required'"
+                  ></v-checkbox>
+                  <span v-show="errors.has('Cerrado')">{{ errors.first('Cerrado') }}</span>
+                </v-flex>
+                <v-flex xs12 v-if="editedIndex != -1">
+                  <v-checkbox
+                    label="Publico"
+                    v-model="editedItem.closed"
+                    name="Publico"
+                    v-validate="'required'"
+                  ></v-checkbox>
+                  <span v-show="errors.has('Publico')">{{ errors.first('Publico') }}</span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -99,43 +119,19 @@
           :search="search"
         >
           <template slot="items" slot-scope="props">
-            <tr @click="props.expanded = !props.expanded">
+            <tr>
               <td>{{ props.item.id }}</td>
               <td>{{ props.item.name }}</td>
-              <td>{{ props.item.client }}</td>
-              <td>{{ props.item.closed }}</td>
-              <td>{{ props.item.public }}</td>
+              <td>{{ props.item.client.name }}</td>
+              <td>{{ props.item.closed ? 'Cerrado' : 'Abierto' }}</td>
+              <td>{{ props.item.notifications_email }}</td>
+              <td>{{ props.item.agile_id || 'No colocado'}}</td>
               <td class="justify-center layout px-0">
+                <v-icon title class="mr-2" color="success" @click="editItem(props.item)">link</v-icon>
                 <v-icon title class="mr-2" color="primary" @click="editItem(props.item)">edit</v-icon>
                 <v-icon title @click="deleteItem(props.item)" color="error">delete</v-icon>
               </td>
             </tr>
-          </template>
-          <template slot="expand" slot-scope="props">
-            <v-container grid-list-md text-xs-center>
-              <v-layout row wrap>
-                <!-- <v-flex
-                  v-for="(sketch, i) in props.item.sketchs" :key="img.name + i"
-                  xs3
-                >
-                  <v-card>
-                    <v-img
-                      :src="urlHosting + img.url"
-                      height="200px"
-                    ></v-img>
-                    <v-card-actions>
-                      <v-btn icon @click="imagePriority(img, i)">
-                        <v-icon>save</v-icon>
-                      </v-btn>
-                      <v-spacer></v-spacer>
-                      <v-btn icon @click="deleteImage(img, props.item, i)">
-                        <v-icon>delete</v-icon>
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-flex> -->
-              </v-layout>
-            </v-container>
           </template>
         </v-data-table>
       </v-card>
@@ -198,9 +194,9 @@
 
             if (this.editedIndex > -1) {
               params.edited = true
-              this.$store.dispatch('portfolios/updateOne', params)
+              this.$store.dispatch('updateOne', params)
             } else {
-              this.$store.dispatch('portfolios/create', params)
+              this.$store.dispatch('create', params)
             }
             this.imagePreviewUrl = ''
             this.close()
@@ -269,7 +265,7 @@
         return this.$store.state[this.viewName].struct
       },
       list () {
-        return this.$store.getters.getAll('portfolios')
+        return this.$store.getters.getAll('projects')
       },
       clients () {
         return this.$store.getters.getAll('clients')

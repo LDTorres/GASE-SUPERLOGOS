@@ -63,6 +63,46 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+		beego.ControllerComments{
+			Method: "GetAll",
+			Router: `/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+		beego.ControllerComments{
+			Method: "Put",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+		beego.ControllerComments{
+			Method: "Delete",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+		beego.ControllerComments{
+			Method: "GetAttachmentsByUUID",
+			Router: `/attachment/:uuid`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "Post",
@@ -251,6 +291,46 @@ func init() {
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+		beego.ControllerComments{
+			Method: "GetAll",
+			Router: `/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+		beego.ControllerComments{
+			Method: "Put",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+		beego.ControllerComments{
+			Method: "Delete",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+		beego.ControllerComments{
+			Method: "GetAttachmentsByUUID",
+			Router: `/attachment/:uuid`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
@@ -783,6 +863,38 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
+	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+		beego.ControllerComments{
+			Method: "GetAll",
+			Router: `/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+		beego.ControllerComments{
+			Method: "Put",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+		beego.ControllerComments{
+			Method: "Delete",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
 	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "Post",
@@ -899,6 +1011,86 @@ func init() {
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+		beego.ControllerComments{
+			Method: "GetAll",
+			Router: `/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+		beego.ControllerComments{
+			Method: "Put",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+		beego.ControllerComments{
+			Method: "Delete",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+		beego.ControllerComments{
+			Method: "NewPublicSketch",
+			Router: `/token/:token`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+		beego.ControllerComments{
+			Method: "GetAll",
+			Router: `/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+		beego.ControllerComments{
+			Method: "Put",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+		beego.ControllerComments{
+			Method: "Delete",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"delete"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+		beego.ControllerComments{
+			Method: "GetAttachmentsByUUID",
+			Router: `/attachment/:uuid`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})

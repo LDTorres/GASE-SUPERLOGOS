@@ -8,10 +8,10 @@ const route = '/projects'
 var struct = [
   { text: 'Id', align: 'left', sortable: true, value: 'id' },
   { text: 'Nombre', value: 'name' },
-  { text: 'Cliente', value: 'client' },
+  { text: 'Cliente', value: 'client.name' },
   { text: 'Estado', value: 'closed' },
-  { text: 'Publico', value: 'public' },
-  { text: 'Servicio', value: 'service.name' },
+  { text: 'Email de Notificación', value: 'email_notifications' },
+  { text: 'Agile ID', value: 'agile_id' },
   {text: 'Acciones', align: 'center', value: ''}
 ]
 const options = { headers: { 'Content-Type': 'multipart/form-data' } }

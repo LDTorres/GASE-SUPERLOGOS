@@ -21,6 +21,7 @@ import services from '@/components/services'
 import users from '@/components/users'
 import portfolios from '@/components/portfolios'
 import trashed from '@/components/trashed'
+import projects from '@/components/projects'
 
 Vue.use(Router)
 
@@ -40,6 +41,12 @@ var instance = new Router({
       path: '/orders',
       name: 'orders',
       component: orders,
+      props: (route) => ({ search: route.query.q })
+    },
+    {
+      path: '/projects',
+      name: 'projects',
+      component: projects,
       props: (route) => ({ search: route.query.q })
     },
     {

@@ -17,8 +17,9 @@ type Projects struct {
 	Closed             bool           `orm:"column(closed);" json:"closed,omitempty" valid:"Required;"`
 	AgileID            string         `orm:"column(agile_id);" json:"agile_id,omitempty"`
 	NotificationsEmail string         `orm:"column(notifications_email);" json:"notifications_email,omitempty" valid:"Required;"`
-	Client             *Clients       `orm:"column(clients_id);rel(fk)" json:"currency,omitempty"`
+	Client             *Clients       `orm:"column(clients_id);rel(fk)" json:"client,omitempty"`
 	Services           []*Services    `orm:"column(services);rel(m2m)" json:"services,omitempty"`
+	Sketchs            []*Sketchs     `orm:"reverse(many)" json:"sketchs,omitempty"`
 	Attachments        []*Attachments `orm:"reverse(many)" json:"attachments,omitempty"`
 	Token              string         `orm:"-" json:"token,omitempty"`
 	CreatedAt          time.Time      `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
@@ -35,7 +36,7 @@ func (t *Projects) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"Attachments", "Comments"}
+	relations := []string{"Attachments", "Services", "Sketchs"}
 
 	for _, relation := range relations {
 		o.LoadRelated(t, relation)
