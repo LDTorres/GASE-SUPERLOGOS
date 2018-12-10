@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GASE/controllers/services/files"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -32,9 +33,20 @@ func (c *AttachmentsController) URLMapping() {
 // @Failure 400 body is empty
 // @router / [post]
 func (c *AttachmentsController) Post() {
+
+	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
+
+	if err != nil {
+		c.Ctx.Output.SetStatus(413)
+		c.ServeJSON()
+		return
+	}
+
+	var r = c.Ctx.Request
+
 	var v models.Attachments
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	err = json.Unmarshal([]byte(r.FormValue("attachments")), &v)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -50,16 +62,31 @@ func (c *AttachmentsController) Post() {
 		return
 	}
 
-	/* foreignsModels := map[string]int{
-		"Currencies": v.Currency.ID,
-		"Services":   v.Service.ID,
+	foreignsModels := map[string]int{
+		"Projects": v.Project.ID,
 	}
 
 	resume := c.doForeignModelsValidation(foreignsModels)
 
 	if !resume {
 		return
-	} */
+	}
+
+	_, fileFh, err := c.GetFile("files")
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	fileUUID, fileMimetype, err := files.CreateFile(fileFh, "project_attachments")
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v.Mimetype = fileMimetype
+	v.UUID = fileUUID
 
 	_, err = models.AddAttachments(&v)
 

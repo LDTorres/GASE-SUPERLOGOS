@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"GASE/models"
 	"GASE/controllers/services/token"
+	"GASE/models"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -123,7 +123,7 @@ func (c ProjectsController) GenerateUploadToken() {
 		return
 	}
 
-	token, err := token.GenerateTimeToken(v.ID, "project", 1)
+	token, err := token.GenerateTimeToken(v.ID, "project", 7)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -144,7 +144,7 @@ func (c ProjectsController) GenerateUploadToken() {
 func (c ProjectsController) VerifyUploadToken() {
 
 	tokenString := c.Ctx.Input.Param(":token")
-	
+
 	_, err := token.ValidateTimeToken(tokenString, "project")
 
 	if err != nil {

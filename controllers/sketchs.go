@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"GASE/controllers/services/files"
+	"GASE/controllers/services/token"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -72,11 +74,163 @@ func (c *SketchsController) Post() {
 		return
 	}
 
+	filesFh, err := c.GetFiles("files")
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	filesData := [][]string{}
+
+	for _, fileFh := range filesFh {
+
+		fileUUID, fileMime, err := files.CreateFile(fileFh, "sketchs_files")
+
+		if err != nil {
+			c.BadRequest(err)
+			return
+		}
+
+		fileData := []string{fileUUID, fileMime}
+
+		filesData = append(filesData, fileData)
+	}
+
 	_, err = models.AddSketchs(&v)
 
 	if err != nil {
+
+		for _, fileData := range filesData {
+			files.DeleteFile(fileData[0], "sketchs_files")
+		}
+
 		c.ServeErrorJSON(err)
 		return
+	}
+
+	for _, fileData := range filesData {
+
+		sketchFile := &models.SketchsFiles{UUID: fileData[0], Mimetype: fileData[1], Sketch: &v}
+
+		_, err := models.AddSketchsFiles(sketchFile)
+
+		if err != nil {
+			c.ServeErrorJSON(err)
+			return
+		}
+	}
+
+	c.Ctx.Output.SetStatus(201)
+	c.Data["json"] = v
+
+	c.ServeJSON()
+}
+
+// NewPublicSketch ...
+// @Title New Public Sketchs
+// @router /token/:token [post]
+func (c *SketchsController) NewPublicSketch() {
+
+	tokenString := c.Ctx.Input.Param(":token")
+
+	decodedToken, err := token.ValidateTimeToken(tokenString, "project")
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	err = c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
+
+	if err != nil {
+		c.Ctx.Output.SetStatus(413)
+		c.ServeJSON()
+		return
+	}
+
+	var r = c.Ctx.Request
+
+	var v models.Sketchs
+
+	err = json.Unmarshal([]byte(r.FormValue("sketchs")), &v)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, v.TableName())
+		return
+	}
+
+	if decodedToken.ID != v.Project.ID {
+		err = errors.New("Project IDs dont matchs")
+		c.BadRequest(err)
+		return
+	}
+
+	foreignsModels := map[string]int{
+		"Projects": v.Project.ID,
+		"Services": v.Service.ID,
+	}
+
+	resume := c.doForeignModelsValidation(foreignsModels)
+
+	if !resume {
+		return
+	}
+
+	filesFh, err := c.GetFiles("sketchs_files")
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	filesData := [][]string{}
+
+	for _, fileFh := range filesFh {
+
+		fileUUID, fileMime, err := files.CreateFile(fileFh, "sketchs_files")
+
+		if err != nil {
+			c.BadRequest(err)
+			return
+		}
+
+		fileData := []string{fileUUID, fileMime}
+
+		filesData = append(filesData, fileData)
+	}
+
+	_, err = models.AddSketchs(&v)
+
+	if err != nil {
+
+		for _, fileData := range filesData {
+			files.DeleteFile(fileData[0], "sketchs_files")
+		}
+
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	for _, fileData := range filesData {
+
+		sketchFile := &models.SketchsFiles{UUID: fileData[0], Mimetype: fileData[1], Sketch: &v}
+
+		_, err := models.AddSketchsFiles(sketchFile)
+
+		if err != nil {
+			c.ServeErrorJSON(err)
+			return
+		}
 	}
 
 	c.Ctx.Output.SetStatus(201)
