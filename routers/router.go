@@ -118,6 +118,36 @@ func init() {
 			beego.NSRouter("/login", &controllers.UsersController{}, "post:Login"),
 			beego.NSRouter("/change-password", &controllers.UsersController{}, "post:ChangePassword"),
 		),
+		beego.NSNamespace("/projects",
+			beego.NSInclude(
+				&controllers.ProjectsController{},
+			),
+		),
+		beego.NSNamespace("/attachments",
+			beego.NSInclude(
+				&controllers.AttachmentsController{},
+			),
+		),
+		beego.NSNamespace("/sketchs",
+			beego.NSInclude(
+				&controllers.SketchsController{},
+			),
+		),
+		beego.NSNamespace("/sketchs-files",
+			beego.NSInclude(
+				&controllers.SketchsFilesController{},
+			),
+		),
+		beego.NSNamespace("/sketchs-files",
+			beego.NSInclude(
+				&controllers.SketchsFilesController{},
+			),
+		),
+		beego.NSNamespace("/comments",
+			beego.NSInclude(
+				&controllers.CommentsController{},
+			),
+		),
 	)
 
 	beego.AddNamespace(ns)

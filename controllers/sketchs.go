@@ -24,6 +24,7 @@ func (c *SketchsController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("NewPublicSketch", c.NewPublicSketch)
 }
 
 // Post ...

@@ -23,6 +23,7 @@ func (c *CommentsController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("GetAttachmentsByUUID", c.GetAttachmentsByUUID)
 }
 
 // Post ...
