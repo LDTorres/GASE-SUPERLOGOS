@@ -466,6 +466,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		payment := &payments.CreditCardPayment{}
 		payment.Token = tokenStripe
 		payment.Currency = countries.Currency.Iso
+		payment.Price = price
 
 		err = payment.CreditCardStripe()
 
@@ -476,7 +477,10 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		paymentID = payment.ID
 		paid = true
 
-	case "03"://transferencia bancaria
+	case "03": //transferencia bancaria
+		paid = false
+
+	case "04": //transferencia bancaria
 		paid = false
 
 	default:
