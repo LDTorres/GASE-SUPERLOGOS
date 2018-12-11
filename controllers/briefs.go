@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/globalsign/mgo/bson"
 )
@@ -50,7 +51,7 @@ func (c *BriefsController) Post() {
 		return
 	}
 
-	client.Token, err = c.GenerateToken("Client", string(clientID))
+	client.Token, err = c.GenerateToken("Client", strconv.Itoa(clientID))
 
 	if err != nil {
 		c.BadRequest(err)
