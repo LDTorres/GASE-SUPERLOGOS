@@ -36,7 +36,7 @@ func (t *Clients) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"Orders"}
+	relations := []string{"Orders", "Projects"}
 
 	for _, relation := range relations {
 		o.LoadRelated(t, relation)
