@@ -24,6 +24,7 @@ type HTMLParams struct {
 	Services   []*models.Services
 	Order      *models.Orders
 	Country    *models.Countries
+	Currency   *models.Currencies
 	Location   *models.Locations
 	Sectors    *models.Sectors
 	Activities *models.Activities
@@ -49,11 +50,12 @@ type Email struct {
 }
 
 var (
-	from    = beego.AppConfig.String("email::from")
-	name    = beego.AppConfig.String("email::name")
-	pass    = beego.AppConfig.String("email::pass")
-	host    = beego.AppConfig.String("email::host")
-	port, _ = beego.AppConfig.Int("email::port")
+	from         = beego.AppConfig.String("email::from")
+	name         = beego.AppConfig.String("email::name")
+	pass         = beego.AppConfig.String("email::pass")
+	host         = beego.AppConfig.String("email::host")
+	port, _      = beego.AppConfig.Int("email::port")
+	defaultEmail = beego.AppConfig.String("email::default")
 )
 
 var (
