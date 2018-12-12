@@ -30,6 +30,9 @@ type HTMLParams struct {
 	Gateway    *models.Gateways
 	Portfolio  *models.Portfolios
 	Brief      *models.Briefs
+	Project    *models.Projects
+	Sketch     *models.Sketchs
+	Comment    *models.Comments
 	Token      string
 }
 
@@ -55,7 +58,7 @@ var (
 
 var (
 	rootDir, _     = filepath.Abs(beego.AppConfig.String("assets::jumps"))
-	mailFolderPath = beego.AppConfig.String("assets::mailTemplatePath")
+	mailFolderPath = "controllers/services/mails/templates"
 	mailFolderDir  = rootDir + "/" + mailFolderPath
 )
 

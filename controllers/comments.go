@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"GASE/controllers/services/files"
+	"GASE/controllers/services/mails"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -94,6 +95,40 @@ func (c *CommentsController) Post() {
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
+	}
+
+	if v.Type == "client" {
+		go func() {
+
+			sketchID := v.Sketch.ID
+
+			sketch, err := models.GetSketchsByID(sketchID)
+			if err != nil {
+				return
+			}
+
+			project, err := models.GetProjectsByID(sketch.Project.ID)
+			if err != nil {
+				return
+			}
+
+			HTMLParams := &mails.HTMLParams{
+				Project: project,
+				Service: sketch.Service,
+				Sketch:  sketch,
+				Client:  project.Client,
+				Comment: &v,
+			}
+
+			mailNotification := &mails.Email{
+				To:         []string{sketch.Project.NotificationsEmail},
+				Subject:    "Comentario en Boceto #" + strconv.Itoa(sketch.Version) + " del Proyecto " + project.Name,
+				HTMLParams: HTMLParams,
+			}
+
+			mails.SendMail(mailNotification, "616")
+
+		}()
 	}
 
 	c.Ctx.Output.SetStatus(201)
