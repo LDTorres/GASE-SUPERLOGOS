@@ -37,7 +37,7 @@ func (t *Sketchs) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"sketchs_files"}
+	relations := []string{"SketchsFiles"}
 
 	for _, relation := range relations {
 		o.LoadRelated(t, relation)
