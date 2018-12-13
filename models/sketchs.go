@@ -15,9 +15,9 @@ type Sketchs struct {
 	ID           int             `orm:"column(id);auto" json:"id"`
 	Version      int             `orm:"column(version);" json:"version,omitempty"`
 	Description  string          `orm:"column(description);" json:"description,omitempty"`
-	Approved     string          `orm:"column(approved);" json:"approved,omitempty"`
-	Selected     string          `orm:"column(selected);" json:"selected,omitempty"`
-	Recommended  string          `orm:"column(recommended);" json:"recommended,omitempty"`
+	Approved     bool            `orm:"column(approved);" json:"approved"`
+	Selected     bool            `orm:"column(selected);" json:"selected"`
+	Recommended  bool            `orm:"column(recommended);" json:"recommended"`
 	Inks         int             `orm:"column(inks);" json:"inks,omitempty"`
 	Author       string          `orm:"column(author);" json:"author,omitempty"`
 	Project      *Projects       `orm:"column(projects_id);rel(fk)" json:"projects,omitempty"`
