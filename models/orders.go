@@ -236,3 +236,53 @@ func GetOrdersByClientID(clientID int) (orders []*Orders, err error) {
 	return
 
 }
+
+// GetInitialPaymentAmount ...
+func (t *Orders) GetInitialPaymentAmount() (initialPayment float32, err error) {
+
+	initialValueWithDiscount := (t.InitialValue - t.InitialDiscount)
+
+	if t.Country == nil {
+		err = errors.New("Country in order data is missing, cant calculate InitialPayment")
+		return
+	}
+
+	var (
+		taxAmount float32
+		tax       = t.Country.Tax
+	)
+
+	if tax > 0 {
+		taxAmount = initialValueWithDiscount * (tax / 100)
+	}
+
+	initialPayment = initialValueWithDiscount + taxAmount
+
+	return
+
+}
+
+// GetFinalPaymentAmount ...
+func (t *Orders) GetFinalPaymentAmount() (finalPayment float32, err error) {
+
+	finalValueWithDiscount := (t.FinalValue - t.FinalDiscount)
+
+	if t.Country == nil {
+		err = errors.New("Country in order data is missing, cant calculate FinalPayment")
+		return
+	}
+
+	var (
+		taxAmount float32
+		tax       = t.Country.Tax
+	)
+
+	if tax > 0 {
+		taxAmount = finalValueWithDiscount * (tax / 100)
+	}
+
+	finalPayment = finalValueWithDiscount + taxAmount
+
+	return
+
+}

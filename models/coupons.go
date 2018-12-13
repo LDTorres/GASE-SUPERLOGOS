@@ -15,7 +15,7 @@ type Coupons struct {
 	ID         int       `orm:"column(id);auto" json:"id"`
 	Percentage float32   `orm:"column(percentage)" json:"percentage,omitempty" valid:"Required"`
 	Code       string    `orm:"column(code);size(45)" json:"code,omitempty" valid:"Required; AlphaNumeric"`
-	Status     int8      `orm:"column(status);null" json:"status" valid:"Required"`
+	Status     bool      `orm:"column(status);null" json:"status" valid:"Required"`
 	Unique     bool      `orm:"column(unique);" json:"unique"`
 	Used       bool      `orm:"column(used);" json:"used"`
 	Orders     []*Orders `orm:"reverse(many)" json:"orders,omitempty"`

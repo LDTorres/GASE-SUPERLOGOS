@@ -179,15 +179,12 @@ func (c *OrdersController) Post() {
 		return
 	}
 
-	InitialValueWithDiscount := (Order.InitialValue - Order.InitialDiscount)
+	paymentAmount, err := Order.GetInitialPaymentAmount()
 
-	var taxAmount float32
-
-	if country.Tax > 0 {
-		taxAmount = InitialValueWithDiscount * (country.Tax / 100)
+	if err != nil {
+		c.BadRequest(err)
+		return
 	}
-
-	paymentAmount := InitialValueWithDiscount + taxAmount
 
 	paid, _, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment)
 
