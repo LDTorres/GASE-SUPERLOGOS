@@ -83,7 +83,7 @@ func (c *SketchsFilesController) Post() {
 // @Success 200 {object} models.SketchsFiles
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c SketchsFilesController) GetOne() {
+func (c *SketchsFilesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 

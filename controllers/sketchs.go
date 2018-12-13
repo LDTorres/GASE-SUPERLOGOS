@@ -247,7 +247,7 @@ func (c *SketchsController) NewPublicSketch() {
 // @Success 200 {object} models.Sketchs
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c SketchsController) GetOne() {
+func (c *SketchsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
