@@ -20,8 +20,8 @@ type Sketchs struct {
 	Recommended  string          `orm:"column(recommended);" json:"recommended,omitempty"`
 	Inks         int             `orm:"column(inks);" json:"inks,omitempty"`
 	Author       string          `orm:"column(author);" json:"author,omitempty"`
-	Project      *Projects       `orm:"column(projects_id);rel(fk)" json:"project,omitempty"`
-	Service      *Services       `orm:"column(services_id);rel(fk)" json:"service,omitempty"`
+	Project      *Projects       `orm:"column(projects_id);rel(fk)" json:"projects,omitempty"`
+	Service      *Services       `orm:"column(services_id);rel(fk)" json:"services,omitempty"`
 	SketchsFiles []*SketchsFiles `orm:"reverse(many)" json:"files,omitempty"`
 	CreatedAt    time.Time       `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt    time.Time       `orm:"column(updated_at);type(datetime);null" json:"-"`
