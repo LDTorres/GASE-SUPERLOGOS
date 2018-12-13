@@ -1,25 +1,25 @@
 package models
 
 import (
-	"time"
-	"strings"
 	"errors"
-	"reflect"
 	"fmt"
+	"reflect"
+	"strings"
+	"time"
+
 	"github.com/astaxie/beego/orm"
 )
 
 //Releases Model
 type Releases struct {
-	ID int `orm:"column(id);auto" json:"id"`
-	Name string `orm:"column(name);" json:"name,omitempty"`
-	URL string `orm:"column(url);" json:"url,omitempty"`
-	Project  *Projects `orm:"column(projects_id);rel(fk)" json:"project,omitempty"`
-	CreatedAt time.Time   `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt time.Time   `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt time.Time   `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID        int       `orm:"column(id);auto" json:"id"`
+	Name      string    `orm:"column(name);" json:"name,omitempty"`
+	URL       string    `orm:"column(url);" json:"url,omitempty"`
+	Project   *Projects `orm:"column(projects_id);rel(fk)" json:"project,omitempty"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
-
 
 //TableName define Name
 func (t *Releases) TableName() string {
@@ -39,7 +39,6 @@ func (t *Releases) loadRelations() {
 	return
 
 }
-
 
 // AddReleases insert a new Releases into database and returns last inserted Id on success.
 func AddReleases(m *Releases) (id int64, err error) {
@@ -63,7 +62,6 @@ func GetReleasesByID(id int) (v *Releases, err error) {
 
 	return
 }
-
 
 //GetAllReleases retrieves all Releases matches certain condition. Returns empty list if no records exist
 func GetAllReleases(query map[string]string, fields []string, sortby []string, order []string,

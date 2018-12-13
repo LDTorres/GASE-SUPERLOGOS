@@ -143,6 +143,11 @@ func init() {
 				&controllers.CommentsController{},
 			),
 		),
+		beego.NSNamespace("/releases",
+			beego.NSInclude(
+				&controllers.ReleasesController{},
+			),
+		),
 	)
 
 	beego.AddNamespace(ns)
