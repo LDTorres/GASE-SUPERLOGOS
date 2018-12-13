@@ -23,6 +23,7 @@ type Sketchs struct {
 	Project      *Projects       `orm:"column(projects_id);rel(fk)" json:"projects,omitempty"`
 	Service      *Services       `orm:"column(services_id);rel(fk)" json:"services,omitempty"`
 	SketchsFiles []*SketchsFiles `orm:"reverse(many)" json:"files,omitempty"`
+	Comments     []*Comments     `orm:"reverse(many)" json:"comments,omitempty"`
 	CreatedAt    time.Time       `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt    time.Time       `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt    time.Time       `orm:"column(deleted_at);type(datetime);null" json:"-"`
