@@ -148,6 +148,11 @@ func init() {
 				&controllers.ReleasesController{},
 			),
 		),
+		beego.NSNamespace("/leads",
+			beego.NSInclude(
+				&controllers.LeadsController{},
+			),
+		),
 	)
 
 	beego.AddNamespace(ns)
