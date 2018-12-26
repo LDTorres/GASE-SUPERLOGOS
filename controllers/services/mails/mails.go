@@ -16,6 +16,7 @@ import (
 	gomail "gopkg.in/gomail.v2"
 )
 
+//HTMLParams ...
 type HTMLParams struct {
 	ClientName string
 	AdminName  string
@@ -34,6 +35,7 @@ type HTMLParams struct {
 	Project    *models.Projects
 	Sketch     *models.Sketchs
 	Comment    *models.Comments
+	Lead       *models.Leads
 	Token      string
 }
 
@@ -55,7 +57,7 @@ var (
 	pass         = beego.AppConfig.String("email::pass")
 	host         = beego.AppConfig.String("email::host")
 	port, _      = beego.AppConfig.Int("email::port")
-	defaultEmail = beego.AppConfig.String("email::default")
+	DefaultEmail = beego.AppConfig.String("email::default")
 )
 
 var (

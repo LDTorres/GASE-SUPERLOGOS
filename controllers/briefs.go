@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"GASE/controllers/services/files"
+	"GASE/controllers/services/mails"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -108,6 +109,23 @@ func (c *BriefsController) Post() {
 		c.BadRequest(err)
 		return
 	}
+
+	go func() {
+
+		HTMLParams := &mails.HTMLParams{
+			Client: client,
+			Brief:  &v,
+		}
+
+		mailNotification := &mails.Email{
+			To:         []string{mails.DefaultEmail},
+			Subject:    "Nuevo Brief",
+			HTMLParams: HTMLParams,
+		}
+
+		mails.SendMail(mailNotification, "555")
+
+	}()
 
 	c.Data["json"] = v
 	c.ServeJSON()
