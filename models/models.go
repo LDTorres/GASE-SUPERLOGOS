@@ -59,7 +59,7 @@ func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	orm.RegisterDataBase("default", "mysql", mysqlConnData.user+":"+mysqlConnData.pass+"@/"+mysqlConnData.dbName+"?charset=utf8")
 
-	orm.RegisterModel(new(Activities), new(Carts), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services), new(Projects), new(Comments), new(Attachments), new(Releases), new(Sketchs), new(SketchsFiles))
+	orm.RegisterModel(new(Activities), new(Carts), new(Clients), new(Countries), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services), new(Projects), new(Comments), new(Attachments), new(Releases), new(Sketchs), new(SketchsFiles), new(Leads))
 
 	// Add defaults to database
 	count, _ := AddDefaultDataCurrencies()

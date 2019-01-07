@@ -37,22 +37,6 @@ func (c *LeadsController) URLMapping() {
 func (c *LeadsController) Post() {
 	var v models.Leads
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	valid := validation.Validation{}
-
-	b, err := valid.Valid(&v)
-
-	if !b {
-		c.BadRequestErrors(valid.Errors, "Leads")
-		return
-	}
-
 	//Validate Iso Country
 	countryIso := c.Ctx.Input.Header("Country-Iso")
 
@@ -60,6 +44,24 @@ func (c *LeadsController) Post() {
 
 	if err != nil {
 		c.ServeErrorJSON(err)
+		return
+	}
+
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v.Country = country
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, "Leads")
 		return
 	}
 

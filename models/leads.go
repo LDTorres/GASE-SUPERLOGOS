@@ -14,9 +14,9 @@ import (
 type Leads struct {
 	ID        int        `orm:"column(id);pk" json:"id"`
 	Name      string     `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
-	Email     string     `orm:"column(email);size(255)" json:"slug,omitempty" valid:"Required"`
+	Email     string     `orm:"column(email);size(255)" json:"email,omitempty" valid:"Required"`
 	Phone     string     `orm:"column(phone);size(255);null" json:"phone,omitempty"`
-	Message   string     `orm:"column(message);null" json:"message,omitempty" valid:"Required"`
+	Message   string     `orm:"column(message);" json:"message,omitempty" valid:"Required"`
 	Schedule  string     `orm:"column(schedule);size(255);null" json:"schedule,omitempty" `
 	Source    string     `orm:"column(source);size(255);null" json:"source,omitempty" `
 	Medium    string     `orm:"column(medium);size(255);null" json:"medium,omitempty" `
