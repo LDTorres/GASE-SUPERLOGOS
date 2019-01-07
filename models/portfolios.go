@@ -74,6 +74,26 @@ func GetPortfoliosByID(id int) (v *Portfolios, err error) {
 	return v, err
 }
 
+// GetPortfoliosBySlug retrieves Portfolios by Id. Returns error if Id doesn't exist
+func GetPortfoliosBySlug(slug string) (v *Portfolios, err error) {
+
+	v = &Portfolios{Slug: slug}
+
+	o := orm.NewOrm()
+
+	query = o.QueryTable(tableName).Filter("slug", slug).Filter("deleted_at__isnull", true).RelatedSel()
+
+	err = query.One(v)
+
+	if err != nil {
+		return nil, err
+	}
+
+	v.loadRelations()
+
+	return v, err
+}
+
 // GetAllPortfolios retrieves all Portfolios matches certain condition. Returns empty list if no records exist
 func GetAllPortfolios(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
