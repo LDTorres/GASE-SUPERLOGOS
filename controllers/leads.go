@@ -25,6 +25,8 @@ func (c *LeadsController) URLMapping() {
 	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+
+	c.Mapping("Newsletter", c.Newsletter)
 }
 
 // Post ...
@@ -307,4 +309,55 @@ func (c *LeadsController) RestoreFromTrash() {
 	c.Data["json"] = v
 	c.ServeJSON()
 
+}
+
+// Newsletter ...
+// @Title Newsletter
+// @Description create Newsletter
+// @Param	body		body 	Newsletter	true		"body for Leads content"
+// @Success 201 {int} Newsletter
+// @Failure 400 body is empty
+// @router /newsletter [post]
+func (c *LeadsController) Newsletter() {
+	var v models.Clients
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	//Validate Iso Country
+	countryIso := c.Ctx.Input.Header("Country-Iso")
+
+	country, err := models.GetCountriesByIso(countryIso)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	go func() {
+		HTMLParams := &mails.HTMLParams{
+			Client:  &v,
+			Country: country,
+		}
+
+		mailNotification := &mails.Email{
+			To:         []string{mails.DefaultEmail, v.Email},
+			Subject:    "Subscripción a newsletter",
+			HTMLParams: HTMLParams,
+		}
+
+		mails.SendMail(mailNotification, "002")
+	}()
+
+	c.Ctx.Output.SetStatus(200)
+	c.Data["json"] = MessageResponse{
+		Message:       "Mail Sent",
+		PrettyMessage: "Correo Enviado",
+	}
+
+	c.ServeJSON()
 }

@@ -184,7 +184,6 @@ func (c *PortfoliosController) GetOne() {
 // @Failure 403 :id is empty
 // @router /slug/:slug [get]
 func (c *PortfoliosController) GetOneBySlug() {
-
 	slug := c.Ctx.Input.Param(":slug")
 
 	CountryIso := c.Ctx.Input.Header("Country-Iso")
@@ -192,7 +191,7 @@ func (c *PortfoliosController) GetOneBySlug() {
 		CountryIso = "US"
 	}
 
-	_, err = models.GetCountriesByIso(CountryIso)
+	_, err := models.GetCountriesByIso(CountryIso)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return

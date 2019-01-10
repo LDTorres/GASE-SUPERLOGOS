@@ -81,7 +81,7 @@ func GetPortfoliosBySlug(slug string) (v *Portfolios, err error) {
 
 	o := orm.NewOrm()
 
-	query = o.QueryTable(tableName).Filter("slug", slug).Filter("deleted_at__isnull", true).RelatedSel()
+	query := o.QueryTable("portfolios").Filter("slug", slug).Filter("deleted_at__isnull", true).RelatedSel()
 
 	err = query.One(v)
 
