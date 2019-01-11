@@ -314,7 +314,7 @@ func (c *LeadsController) RestoreFromTrash() {
 // Newsletter ...
 // @Title Newsletter
 // @Description create Newsletter
-// @Param	body		body 	Newsletter	true		"body for Leads content"
+// @Param	body		body 	Newsletter	true		"body for Newsletter content"
 // @Success 201 {int} Newsletter
 // @Failure 400 body is empty
 // @router /newsletter [post]
@@ -345,7 +345,7 @@ func (c *LeadsController) Newsletter() {
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{mails.DefaultEmail, v.Email},
+			To:         []string{v.Email, mails.DefaultEmail},
 			Subject:    "Subscripción a newsletter",
 			HTMLParams: HTMLParams,
 		}

@@ -92,12 +92,14 @@ func init() {
 		fmt.Println("Added relations GatewaysCurrencies : ", count)
 	}
 
-	count, _ = AddDefaultDataServices()
-	if count > 0 {
-		fmt.Println("Added Services : ", count)
-	}
+	/*
+		count, _ = AddDefaultDataServices()
+		if count > 0 {
+			fmt.Println("Added Services : ", count)
+		}
+	*/
 
-	AddDefaultDataPrices()
+	// AddDefaultDataPrices()
 
 	AddDefaultDataUsers()
 

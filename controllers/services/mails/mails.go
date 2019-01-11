@@ -182,6 +182,8 @@ func SendMail(Email *Email, code string) (err error) {
 
 	d := gomail.NewDialer(host, port, from, pass)
 
+	// beego.Debug("DialAndSend: ", m)
+
 	err = d.DialAndSend(m)
 
 	if err != nil {
