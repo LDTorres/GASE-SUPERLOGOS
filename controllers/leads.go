@@ -349,7 +349,7 @@ func (c *LeadsController) Newsletter() {
 
 		mailNotification := &mails.Email{
 			To:         []string{mails.DefaultEmail},
-			Subject:    "Subscripción a newsletter",
+			Subject:    "Subscripción a newsletter - " + v.Email,
 			HTMLParams: HTMLParams,
 		}
 

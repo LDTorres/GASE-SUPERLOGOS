@@ -13,18 +13,16 @@
                 <th>Referencia</th>
                 <th>Precio</th>
                 <th>Pago Inicial</th>
-                <th>Estado</th>
                 <th>Método de Pago</th>
                 
             </tr>
         </thead>
         <tbody>
            <tr>
-               <td>{{.ID}}</td>
-               <td>{{.GetFinalPaymentAmount}}</td>
-               <td>{{.GetInitialPaymentAmount}}</td>
-               <td>{{.Status}}</td>
-               <td>{{.Gateway.Name}}</td>
+               <td>{{.Order.ID}}</td>
+               <td>{{.Order.GetFinalPaymentAmount}}</td>
+               <td>{{.Order.GetInitialPaymentAmount}}</td>
+               <td>{{.Order.Gateway.Name}}</td>
            </tr>
         </tbody>
     </table>

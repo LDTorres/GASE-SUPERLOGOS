@@ -47,7 +47,6 @@ func (c *BriefsController) Post() {
 	err = json.Unmarshal([]byte(r.FormValue("client")), client)
 
 	if err != nil {
-		fmt.Println("hola")
 		c.BadRequest(err)
 		return
 	}
@@ -138,7 +137,7 @@ func (c *BriefsController) Post() {
 
 		mailNotification := &mails.Email{
 			To:         []string{mails.DefaultEmail},
-			Subject:    "Nuevo Brief",
+			Subject:    "Nuevo Brief - " + string(v.ID),
 			HTMLParams: HTMLParams,
 		}
 

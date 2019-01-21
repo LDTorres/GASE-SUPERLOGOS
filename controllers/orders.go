@@ -226,7 +226,7 @@ func (c *OrdersController) Post() {
 
 		mailNotification := &mails.Email{
 			To:         []string{client.Email, mails.DefaultEmail},
-			Subject:    "Gracias por su pedido",
+			Subject:    "Gracias por su pedido - " + strconv.Itoa(Order.ID),
 			HTMLParams: HTMLParams,
 		}
 
