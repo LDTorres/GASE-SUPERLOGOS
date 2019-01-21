@@ -314,16 +314,19 @@ func (c *LeadsController) RestoreFromTrash() {
 // Newsletter ...
 // @Title Newsletter
 // @Description create Newsletter
-// @Param	body		body 	Newsletter	true		"body for Newsletter content"
-// @Success 201 {int} Newsletter
-// @Failure 400 body is empty
 // @router /newsletter [post]
 func (c *LeadsController) Newsletter() {
-	var v models.Clients
+	var v models.Leads
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	if v.Email == "" {
+		err = errors.New("email is missing")
 		c.BadRequest(err)
 		return
 	}
@@ -340,17 +343,18 @@ func (c *LeadsController) Newsletter() {
 
 	go func() {
 		HTMLParams := &mails.HTMLParams{
-			Client:  &v,
+			Lead:    &v,
 			Country: country,
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{v.Email, mails.DefaultEmail},
+			To:         []string{mails.DefaultEmail},
 			Subject:    "Subscripción a newsletter",
 			HTMLParams: HTMLParams,
 		}
 
 		mails.SendMail(mailNotification, "002")
+
 	}()
 
 	c.Ctx.Output.SetStatus(200)

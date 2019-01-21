@@ -6,6 +6,7 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -44,6 +45,24 @@ func (c *BriefsController) Post() {
 	client := &models.Clients{}
 
 	err = json.Unmarshal([]byte(r.FormValue("client")), client)
+
+	if err != nil {
+		fmt.Println("hola")
+		c.BadRequest(err)
+		return
+	}
+
+	//Validate Iso Country
+	countryIso := c.Ctx.Input.Header("Country-Iso")
+
+	country, err := models.GetCountriesByIso(countryIso)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	client.Country = country
 
 	clientID, err := models.CreateOrUpdateUser(client)
 
@@ -90,6 +109,7 @@ func (c *BriefsController) Post() {
 		Client:      client,
 		Data:        *dataBrief,
 		Attachments: filesUUIDs,
+		Country:     country,
 	}
 
 	//imagesURLs := []string{}
@@ -100,7 +120,6 @@ func (c *BriefsController) Post() {
 			c.BadRequest(err)
 			return
 		}
-
 	}
 
 	err = v.Insert()
@@ -123,7 +142,9 @@ func (c *BriefsController) Post() {
 			HTMLParams: HTMLParams,
 		}
 
-		mails.SendMail(mailNotification, "555")
+		errnBrief := mails.SendMail(mailNotification, "555")
+
+		fmt.Println(errnBrief)
 
 	}()
 
