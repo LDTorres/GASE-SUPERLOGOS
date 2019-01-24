@@ -16,6 +16,7 @@ import (
 	gomail "gopkg.in/gomail.v2"
 )
 
+//HTMLParams ...
 type HTMLParams struct {
 	ClientName string
 	AdminName  string
@@ -24,12 +25,17 @@ type HTMLParams struct {
 	Services   []*models.Services
 	Order      *models.Orders
 	Country    *models.Countries
+	Currency   *models.Currencies
 	Location   *models.Locations
 	Sectors    *models.Sectors
 	Activities *models.Activities
 	Gateway    *models.Gateways
 	Portfolio  *models.Portfolios
 	Brief      *models.Briefs
+	Project    *models.Projects
+	Sketch     *models.Sketchs
+	Comment    *models.Comments
+	Lead       *models.Leads
 	Token      string
 }
 
@@ -46,16 +52,17 @@ type Email struct {
 }
 
 var (
-	from    = beego.AppConfig.String("email::from")
-	name    = beego.AppConfig.String("email::name")
-	pass    = beego.AppConfig.String("email::pass")
-	host    = beego.AppConfig.String("email::host")
-	port, _ = beego.AppConfig.Int("email::port")
+	from         = beego.AppConfig.String("email::from")
+	name         = beego.AppConfig.String("email::name")
+	pass         = beego.AppConfig.String("email::pass")
+	host         = beego.AppConfig.String("email::host")
+	port, _      = beego.AppConfig.Int("email::port")
+	DefaultEmail = beego.AppConfig.String("email::default")
 )
 
 var (
 	rootDir, _     = filepath.Abs(beego.AppConfig.String("assets::jumps"))
-	mailFolderPath = beego.AppConfig.String("assets::mailTemplatePath")
+	mailFolderPath = "controllers/services/mails/templates"
 	mailFolderDir  = rootDir + "/" + mailFolderPath
 )
 
@@ -174,6 +181,8 @@ func SendMail(Email *Email, code string) (err error) {
 	m.SetBody("text/html", Email.html)
 
 	d := gomail.NewDialer(host, port, from, pass)
+
+	// beego.Debug("DialAndSend: ", m)
 
 	err = d.DialAndSend(m)
 

@@ -7,9 +7,10 @@ import (
 
 // Briefs model definiton.
 type Briefs struct {
-	ID          bson.ObjectId          `orm:"-" bson:"_id,omitempty"      json:"id,omitempty"`
-	Cookie      string                 `orm:"-" bson:"cookie"     json:"cookie,omitempty"`
-	Client      *Clients               `orm:"-" bson:"client"     json:"client,omitempty"`
+	ID          bson.ObjectId          `orm:"-" bson:"_id,omitempty" json:"id,omitempty"`
+	Cookie      string                 `orm:"-" bson:"cookie" json:"cookie,omitempty"`
+	Client      *Clients               `orm:"-" bson:"client" json:"client,omitempty"`
+	Country     *Countries             `orm:"-" bson:"country" json:"country,omitempty"`
 	Data        map[string]interface{} `orm:"-" bson:"data" json:"data,omitempty"`
 	Attachments []string               `orm:"-" bson:"attachments" json:"attachments,omitempty"`
 }

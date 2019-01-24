@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"GASE/controllers/services/files"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -11,30 +10,30 @@ import (
 	"github.com/astaxie/beego/validation"
 )
 
-// SketchsFilesController operations for Prices
-type SketchsFilesController struct {
+// ReleasesController operations for Prices
+type ReleasesController struct {
 	BaseController
 }
 
 // URLMapping ...
-func (c *SketchsFilesController) URLMapping() {
+func (c *ReleasesController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-	c.Mapping("GetAttachmentsByUUID", c.GetAttachmentsByUUID)
 }
 
 // Post ...
 // @Title Post
-// @Description create SketchsFiles
-// @Param	body		body 	models.SketchsFiles	true		"body for SketchsFiles content"
-// @Success 201 {object} models.SketchsFiles
+// @Description create Releases
+// @Param	body		body 	models.Releases	true		"body for Releases content"
+// @Success 201 {object} models.Releases
 // @Failure 400 body is empty
 // @router / [post]
-func (c *SketchsFilesController) Post() {
-	var v models.SketchsFiles
+func (c *ReleasesController) Post() {
+
+	var v models.Releases
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
@@ -48,22 +47,11 @@ func (c *SketchsFilesController) Post() {
 	b, err := valid.Valid(&v)
 
 	if !b {
-		c.BadRequestErrors(valid.Errors, v.TableName())
+		c.BadRequestErrors(valid.Errors, "Releases")
 		return
 	}
 
-	/* foreignsModels := map[string]int{
-		"Currencies": v.Currency.ID,
-		"Services":   v.Service.ID,
-	}
-
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
-		return
-	} */
-
-	_, err = models.AddSketchsFiles(&v)
+	_, err = models.AddReleases(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -78,12 +66,12 @@ func (c *SketchsFilesController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get SketchsFiles by id
+// @Description get Releases by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.SketchsFiles
+// @Success 200 {object} models.Releases
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *SketchsFilesController) GetOne() {
+func (c *ReleasesController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -92,7 +80,7 @@ func (c *SketchsFilesController) GetOne() {
 		return
 	}
 
-	v, err := models.GetSketchsFilesByID(id)
+	v, err := models.GetReleasesByID(id)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -104,17 +92,10 @@ func (c *SketchsFilesController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get SketchsFiles
-// @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
-// @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
-// @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
-// @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {array} models.SketchsFiles
+// @Success 200 {array} models.Releases
 // @Failure 403
 // @router / [get]
-func (c *SketchsFilesController) GetAll() {
+func (c *ReleasesController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -156,7 +137,7 @@ func (c *SketchsFilesController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllSketchsFiles(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllReleases(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -168,13 +149,10 @@ func (c *SketchsFilesController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the SketchsFiles
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.SketchsFiles	true		"body for SketchsFiles content"
-// @Success 200 {object} models.SketchsFiles
-// @Failure 403 :id is not int
+// @Success 200 {object} models.Releases
+// @Failure 400 :id is not int
 // @router /:id [put]
-func (c *SketchsFilesController) Put() {
+func (c *ReleasesController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -183,7 +161,7 @@ func (c *SketchsFilesController) Put() {
 		return
 	}
 
-	v := models.SketchsFiles{ID: id}
+	v := models.Releases{ID: id}
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -200,18 +178,7 @@ func (c *SketchsFilesController) Put() {
 		return
 	}
 
-	/* foreignsModels := map[string]int{
-		"Currencies": v.Currency.ID,
-		"Services":   v.Service.ID,
-	}
-
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
-		return
-	} */
-
-	err = models.UpdateSketchsFilesByID(&v)
+	err = models.UpdateReleasesByID(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -228,12 +195,11 @@ func (c *SketchsFilesController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the SketchsFiles
-// @Param	id		path 	string	true		"The id you want to delete"
+// @Description delete the Releases
 // @Success 200 {string} delete success!
-// @Failure 403 id is empty
+// @Failure 400 id is empty
 // @router /:id [delete]
-func (c *SketchsFilesController) Delete() {
+func (c *ReleasesController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -248,7 +214,7 @@ func (c *SketchsFilesController) Delete() {
 		trash = true
 	}
 
-	err = models.DeleteSketchsFiles(id, trash)
+	err = models.DeleteReleases(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -261,30 +227,4 @@ func (c *SketchsFilesController) Delete() {
 	}
 
 	c.ServeJSON()
-}
-
-// GetAttachmentsByUUID ...
-// @Title Get  By UUID
-// @Description Get file By UUID
-// @router /attachment/:uuid [get]
-func (c *SketchsFilesController) GetAttachmentsByUUID() {
-
-	uuid := c.Ctx.Input.Param(":uuid")
-	if uuid == "" {
-		c.Ctx.Output.SetStatus(400)
-		c.Ctx.Output.Body([]byte{})
-		return
-	}
-
-	imageBytes, mimeType, err := files.GetFile(uuid, "sketch_files")
-	if err != nil {
-		c.Ctx.Output.SetStatus(404)
-		c.Ctx.Output.Body([]byte{})
-		return
-	}
-
-	c.Ctx.Output.Header("Content-Type", mimeType)
-	c.Ctx.Output.SetStatus(200)
-	c.Ctx.Output.Body(imageBytes)
-
 }

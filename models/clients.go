@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-	"github.com/sethvargo/go-password/password"
 )
 
 //Clients Model
@@ -19,6 +18,7 @@ type Clients struct {
 	Password  string      `orm:"column(password);size(255)" json:"password,omitempty" valid:"Required"`
 	Phone     string      `orm:"column(phone);size(255)" json:"phone,omitempty" valid:"Required"`
 	Company   string      `orm:"column(company);size(255)" json:"company,omitempty" valid:"Required"`
+	Country   *Countries  `orm:"column(countries_id);rel(fk)" json:"countries,omitempty" valid:"Required"`
 	Orders    []*Orders   `orm:"reverse(many)" json:"orders,omitempty"`
 	Projects  []*Projects `orm:"reverse(many)" json:"projects,omitempty"`
 	Token     string      `orm:"-" json:"token,omitempty"`
@@ -36,7 +36,7 @@ func (t *Clients) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"Orders"}
+	relations := []string{"Orders", "Projects"}
 
 	for _, relation := range relations {
 		o.LoadRelated(t, relation)
@@ -108,8 +108,8 @@ func CreateOrUpdateUser(m *Clients) (id int, err error) {
 		return m.ID, err
 	}
 
-	password, err := password.Generate(5, 3, 0, false, false)
-	m.Password = password
+	//password, err := password.Generate(5, 3, 0, false, false)
+	m.Password = GetMD5Hash(m.Phone)
 
 	newID, err := o.Insert(m)
 	m.ID = int(newID)

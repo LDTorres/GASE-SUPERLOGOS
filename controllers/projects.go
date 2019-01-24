@@ -84,7 +84,7 @@ func (c *ProjectsController) Post() {
 // @Success 200 {object} models.Projects
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c ProjectsController) GetOne() {
+func (c *ProjectsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -108,7 +108,7 @@ func (c ProjectsController) GetOne() {
 // @Success 200 {object} models.Projects
 // @Failure 403 :id is empty
 // @router /:id/token [post]
-func (c ProjectsController) GenerateUploadToken() {
+func (c *ProjectsController) GenerateUploadToken() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -141,7 +141,7 @@ func (c ProjectsController) GenerateUploadToken() {
 // @Success 200 {object} models.Projects
 // @Failure 403 :id is empty
 // @router /token/:token [get]
-func (c ProjectsController) VerifyUploadToken() {
+func (c *ProjectsController) VerifyUploadToken() {
 
 	tokenString := c.Ctx.Input.Param(":token")
 

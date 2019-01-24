@@ -2,10 +2,13 @@ package controllers
 
 import (
 	"GASE/controllers/services/files"
+	"GASE/controllers/services/mails"
 	"GASE/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/globalsign/mgo/bson"
 )
@@ -43,6 +46,23 @@ func (c *BriefsController) Post() {
 
 	err = json.Unmarshal([]byte(r.FormValue("client")), client)
 
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	//Validate Iso Country
+	countryIso := c.Ctx.Input.Header("Country-Iso")
+
+	country, err := models.GetCountriesByIso(countryIso)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	client.Country = country
+
 	clientID, err := models.CreateOrUpdateUser(client)
 
 	if err != nil {
@@ -50,7 +70,7 @@ func (c *BriefsController) Post() {
 		return
 	}
 
-	client.Token, err = c.GenerateToken("Client", string(clientID))
+	client.Token, err = c.GenerateToken("Client", strconv.Itoa(clientID))
 
 	if err != nil {
 		c.BadRequest(err)
@@ -88,6 +108,7 @@ func (c *BriefsController) Post() {
 		Client:      client,
 		Data:        *dataBrief,
 		Attachments: filesUUIDs,
+		Country:     country,
 	}
 
 	//imagesURLs := []string{}
@@ -98,7 +119,6 @@ func (c *BriefsController) Post() {
 			c.BadRequest(err)
 			return
 		}
-
 	}
 
 	err = v.Insert()
@@ -107,6 +127,25 @@ func (c *BriefsController) Post() {
 		c.BadRequest(err)
 		return
 	}
+
+	go func() {
+
+		HTMLParams := &mails.HTMLParams{
+			Client: client,
+			Brief:  &v,
+		}
+
+		mailNotification := &mails.Email{
+			To:         []string{mails.DefaultEmail},
+			Subject:    "Nuevo Brief - " + string(v.ID),
+			HTMLParams: HTMLParams,
+		}
+
+		errnBrief := mails.SendMail(mailNotification, "555")
+
+		fmt.Println(errnBrief)
+
+	}()
 
 	c.Data["json"] = v
 	c.ServeJSON()

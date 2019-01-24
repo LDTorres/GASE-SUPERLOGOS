@@ -15,7 +15,7 @@ type SketchsFiles struct {
 	ID        int       `orm:"column(id);auto" json:"id"`
 	UUID      string    `orm:"column(uuid);" json:"uuid,omitempty"`
 	Mimetype  string    `orm:"column(mimetype);" json:"mime_type,omitempty"`
-	Sketch    *Sketchs  `orm:"column(Skecths_id);rel(fk)" json:"skecth,omitempty"`
+	Sketch    *Sketchs  `orm:"column(sketchs_id);rel(fk)" json:"skecths,omitempty"`
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt time.Time `orm:"column(deleted_at);type(datetime);null" json:"-"`

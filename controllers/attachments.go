@@ -109,7 +109,7 @@ func (c *AttachmentsController) Post() {
 // @Success 200 {object} models.Attachments
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c AttachmentsController) GetOne() {
+func (c *AttachmentsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 

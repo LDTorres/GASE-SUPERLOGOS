@@ -21,6 +21,7 @@ type Projects struct {
 	Services           []*Services    `orm:"column(services);rel(m2m)" json:"services,omitempty"`
 	Sketchs            []*Sketchs     `orm:"reverse(many)" json:"sketchs,omitempty"`
 	Attachments        []*Attachments `orm:"reverse(many)" json:"attachments,omitempty"`
+	Releases           []*Releases    `orm:"reverse(many)" json:"releases,omitempty"`
 	Token              string         `orm:"-" json:"token,omitempty"`
 	CreatedAt          time.Time      `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt          time.Time      `orm:"column(updated_at);type(datetime);null" json:"-"`
@@ -36,7 +37,7 @@ func (t *Projects) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"Attachments", "Services", "Sketchs"}
+	relations := []string{"Attachments", "Services", "Sketchs", "Releases"}
 
 	for _, relation := range relations {
 		o.LoadRelated(t, relation)

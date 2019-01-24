@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"GASE/controllers/services/files"
 	"GASE/controllers/services/mails"
 	"GASE/models"
 	"encoding/json"
@@ -12,124 +11,85 @@ import (
 	"github.com/astaxie/beego/validation"
 )
 
-// CommentsController operations for Prices
-type CommentsController struct {
+// LeadsController operations for Leads
+type LeadsController struct {
 	BaseController
 }
 
 // URLMapping ...
-func (c *CommentsController) URLMapping() {
+func (c *LeadsController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetAllFromTrash", c.GetAllFromTrash)
+	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-	c.Mapping("GetAttachmentsByUUID", c.GetAttachmentsByUUID)
+
+	c.Mapping("Newsletter", c.Newsletter)
 }
 
 // Post ...
 // @Title Post
-// @Description create Comments
-// @Param	body		body 	models.Comments	true		"body for Comments content"
-// @Success 201 {object} models.Comments
+// @Description create Leads
+// @Param	body		body 	models.Leads	true		"body for Leads content"
+// @Success 201 {int} models.Leads
 // @Failure 400 body is empty
 // @router / [post]
-func (c *CommentsController) Post() {
+func (c *LeadsController) Post() {
+	var v models.Leads
 
-	err := c.Ctx.Input.ParseFormOrMulitForm(128 << 20)
+	//Validate Iso Country
+	countryIso := c.Ctx.Input.Header("Country-Iso")
 
-	if err != nil {
-		c.Ctx.Output.SetStatus(413)
-		c.ServeJSON()
-		return
-	}
-
-	var r = c.Ctx.Request
-
-	var v models.Comments
-
-	err = json.Unmarshal([]byte(r.FormValue("comments")), &v)
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	valid := validation.Validation{}
-
-	b, err := valid.Valid(&v)
-
-	if !b {
-		c.BadRequestErrors(valid.Errors, v.TableName())
-		return
-	}
-
-	foreignsModels := map[string]int{
-		"Sketchs": v.Sketch.ID,
-	}
-
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
-		return
-	}
-
-	_, fileFh, err := c.GetFile("files")
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	fileUUID, fileMimetype, err := files.CreateFile(fileFh, "project_comments")
-
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
-
-	v.AttachmentMime = fileMimetype
-	v.AttachmentUUID = fileUUID
-
-	_, err = models.AddComments(&v)
+	country, err := models.GetCountriesByIso(countryIso)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
 	}
 
-	if v.Type == "client" {
-		go func() {
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
-			sketchID := v.Sketch.ID
-
-			sketch, err := models.GetSketchsByID(sketchID)
-			if err != nil {
-				return
-			}
-
-			project, err := models.GetProjectsByID(sketch.Project.ID)
-			if err != nil {
-				return
-			}
-
-			HTMLParams := &mails.HTMLParams{
-				Project: project,
-				Service: sketch.Service,
-				Sketch:  sketch,
-				Client:  project.Client,
-				Comment: &v,
-			}
-
-			mailNotification := &mails.Email{
-				To:         []string{sketch.Project.NotificationsEmail},
-				Subject:    "Comentario en Boceto #" + strconv.Itoa(sketch.Version) + " del Proyecto " + project.Name,
-				HTMLParams: HTMLParams,
-			}
-
-			mails.SendMail(mailNotification, "616")
-
-		}()
+	if err != nil {
+		c.BadRequest(err)
+		return
 	}
+
+	v.Country = country
+
+	valid := validation.Validation{}
+
+	b, err := valid.Valid(&v)
+
+	if !b {
+		c.BadRequestErrors(valid.Errors, "Leads")
+		return
+	}
+
+	_, err = models.AddLeads(&v)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	go func() {
+
+		HTMLParams := &mails.HTMLParams{
+			Lead:    &v,
+			Country: country,
+		}
+
+		mailNotification := &mails.Email{
+			To:         []string{mails.DefaultEmail},
+			Subject:    "Nuevo Lead",
+			HTMLParams: HTMLParams,
+		}
+
+		mails.SendMail(mailNotification, "777")
+
+	}()
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = v
@@ -139,12 +99,12 @@ func (c *CommentsController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Comments by id
+// @Description get Leads by id
 // @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Comments
+// @Success 200 {object} models.Leads
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *CommentsController) GetOne() {
+func (c *LeadsController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -153,7 +113,7 @@ func (c *CommentsController) GetOne() {
 		return
 	}
 
-	v, err := models.GetCommentsByID(id)
+	v, err := models.GetLeadsByID(id)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -165,17 +125,17 @@ func (c *CommentsController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get Comments
+// @Description get Leads
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.Prices
+// @Success 200 {object} models.Leads
 // @Failure 403
 // @router / [get]
-func (c *CommentsController) GetAll() {
+func (c *LeadsController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -217,7 +177,7 @@ func (c *CommentsController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllComments(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllLeads(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return
@@ -229,13 +189,13 @@ func (c *CommentsController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the Comments
+// @Description update the Leads
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Comments	true		"body for Comments content"
-// @Success 200 {object} models.Comments
+// @Param	body		body 	models.Leads	true		"body for Leads content"
+// @Success 200 {object} models.Leads
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *CommentsController) Put() {
+func (c *LeadsController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -244,7 +204,7 @@ func (c *CommentsController) Put() {
 		return
 	}
 
-	v := models.Comments{ID: id}
+	v := models.Leads{ID: id}
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &v)
 
 	if err != nil {
@@ -252,27 +212,7 @@ func (c *CommentsController) Put() {
 		return
 	}
 
-	valid := validation.Validation{}
-
-	b, err := valid.Valid(&v)
-
-	if !b {
-		c.BadRequestErrors(valid.Errors, v.TableName())
-		return
-	}
-
-	/* foreignsModels := map[string]int{
-		"Currencies": v.Currency.ID,
-		"Services":   v.Service.ID,
-	}
-
-	resume := c.doForeignModelsValidation(foreignsModels)
-
-	if !resume {
-		return
-	} */
-
-	err = models.UpdateCommentsByID(&v)
+	err = models.UpdateLeadsByID(&v)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -289,12 +229,12 @@ func (c *CommentsController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the Comments
+// @Description delete the Leads
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *CommentsController) Delete() {
+func (c *LeadsController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, err := strconv.Atoi(idStr)
 
@@ -309,7 +249,7 @@ func (c *CommentsController) Delete() {
 		trash = true
 	}
 
-	err = models.DeleteComments(id, trash)
+	err = models.DeleteLeads(id, trash)
 
 	if err != nil {
 		c.ServeErrorJSON(err)
@@ -324,28 +264,104 @@ func (c *CommentsController) Delete() {
 	c.ServeJSON()
 }
 
-// GetAttachmentsByUUID ...
-// @Title Get  By UUID
-// @Description Get file By UUID
-// @router /attachment/:uuid [get]
-func (c *CommentsController) GetAttachmentsByUUID() {
+// GetAllFromTrash ...
+// @Title Get All From Trash
+// @Description Get All From Trash
+// @router /trashed [get]
+func (c *LeadsController) GetAllFromTrash() {
 
-	uuid := c.Ctx.Input.Param(":uuid")
-	if uuid == "" {
-		c.Ctx.Output.SetStatus(400)
-		c.Ctx.Output.Body([]byte{})
-		return
-	}
+	v, err := models.GetLeadsFromTrash()
 
-	imageBytes, mimeType, err := files.GetFile(uuid, "project_comments")
 	if err != nil {
-		c.Ctx.Output.SetStatus(404)
-		c.Ctx.Output.Body([]byte{})
+		c.ServeErrorJSON(err)
 		return
 	}
 
-	c.Ctx.Output.Header("Content-Type", mimeType)
-	c.Ctx.Output.SetStatus(200)
-	c.Ctx.Output.Body(imageBytes)
+	c.Data["json"] = v
+	c.ServeJSON()
 
+}
+
+// RestoreFromTrash ...
+// @Title Restore From Trash
+// @Description Restore From Trash
+// @router /:id/restore [put]
+func (c *LeadsController) RestoreFromTrash() {
+
+	idStr := c.Ctx.Input.Param(":id")
+
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	v := &models.Leads{ID: id}
+
+	err = models.RestoreFromTrash(v.TableName(), v.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = v
+	c.ServeJSON()
+
+}
+
+// Newsletter ...
+// @Title Newsletter
+// @Description create Newsletter
+// @router /newsletter [post]
+func (c *LeadsController) Newsletter() {
+	var v models.Leads
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	if v.Email == "" {
+		err = errors.New("email is missing")
+		c.BadRequest(err)
+		return
+	}
+
+	//Validate Iso Country
+	countryIso := c.Ctx.Input.Header("Country-Iso")
+
+	country, err := models.GetCountriesByIso(countryIso)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	go func() {
+		HTMLParams := &mails.HTMLParams{
+			Lead:    &v,
+			Country: country,
+		}
+
+		mailNotification := &mails.Email{
+			To:         []string{mails.DefaultEmail},
+			Subject:    "Subscripción a newsletter - " + v.Email,
+			HTMLParams: HTMLParams,
+		}
+
+		mails.SendMail(mailNotification, "002")
+
+	}()
+
+	c.Ctx.Output.SetStatus(200)
+	c.Data["json"] = MessageResponse{
+		Message:       "Mail Sent",
+		PrettyMessage: "Correo Enviado",
+	}
+
+	c.ServeJSON()
 }

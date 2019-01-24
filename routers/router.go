@@ -138,14 +138,19 @@ func init() {
 				&controllers.SketchsFilesController{},
 			),
 		),
-		beego.NSNamespace("/sketchs-files",
-			beego.NSInclude(
-				&controllers.SketchsFilesController{},
-			),
-		),
 		beego.NSNamespace("/comments",
 			beego.NSInclude(
 				&controllers.CommentsController{},
+			),
+		),
+		beego.NSNamespace("/releases",
+			beego.NSInclude(
+				&controllers.ReleasesController{},
+			),
+		),
+		beego.NSNamespace("/leads",
+			beego.NSInclude(
+				&controllers.LeadsController{},
 			),
 		),
 	)

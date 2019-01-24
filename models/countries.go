@@ -24,6 +24,7 @@ type Countries struct {
 	ShowPortfolios bool         `orm:"column(show_portfolios);type(boolean);1" json:"show_portfolios" valid:"Required"`
 	Currency       *Currencies  `orm:"column(currency_id);rel(fk)" json:"currency,omitempty"`
 	Locations      []*Locations `orm:"reverse(many)" json:"locations,omitempty"`
+	Clients        []*Clients   `orm:"reverse(many)" json:"clients,omitempty"`
 	CreatedAt      time.Time    `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt      time.Time    `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt      time.Time    `orm:"column(deleted_at);type(datetime);null"  json:"-"`

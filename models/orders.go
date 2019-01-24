@@ -12,21 +12,22 @@ import (
 
 //Orders Model
 type Orders struct {
-	ID           int        `orm:"column(id);auto" json:"id"`
-	InitialValue float32    `orm:"column(initial_value)" json:"initial_value,omitempty" valid:"Required"`
-	FinalValue   float32    `orm:"column(final_value)" json:"final_value,omitempty" valid:"Required"`
-	Discount     float32    `orm:"column(discount)" json:"discount,omitempty"`
-	Status       string     `orm:"column(status)" json:"status,omitempty" valid:"Required; Alpha"`
-	BriefCookie  string     `orm:"column(brief_cookie);null" json:"brief_cookie,omitempty"`
-	Client       *Clients   `orm:"column(clients_id);rel(fk)" json:"clients,omitempty" valid:"Required;"`
-	Gateway      *Gateways  `orm:"column(gateways_id);rel(fk)" json:"gateways,omitempty" valid:"Required;"`
-	Prices       []*Prices  `orm:"rel(m2m)" json:"prices,omitempty"`
-	Coupons      []*Coupons `orm:"rel(m2m)" json:"coupons,omitempty"`
-	Country      *Countries `orm:"column(countries_id);rel(fk)" json:"countries,omitempty"`
-	PaymentID    string     `orm:"column(payment_id)" json:"payment_id,omitempty"`
-	CreatedAt    time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt    time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt    time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
+	ID              int        `orm:"column(id);auto" json:"id"`
+	InitialValue    float32    `orm:"column(initial_value)" json:"initial_value,omitempty" valid:"Required"`
+	FinalValue      float32    `orm:"column(final_value)" json:"final_value,omitempty" valid:"Required"`
+	InitialDiscount float32    `orm:"column(initial_discount)" json:"initial_discount,omitempty"`
+	FinalDiscount   float32    `orm:"column(final_discount)" json:"final_discount,omitempty"`
+	Status          string     `orm:"column(status)" json:"status,omitempty" valid:"Required; Alpha"`
+	BriefCookie     string     `orm:"column(brief_cookie);null" json:"brief_cookie,omitempty"`
+	Client          *Clients   `orm:"column(clients_id);rel(fk)" json:"clients,omitempty" valid:"Required;"`
+	Gateway         *Gateways  `orm:"column(gateways_id);rel(fk)" json:"gateways,omitempty" valid:"Required;"`
+	Prices          []*Prices  `orm:"rel(m2m)" json:"prices,omitempty"`
+	Coupons         []*Coupons `orm:"rel(m2m)" json:"coupons,omitempty"`
+	Country         *Countries `orm:"column(countries_id);rel(fk)" json:"countries,omitempty"`
+	PaymentID       string     `orm:"column(payment_id)" json:"payment_id,omitempty"`
+	CreatedAt       time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt       time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt       time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName define Name
@@ -191,23 +192,96 @@ func DeleteOrders(id int, trash bool) (err error) {
 }
 
 //GetOrdersFromTrash return Orders soft Deleted
-func GetOrdersFromTrash() (locations []*Orders, err error) {
+func GetOrdersFromTrash() (orders []*Orders, err error) {
 
 	o := orm.NewOrm()
 
 	var v []*Orders
 
-	_, err = o.QueryTable("locations").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+	_, err = o.QueryTable("orders").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
 
 	if err != nil {
 		return
 	}
 
-	for _, currency := range v {
-		currency.loadRelations()
+	for _, order := range v {
+		order.loadRelations()
 	}
 
-	locations = v
+	orders = v
+
+	return
+
+}
+
+//GetOrdersByClientID return Orders from one Client
+func GetOrdersByClientID(clientID int) (orders []*Orders, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Orders
+
+	_, err = o.QueryTable("orders").Filter("deleted_at__isnull", true).Filter("clients_id", clientID).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	for _, order := range v {
+		order.loadRelations()
+	}
+
+	orders = v
+
+	return
+
+}
+
+// GetInitialPaymentAmount ...
+func (t *Orders) GetInitialPaymentAmount() (initialPayment float32, err error) {
+
+	initialValueWithDiscount := (t.InitialValue - t.InitialDiscount)
+
+	if t.Country == nil {
+		err = errors.New("Country in order data is missing, cant calculate InitialPayment")
+		return
+	}
+
+	var (
+		taxAmount float32
+		tax       = t.Country.Tax
+	)
+
+	if tax > 0 {
+		taxAmount = initialValueWithDiscount * (tax / 100)
+	}
+
+	initialPayment = initialValueWithDiscount + taxAmount
+
+	return
+
+}
+
+// GetFinalPaymentAmount ...
+func (t *Orders) GetFinalPaymentAmount() (finalPayment float32, err error) {
+
+	finalValueWithDiscount := (t.FinalValue - t.FinalDiscount)
+
+	if t.Country == nil {
+		err = errors.New("Country in order data is missing, cant calculate FinalPayment")
+		return
+	}
+
+	var (
+		taxAmount float32
+		tax       = t.Country.Tax
+	)
+
+	if tax > 0 {
+		taxAmount = finalValueWithDiscount * (tax / 100)
+	}
+
+	finalPayment = finalValueWithDiscount + taxAmount
 
 	return
 

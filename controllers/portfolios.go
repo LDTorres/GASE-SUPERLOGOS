@@ -20,6 +20,7 @@ type PortfoliosController struct {
 func (c *PortfoliosController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetOneBySlug", c.GetOneBySlug)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("GetAllFromTrash", c.GetAllFromTrash)
 	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
@@ -164,6 +165,39 @@ func (c *PortfoliosController) GetOne() {
 	}
 
 	v, err := models.GetPortfoliosByID(id)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	v.OrderImagesByPriority()
+
+	c.Data["json"] = v
+	c.ServeJSON()
+}
+
+// GetOneBySlug ...
+// @Title GetOneBySlug
+// @Description GetOneBySlug
+// @Param	slug		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Portfolios
+// @Failure 403 :id is empty
+// @router /slug/:slug [get]
+func (c *PortfoliosController) GetOneBySlug() {
+	slug := c.Ctx.Input.Param(":slug")
+
+	CountryIso := c.Ctx.Input.Header("Country-Iso")
+	if CountryIso == "" {
+		CountryIso = "US"
+	}
+
+	_, err := models.GetCountriesByIso(CountryIso)
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	v, err := models.GetPortfoliosBySlug(slug)
 	if err != nil {
 		c.ServeErrorJSON(err)
 		return

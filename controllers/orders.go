@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"GASE/controllers/services/mails"
 	"GASE/models"
 	"encoding/json"
 	"errors"
@@ -24,6 +25,7 @@ func (c *OrdersController) URLMapping() {
 	c.Mapping("RestoreFromTrash", c.RestoreFromTrash)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("GetSelf", c.GetSelf)
 }
 
 // Post ...
@@ -80,14 +82,20 @@ func (c *OrdersController) Post() {
 		return
 	}
 
-	Token, err := strconv.Atoi(decodedToken.ID)
+	clientID, err := strconv.Atoi(decodedToken.ID)
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
-	client := &models.Clients{ID: Token}
+	client, err := models.GetClientsByID(clientID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
 	Order.Client = client
 	Order.Country = country
 
@@ -132,7 +140,8 @@ func (c *OrdersController) Post() {
 		couponsRelationsIDs = append(couponsRelationsIDs, el.ID)
 
 		// Getting the discount
-		Order.Discount = (Order.InitialValue * el.Percentage) / 100
+		Order.InitialDiscount = (Order.InitialValue * el.Percentage) / 100
+		Order.FinalDiscount = (Order.FinalDiscount * el.Percentage) / 100
 	}
 
 	Order.Status = "PENDING"
@@ -170,7 +179,12 @@ func (c *OrdersController) Post() {
 		return
 	}
 
-	paymentAmount := Order.InitialValue - Order.Discount
+	paymentAmount, err := Order.GetInitialPaymentAmount()
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
 
 	paid, _, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment)
 
@@ -198,6 +212,27 @@ func (c *OrdersController) Post() {
 			return
 		}
 	}
+
+	go func() {
+
+		HTMLParams := &mails.HTMLParams{
+			Client:   client,
+			Order:    Order,
+			Gateway:  gateway,
+			Country:  country,
+			Currency: country.Currency,
+			Services: cart.Services,
+		}
+
+		mailNotification := &mails.Email{
+			To:         []string{client.Email, mails.DefaultEmail},
+			Subject:    "Gracias por su pedido - " + strconv.Itoa(Order.ID),
+			HTMLParams: HTMLParams,
+		}
+
+		mails.SendMail(mailNotification, "001")
+
+	}()
 
 	c.Ctx.Output.SetStatus(201)
 	c.Data["json"] = Order
@@ -228,6 +263,46 @@ func (c *OrdersController) GetOne() {
 	}
 
 	c.Data["json"] = v
+	c.ServeJSON()
+}
+
+// GetSelf ...
+// @Title Get Self
+// @router /self [get]
+func (c *OrdersController) GetSelf() {
+
+	token := c.Ctx.Input.Header("Authorization")
+
+	//Validate Client
+	decodedToken, err := VerifyToken(token, "Client")
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	clientID, err := strconv.Atoi(decodedToken.ID)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	client, err := models.GetClientsByID(clientID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	orders, err := models.GetOrdersByClientID(client.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	c.Data["json"] = orders
 	c.ServeJSON()
 }
 

@@ -10,35 +10,33 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-//Sketchs Model
-type Sketchs struct {
-	ID           int             `orm:"column(id);auto" json:"id"`
-	Version      int             `orm:"column(version);" json:"version,omitempty"`
-	Description  string          `orm:"column(description);" json:"description,omitempty"`
-	Approved     bool            `orm:"column(approved);" json:"approved"`
-	Selected     bool            `orm:"column(selected);" json:"selected"`
-	Recommended  bool            `orm:"column(recommended);" json:"recommended"`
-	Inks         int             `orm:"column(inks);" json:"inks,omitempty"`
-	Author       string          `orm:"column(author);" json:"author,omitempty"`
-	Project      *Projects       `orm:"column(projects_id);rel(fk)" json:"projects,omitempty"`
-	Service      *Services       `orm:"column(services_id);rel(fk)" json:"services,omitempty"`
-	SketchsFiles []*SketchsFiles `orm:"reverse(many)" json:"files,omitempty"`
-	Comments     []*Comments     `orm:"reverse(many)" json:"comments,omitempty"`
-	CreatedAt    time.Time       `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
-	UpdatedAt    time.Time       `orm:"column(updated_at);type(datetime);null" json:"-"`
-	DeletedAt    time.Time       `orm:"column(deleted_at);type(datetime);null" json:"-"`
+//Leads model
+type Leads struct {
+	ID        int        `orm:"column(id);pk" json:"id"`
+	Name      string     `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
+	Email     string     `orm:"column(email);size(255)" json:"email,omitempty" valid:"Required"`
+	Phone     string     `orm:"column(phone);size(255);null" json:"phone,omitempty"`
+	Message   string     `orm:"column(message);" json:"message,omitempty" valid:"Required"`
+	Schedule  string     `orm:"column(schedule);size(255);null" json:"schedule,omitempty" `
+	Source    string     `orm:"column(source);size(255);null" json:"source,omitempty" `
+	Medium    string     `orm:"column(medium);size(255);null" json:"medium,omitempty" `
+	Campaign  string     `orm:"column(campaign);size(255);null" json:"campaign,omitempty" `
+	Country   *Countries `orm:"column(countries_id);rel(fk)" json:"countries,omitempty"`
+	CreatedAt time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
+	UpdatedAt time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
+	DeletedAt time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
 }
 
 //TableName define Name
-func (t *Sketchs) TableName() string {
-	return "sketchs"
+func (t *Leads) TableName() string {
+	return "leads"
 }
 
-func (t *Sketchs) loadRelations() {
+func (t *Leads) loadRelations() {
 
 	o := orm.NewOrm()
 
-	relations := []string{"SketchsFiles", "Comments"}
+	relations := []string{}
 
 	for _, relation := range relations {
 		o.LoadRelated(t, relation)
@@ -48,17 +46,24 @@ func (t *Sketchs) loadRelations() {
 
 }
 
-// AddSketchs insert a new Sketchs into database and returns last inserted Id on success.
-func AddSketchs(m *Sketchs) (id int64, err error) {
+// AddLeads insert a new Leads into database and returns last inserted Id on success.
+func AddLeads(m *Leads) (id int64, err error) {
 	o := orm.NewOrm()
 
 	id, err = o.Insert(m)
+
+	if err != nil {
+		return
+	}
+
+	m.ID = int(id)
+
 	return
 }
 
-//GetSketchsByID retrieves Sketchs by Id. Returns error if Id doesn't exist
-func GetSketchsByID(id int) (v *Sketchs, err error) {
-	v = &Sketchs{ID: id}
+//GetLeadsByID retrieves Leads by Id. Returns error if Id doesn't exist
+func GetLeadsByID(id int) (v *Leads, err error) {
+	v = &Leads{ID: id}
 
 	err = searchFK(v.TableName(), v.ID).One(v)
 
@@ -71,11 +76,11 @@ func GetSketchsByID(id int) (v *Sketchs, err error) {
 	return
 }
 
-//GetAllSketchs retrieves all Sketchs matches certain condition. Returns empty list if no records exist
-func GetAllSketchs(query map[string]string, fields []string, sortby []string, order []string,
+//GetAllLeads retrieves all Leads matches certain condition. Returns empty list if no records exist
+func GetAllLeads(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Sketchs))
+	qs := o.QueryTable(new(Leads))
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -125,7 +130,7 @@ func GetAllSketchs(query map[string]string, fields []string, sortby []string, or
 		}
 	}
 
-	var l []Sketchs
+	var l []Leads
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).Filter("deleted_at__isnull", true).RelatedSel().All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -150,10 +155,10 @@ func GetAllSketchs(query map[string]string, fields []string, sortby []string, or
 	return nil, err
 }
 
-//UpdateSketchsByID updates Sketchs by Id and returns error if the record to be updated doesn't exist
-func UpdateSketchsByID(m *Sketchs) (err error) {
+//UpdateLeadsByID updates Leads by Id and returns error if the record to be updated doesn't exist
+func UpdateLeadsByID(m *Leads) (err error) {
 	o := orm.NewOrm()
-	v := Sketchs{ID: m.ID}
+	v := Leads{ID: m.ID}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -164,10 +169,10 @@ func UpdateSketchsByID(m *Sketchs) (err error) {
 	return
 }
 
-//DeleteSketchs deletes Sketchs by Id and returns error if the record to be deleted doesn't exist
-func DeleteSketchs(id int, trash bool) (err error) {
+//DeleteLeads deletes Leads by Id and returns error if the record to be deleted doesn't exist
+func DeleteLeads(id int, trash bool) (err error) {
 	o := orm.NewOrm()
-	v := Sketchs{ID: id}
+	v := Leads{ID: id}
 	// ascertain id exists in the database
 	err = o.Read(&v)
 
@@ -187,4 +192,23 @@ func DeleteSketchs(id int, trash bool) (err error) {
 	}
 
 	return
+}
+
+//GetLeadsFromTrash return Leads soft Deleted
+func GetLeadsFromTrash() (leads []*Leads, err error) {
+
+	o := orm.NewOrm()
+
+	var v []*Leads
+
+	_, err = o.QueryTable("leads").Filter("deleted_at__isnull", false).RelatedSel().All(&v)
+
+	if err != nil {
+		return
+	}
+
+	leads = v
+
+	return
+
 }
