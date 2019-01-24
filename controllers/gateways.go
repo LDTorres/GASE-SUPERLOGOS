@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego"
+
 	"github.com/astaxie/beego/validation"
 )
 
@@ -224,23 +226,20 @@ func (c *GatewaysController) Put() {
 			return
 		}
 
-		gateway, _ := models.GetGatewaysByID(v.ID)
-		exists = false
-
-		for _, tCurrency := range gateway.Currencies {
-			if el.ID == tCurrency.ID {
-				exists = true
-			}
-		}
-
-		if !exists {
-			relationsIDs = append(relationsIDs, el.ID)
-		}
+		relationsIDs = append(relationsIDs, el.ID)
 	}
 
 	err = models.UpdateGatewaysByID(&v)
 
 	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	_, err = models.DeleteAllRelationsM2M("DELETE", "gateways", v.ID, "currencies")
+
+	if err != nil {
+		beego.Debug(err)
 		c.ServeErrorJSON(err)
 		return
 	}
@@ -476,7 +475,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		paymentID = payment.ID
 		paid = true
 
-	case "03"://transferencia bancaria
+	case "03": //transferencia bancaria
 		paid = false
 
 	default:

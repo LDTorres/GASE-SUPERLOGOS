@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-btn :to="'/trashed?m='+viewName" color="error" flat class="mb-2">PAPELERA</v-btn>
       <v-dialog v-model="dialog" max-width="800px">
-        <v-btn slot="activator" color="primary" flat class="mb-2">Nuevas {{ viewNameESP }}</v-btn>
+        <v-btn slot="activator" color="primary" flat class="mb-2">Nueva Pasarela</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{ formTitle }}</span>

@@ -240,9 +240,7 @@ func RelationsM2M(operation string, entityFieldName string, entityID int, relati
 	QueryRaw := "INSERT INTO " + tableName + " (" + entityFieldName + "," + relationFieldName + ") VALUES (?,?)"
 
 	if operation == "DELETE" {
-
-		QueryRaw = "DELETE FROM " + tableName + " WHERE " + entityFieldName + " = ? AND " + relationFieldName + " = ?"
-
+		QueryRaw = "DELETE FROM " + tableName + " WHERE " + entityFieldName + " = ?"
 	}
 
 	o := orm.NewOrm()
@@ -252,11 +250,15 @@ func RelationsM2M(operation string, entityFieldName string, entityID int, relati
 		return 0, err
 	}
 
+	beego.Debug(relationsIDs)
+
 	for _, relationID := range relationsIDs {
 
 		Args := []int{entityID, relationID}
 
 		_, err := o.Raw(QueryRaw, Args).Exec()
+
+		beego.Debug(QueryRaw, Args)
 
 		if err != nil {
 			errRoll := o.Rollback()
@@ -267,6 +269,40 @@ func RelationsM2M(operation string, entityFieldName string, entityID int, relati
 		}
 
 		count++
+	}
+
+	err = o.Commit()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return
+}
+
+// DeleteAllRelationsM2M Relations on database
+func DeleteAllRelationsM2M(operation string, entityFieldName string, entityID int, relationFieldName string) (count int, err error) {
+
+	tableName := entityFieldName + "_" + relationFieldName + "s"
+	entityFieldName = entityFieldName + "_id"
+
+	QueryRaw := "DELETE FROM " + tableName + " WHERE " + entityFieldName + " = " + strconv.Itoa(entityID)
+
+	o := orm.NewOrm()
+	err = o.Begin()
+
+	if err != nil {
+		return 0, err
+	}
+
+	_, err = o.Raw(QueryRaw).Exec()
+
+	if err != nil {
+		errRoll := o.Rollback()
+		if errRoll != nil {
+			return 0, errRoll
+		}
+		return 0, err
 	}
 
 	err = o.Commit()
