@@ -101,9 +101,7 @@
           Precio
         </th>
       </tr>
-      {{
-        range.Services
-      }}
+      {{ range .Services }}
         <tr>
           <td
             style="    
@@ -132,9 +130,7 @@
             {{.Price.Value}}
           </td>
         </tr>
-      {{
-        end
-      }}
+      {{ end }}
 
       <tr>
         <th
