@@ -230,8 +230,12 @@ func (c *OrdersController) Post() {
 			HTMLParams: HTMLParams,
 		}
 
-		mails.SendMail(mailNotification, "001")
+		err = mails.SendMail(mailNotification, "001")
 
+		if err != nil {
+			c.ServeErrorJSON(err)
+			return
+		}
 	}()
 
 	c.Ctx.Output.SetStatus(201)
