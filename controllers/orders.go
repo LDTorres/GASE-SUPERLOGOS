@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 )
 
@@ -116,6 +117,7 @@ func (c *OrdersController) Post() {
 	Order.Gateway = gateway
 
 	//Get cart
+	beego.Debug("Cookie del carrito", cookie)
 	cart, err := models.GetOrCreateCartsByCookie(cookie, country.Iso)
 
 	if err != nil {
@@ -213,6 +215,8 @@ func (c *OrdersController) Post() {
 		}
 	}
 
+	beego.Debug("Servicios del carrito ", cart.Services)
+
 	go func() {
 
 		HTMLParams := &mails.HTMLParams{
@@ -233,8 +237,8 @@ func (c *OrdersController) Post() {
 		err = mails.SendMail(mailNotification, "001")
 
 		if err != nil {
-			c.ServeErrorJSON(err)
-			return
+			beego.Debug("Parametros de email", HTMLParams)
+			beego.Debug("Error", err)
 		}
 	}()
 

@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/gofrs/uuid"
 )
@@ -77,7 +78,7 @@ func GetOrCreateCartsByCookie(Cookie string, Iso string) (v *Carts, err error) {
 		return nil, err
 	}
 
-	//beego.Debug(result, id, err)
+	beego.Debug(result, id, err)
 
 	if result {
 		UUID, err := uuid.NewV4()
