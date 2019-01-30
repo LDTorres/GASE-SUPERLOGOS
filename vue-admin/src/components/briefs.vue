@@ -52,7 +52,7 @@
               <table>
                 <thead>
                   <tr>
-                    <th colspan="3">
+                    <th colspan="4">
                       <b>Datos del cliente</b>
                     </th>
                     <th colspan="4">
@@ -62,7 +62,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td colspan=3 class="text-xs-left">
+                    <td colspan="4" class="text-xs-left">
                       <tr>
                         <td class="text-xs-left"><b>Nombre: </b> {{props.item.client.name}}</td>
                       </tr>
@@ -80,7 +80,7 @@
                       <tr>
                         <td class="text-xs-left"><b>Servicio:</b> {{props.item.data.service.name}} </td>
                       </tr>
-                      <tr v-for="(item, i) in props.item.data.information" :key="i" v-if="item.value != [] && item.value != '' && item.value">
+                      <tr v-if="item.value != [] && item.value != '' && item.value" v-for="(item, i) in props.item.data.information" :key="i">
                         <td class="text-xs-left" v-if="!Array.isArray(item.value)">
                           <b>{{item.label}}: </b> {{item.value}}
                         </td>
@@ -92,24 +92,29 @@
                     </td>
                   </tr>
                   <tr>
-                    <th colspan="2">Colores: </th>
-                    <th colspan="2">Diseños</th>
-                    <th colspan="2">Estilos</th>
+                    <th colspan="7">Diseños</th>
                   </tr>
-                  <tr>
-                    <td colspan="2" v-if="props.item.data.colors.length">
-                      <span v-for="color in props.item.data.colors" :key="color" class="mr-2">
-                        <img width="30px" :src="'/static/colors/' + color + '.png'">
+                  <tr> 
+                    <td v-if="props.item.data.designs.length">
+                      <span v-for="design in props.item.data.designs" :key="design">  
+                        <img width="200px" style="margin-right:40px;" :src="'http://liderlogos.com/images/brief/designs/' + design + '.jpg'">
                       </span>
                     </td>
-                    <td colspan="2" v-if="!props.item.data.colors.length">No seleccionó colores</td>
-
-                    <td colspan="2" v-if="props.item.data.designs.length">
-                      <span v-for="design in props.item.data.designs" :key="design">{{design}}  </span>
+                    <td v-if="!props.item.data.designs.length">No seleccionó diseños</td>
+                  </tr>
+                  <tr>
+                    <th colspan="4">Colores: </th>
+                    <th colspan="3">Estilos</th>
+                  </tr>
+                  <tr>
+                    <td colspan="4" v-if="props.item.data.colors.length">
+                      <span v-for="color in props.item.data.colors" :key="color" class="mr-2">
+                        <img width="30px" :src="'http://liderlogos.com/images/brief/colors/' + color + '.png'">
+                      </span>
                     </td>
-                    <td colspan="2" v-if="!props.item.data.designs.length">No seleccionó diseños</td>
+                    <td colspan="4" v-if="!props.item.data.colors.length">No seleccionó colores</td>
 
-                    <td colspan="2">
+                    <td colspan="3">
                       <div class="mb-3 style-range" v-for="(style, i) in props.item.data.styles" :key="i">
                         <b>{{espStyles[i][0]}}</b>
                         <b class="mx-3">{{style}}</b>
