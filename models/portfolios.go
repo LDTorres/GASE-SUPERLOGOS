@@ -303,7 +303,9 @@ func GetPortfoliosByCustomSearch(filters map[string]int, limit int, offset int) 
 	}
 
 	if whereString != "" {
-		qb.Where(whereString)
+		qb.Where(whereString).And("portfolios.deleted_at IS NULL")
+	} else {
+		qb.Where("portfolios.deleted_at IS NULL")
 	}
 
 	qb = qb.OrderBy("portfolios.priority").Asc()
