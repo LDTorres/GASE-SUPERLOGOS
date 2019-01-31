@@ -713,6 +713,14 @@ func init() {
 
 	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
 		beego.ControllerComments{
+			Method: "Test",
+			Router: `/test`,
+			AllowHTTPMethods: []string{"post"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
 			AllowHTTPMethods: []string{"get"},
