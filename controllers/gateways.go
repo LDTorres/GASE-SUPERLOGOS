@@ -482,6 +482,22 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 	case "04": //transferencia bancaria
 		paid = false
 
+	case "05": // safetyPay
+
+		if filterValue, ok := paymentData["filter"]; !ok || filterValue.(string) == "" || (filterValue.(string) != "cash" && filterValue.(string) != "online") {
+			err = errors.New("filter is missing or invalid")
+			return
+		}
+
+		filter := paymentData["filter"].(string)
+
+		redirect, err = payments.SafetyPayCreateExpressToken(countries.Currency.Iso, price, orderID, "http://google.com/success", "http://google.com/error", filter)
+		if err != nil {
+			return
+		}
+
+		paid = false
+
 	default:
 		err = errors.New("Invalid Gateway code")
 		return
@@ -533,6 +549,47 @@ func (c *GatewaysController) RestoreFromTrash() {
 	}
 
 	c.Data["json"] = v
+	c.ServeJSON()
+
+}
+
+// GetSafetypayNotifications ...
+// @Title Get Safetypay Notifications
+// @Description Get Safetypay Notifications
+// @router /safetypay/notifications [get]
+func (c *GatewaysController) GetSafetypayNotifications() {
+
+	operations, err := payments.SafetyPayGetNewOperationActivity()
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	err = payments.SafetypayConfirmNewOperationActivity(operations)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	for _, operation := range operations {
+
+		orderID, err := strconv.Atoi(operation.MerchantOrderID)
+		if err != nil {
+			continue
+		}
+
+		order, err := models.GetOrdersByID(orderID)
+		if err != nil {
+			continue
+		}
+
+		order.Status = "COMPLETED"
+		models.UpdateOrdersByID(order)
+
+	}
+
+	c.Data["json"] = operations
 	c.ServeJSON()
 
 }
