@@ -84,7 +84,7 @@
         width: 50%;
         "
         >
-          Servicio
+          Nombre
         </th>
         <th
         style="    
@@ -101,7 +101,7 @@
           Precio
         </th>
       </tr>
-      {{range .Services}}
+      {{ range .Services }}
         <tr>
           <td
             style="    
@@ -112,6 +112,7 @@
           margin: 10px 20px;
           color: #414143;
           width: 50%;
+          text-align: center;
           "
           >
             {{.Name}}
@@ -125,12 +126,13 @@
           margin: 10px 20px;
           color: #414143;
           width: 50%;
+          text-align: center;
           "
           >
-            {{.Price.Value}}
+            {{.Price.Value}} {{.Price.Currency.Symbol}}
           </td>
         </tr>
-      {{end}}
+      {{ end }}
 
       <tr>
         <th
@@ -173,9 +175,10 @@
         color: #414143;
         width: 50%;
         word-break: break-word;
+        text-align: center;
         "
         >
-          {{.Order.GetInitialPaymentAmount}}
+        {{.Services[0].Price.Currency.Symbol}}{{.Order.GetInitialPaymentAmount}}
         </td>
         <td
           style="    
@@ -187,9 +190,10 @@
         color: #414143;
         width: 50%;
         word-break: break-word;
+        text-align: center;
         "
         >
-          {{.Order.GetFinalPaymentAmount}}
+        {{.Services[0].Price.Currency.Symbol}}{{.Order.GetFinalPaymentAmount}}
         </td>
       </tr>
     </table>
