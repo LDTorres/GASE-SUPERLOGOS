@@ -12,3 +12,7 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+/config/index.js
+admin.liderlogos.com
+admin.liderlogos.com.zip

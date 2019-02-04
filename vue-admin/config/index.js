@@ -44,10 +44,10 @@ module.exports = {
 
 	build: {
 		// Template for index.html
-		index: path.resolve(__dirname, "../../../../../../var/www/admin.liderlogos.com/index.html"),
+		index: path.resolve(__dirname, "../admin.liderlogos.com/index.html"),
 
 		// Paths
-		assetsRoot: path.resolve(__dirname, "../../../../../../var/www/admin.liderlogos.com"),
+		assetsRoot: path.resolve(__dirname, "../admin.liderlogos.com"),
 		assetsSubDirectory: "assets",
 		assetsPublicPath: "/",
 
