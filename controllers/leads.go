@@ -97,7 +97,7 @@ func (c *LeadsController) Post() {
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{mails.DefaultEmail},
+			To:         []string{mails.DefaultEmail, "cisliderlogofreelancer@gmail.com"},
 			Subject:    "Nuevo Lead",
 			HTMLParams: HTMLParams,
 		}
@@ -363,7 +363,7 @@ func (c *LeadsController) Newsletter() {
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{mails.DefaultEmail},
+			To:         []string{mails.DefaultEmail, "cisliderlogofreelancer@gmail.com"},
 			Subject:    "Subscripción a newsletter - " + v.Email,
 			HTMLParams: HTMLParams,
 		}

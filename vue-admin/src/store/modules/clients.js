@@ -10,6 +10,7 @@ var struct = [
   { text: 'Nombre', value: 'name' },
   { text: 'Email', value: 'email' },
   { text: 'Phone', value: 'phone' },
+  { text: 'Pais', value: 'country' },
   {text: 'Acciones', align: 'center', value: ''}
 ]
 

@@ -19,7 +19,7 @@ type Portfolios struct {
 	Slug        string      `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
 	Description string      `orm:"column(description)" json:"description,omitempty"`
 	Client      string      `orm:"column(client);size(255)" json:"client,omitempty" valid:"Required"`
-	Priority    int         `orm:"column(priority)" json:"priority,omitempty"`
+	Priority    int         `orm:"column(priority)" json:"priority"`
 	Location    *Locations  `orm:"column(locations_id);rel(fk)" json:"location,omitempty"`
 	Service     *Services   `orm:"column(services_id);rel(fk)" json:"service,omitempty"`
 	Activity    *Activities `orm:"column(activities_id);rel(fk)" json:"activity,omitempty"`

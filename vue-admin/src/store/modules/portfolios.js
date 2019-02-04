@@ -70,7 +70,7 @@ var getFormUploadImage = (data) => {
 
 export default {
   namespaced: true,
-  state: { all: [], defaultItem: {}, editedItem: {}, trashed: [], struct: struct },
+  state: { all: [], defaultItem: { priority: 0 }, editedItem: {}, trashed: [], struct: struct },
   mutations: {
     GET_ALL (state, data) {
       state.all = data

@@ -136,7 +136,7 @@ func (c *BriefsController) Post() {
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{mails.DefaultEmail},
+			To:         []string{mails.DefaultEmail, "cisliderlogofreelancer@gmail.com"},
 			Subject:    "Nuevo Brief - " + string(v.ID),
 			HTMLParams: HTMLParams,
 		}

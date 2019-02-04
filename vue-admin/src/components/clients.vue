@@ -26,6 +26,21 @@
                   <v-text-field type="number" name="Telefono" v-validate="'required|numeric'" v-model="editedItem.phone" label="Teléfono"></v-text-field>
                   <span v-show="errors.has('Telefono')">{{ errors.first('Telefono') }}</span>
                 </v-flex>
+
+                <v-flex xs12>
+                  <v-select
+                    v-model="editedItem.countries"
+                    :items="countries"
+                    item-text="name"
+                    :error-messages="selectErrors"
+                    return-object
+                    label="Pais"
+                    required
+                    name="Pais" 
+                    v-validate="'required'"
+                  ></v-select>
+                  <span v-show="errors.has('Pais')">{{ errors.first('Pais') }}</span>
+                </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
@@ -65,6 +80,7 @@
         <td >{{ props.item.name }}</td>
         <td >{{ props.item.email }}</td>
         <td >{{ props.item.phone }}</td>
+        <td >{{ props.item.countries.name }}</td>
         <td class="justify-center layout px-0">
           <v-icon
             title
@@ -93,6 +109,7 @@
     props: ['search'],
     created () {
       this.$store.dispatch('getAll', {state: this.viewName})
+      this.$store.dispatch('getAll', {state: 'countries'})
     },
     mounted () {
     },
@@ -158,6 +175,9 @@
       },
       list () {
         return this.$store.getters.getAll('clients')
+      },
+      countries () {
+        return this.$store.getters.getAll('countries')
       },
       pages () {
         if (this.pagination.rowsPerPage == null || this.pagination.totalItems == null) return 0
