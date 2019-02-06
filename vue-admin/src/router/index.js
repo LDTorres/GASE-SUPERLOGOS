@@ -22,6 +22,7 @@ import users from '@/components/users'
 import portfolios from '@/components/portfolios'
 import trashed from '@/components/trashed'
 import projects from '@/components/projects'
+import leads from '@/components/leads'
 
 Vue.use(Router)
 
@@ -113,6 +114,12 @@ var instance = new Router({
       path: '/users',
       name: 'users',
       component: users,
+      props: (route) => ({ search: route.query.q })
+    },
+    {
+      path: '/leads',
+      name: 'leads',
+      component: leads,
       props: (route) => ({ search: route.query.q })
     },
     {

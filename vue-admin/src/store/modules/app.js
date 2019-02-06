@@ -76,6 +76,11 @@ const app = {
         route: 'clients'
       },
       {
+        icon: 'people',
+        title: 'Leads',
+        route: 'leads'
+      },
+      {
         icon: 'assignment',
         title: 'Briefs',
         route: 'briefs'

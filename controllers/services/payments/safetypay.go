@@ -18,17 +18,17 @@ import (
 
 // SafetyPayOperationActivity describe a operation Object from Safety Pay
 type SafetyPayOperationActivity struct {
-	CreationDateTime   string
-	OperationID        string
-	MerchantSalesID    string
-	MerchantOrderID    string
-	Amount             float32
-	CurrencyID         string
-	ShopperAmount      float32
-	ShopperCurrencyID  string
-	AuthorizationCode  string
-	PaymentReferenceNo string
-	OperationStatus    string
+	CreationDateTime   string  `xml:"urn:CreationDateTime"`
+	OperationID        string  `xml:"urn:OperationID"`
+	MerchantSalesID    string  `xml:"urn:MerchantSalesID"`
+	MerchantOrderID    string  `xml:"urn:MerchantOrderID"`
+	Amount             float32 `xml:"urn:Amount"`
+	CurrencyID         string  `xml:"urn:CurrencyID"`
+	ShopperAmount      float32 `xml:"urn:ShopperAmount"`
+	ShopperCurrencyID  string  `xml:"urn:ShopperCurrencyID"`
+	AuthorizationCode  string  `xml:"urn:AuthorizationCode,omitempty"`
+	PaymentReferenceNo string  `xml:"urn:PaymentReferenceNo,omitempty"`
+	OperationStatus    string  `xml:"urn:OperationStatus,omitempty"`
 }
 
 //TODO: AGFREGAR ENMARCADO XML BASADO EN Manual
@@ -41,6 +41,7 @@ type SafetyPayOperationActivityRequest struct {
 	Signature       string   `xml:"urn:Signature,omitempty"`
 }
 
+// SafetyPayConfirmNewOperationActivityRequest confirm multiple operations
 type SafetyPayConfirmNewOperationActivityRequest struct {
 	XMLName             xml.Name                      `xml:"urn:GetNewOperationActivity"`
 	APIKey              string                        `xml:"urn:ApiKey,omitempty"`
@@ -51,30 +52,33 @@ type SafetyPayConfirmNewOperationActivityRequest struct {
 
 // SafetyPayExpressTokenRequest describe a SafetyPay Express Token Request
 type SafetyPayExpressTokenRequest struct {
-	XMLName             xml.Name `xml:"urn:CreateExpressToken"`
-	APIKey              string   `xml:"urn:ApiKey,omitempty"`
-	RequestDateTime     string   `xml:"urn:RequestDateTime,omitempty"`
-	CurrencyID          string   `xml:"urn:CurrencyID,omitempty"`
-	Amount              float32  `xml:"urn:Amount,omitempty"`
-	MerchantSalesID     string   `xml:"urn:MerchantSalesID,omitempty"`
-	Language            string   `xml:"urn:Language,omitempty"`
-	ExpirationTime      string   `xml:"urn:ExpirationTime,omitempty"`
-	FilterBy            string   `xml:"urn:FilterBy,omitempty"`
-	TransactionOkURL    string   `xml:"urn:TransactionOkURL,omitempty"`
-	TransactionErrorURL string   `xml:"urn:TransactionErrorURL,omitempty"`
-	TrackingCode        string   `xml:"urn:TrackingCode,omitempty"`
-	ProductID           string   `xml:"urn:ProductID,omitempty"`
-	Signature           string   `xml:"urn:Signature,omitempty"`
+	XMLName                   xml.Name `xml:"urn:CreateExpressToken"`
+	APIKey                    string   `xml:"urn:ApiKey,omitempty"`
+	RequestDateTime           string   `xml:"urn:RequestDateTime,omitempty"`
+	CurrencyID                string   `xml:"urn:CurrencyID,omitempty"`
+	Amount                    float32  `xml:"urn:Amount,omitempty"`
+	MerchantSalesID           string   `xml:"urn:MerchantSalesID,omitempty"`
+	Language                  string   `xml:"urn1:Language,omitempty"`
+	ExpirationTime            string   `xml:"urn:ExpirationTime,omitempty"`
+	TransactionExpirationTime string   `xml:"urn:TransactionExpirationTime,omitempty"`
+	FilterBy                  string   `xml:"urn:FilterBy,omitempty"`
+	TransactionOkURL          string   `xml:"urn:TransactionOkURL,omitempty"`
+	TransactionErrorURL       string   `xml:"urn:TransactionErrorURL,omitempty"`
+	TrackingCode              string   `xml:"urn:TrackingCode,omitempty"`
+	ProductID                 string   `xml:"urn:ProductID,omitempty"`
+	Signature                 string   `xml:"urn:Signature,omitempty"`
 }
 
 // SafetyPayRequest describe a SafetyPay xml Env
 type SafetyPayRequest struct {
-	XMLName                     xml.Name                                     `xml:"soapenv:Envelope"`
-	SoapEnv                     string                                       `xml:"xmlns:soapev,attr"`
-	Urn                         string                                       `xml:"xmlns:urn,attr"`
-	CreateExpressToken          *SafetyPayExpressTokenRequest                `xml:"soapenv:Body>urn:CreateExpressToken"`
-	OperationActivity           *SafetyPayOperationActivityRequest           `xml:"soapenv:Body>urn:GetNewOperationActivity"`
-	ConfirmNewOperationActivity *SafetyPayConfirmNewOperationActivityRequest `xml:"soapenv:Body>urn:ConfirmNewOperationActivity"`
+	XMLName                     xml.Name `xml:"soapenv:Envelope"`
+	SoapEnv                     string   `xml:"xmlns:soapev,attr"`
+	Urn                         string   `xml:"xmlns:urn,attr"`
+	Urn1                        string   `xml:"xmlns:urn1,attr,omitempty"`
+	SOAPAction                  string
+	CreateExpressToken          *SafetyPayExpressTokenRequest                `xml:"soapenv:Body>urn:ExpressTokenRequest"`
+	OperationActivity           *SafetyPayOperationActivityRequest           `xml:"soapenv:Body>urn:OperationActivityRequest"`
+	ConfirmNewOperationActivity *SafetyPayConfirmNewOperationActivityRequest `xml:"soapenv:Body>urn:OperationActivityNotifiedRequest"`
 }
 
 var safetyPay = struct {
@@ -120,7 +124,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL string, err error) {
 	}
 
 	req.Header.Add("Content-Type", "text/xml")
-	req.Header.Add("SOAPAction", "urn:safetypay:contract:mws:api:CreateExpressToken") //DUDAS EN LOS NOMBRES DE LAS PETICIONES
+	req.Header.Add("SOAPAction", "urn:safetypay:contract:mws:api:"+s.SOAPAction)
 
 	client := &http.Client{}
 	res, err := client.Do(req)
@@ -155,15 +159,15 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 
 	//condicional filter online o efectivo
 	var (
-		filterBy  string
+		// filterBy  string
 		productID string
 	)
 
 	if filter == "online" {
-		filterBy = "CHANNEL(OL)"
+		// filterBy = "CHANNEL(OL)"
 		productID = "1"
 	} else if filter == "cash" {
-		filterBy = "CHANNEL(WP)"
+		// filterBy = "CHANNEL(WP)"
 		productID = "2"
 	} else {
 		err = errors.New("filter value is not valid")
@@ -173,30 +177,33 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 	requestDateTime := jodaTime.Format("yyyy-MM-ddThh:mm:ss", time.Now())
 	amountString := strconv.FormatFloat(float64(amount), 'f', 2, 32)
 
-	signature := createSignature256(requestDateTime, currencyID, amountString, strconv.Itoa(orderID), "ES", "X", "120", transactionOkURL, transactionErrorURL, safetyPay.SignatureKey)
+	signature := createSignature256(requestDateTime, currencyID, amountString, strconv.Itoa(orderID), "ES", "", "120", transactionOkURL, transactionErrorURL, safetyPay.SignatureKey)
 
 	// TODO: REVISAR SIGNATURE RESULTANTE, el string posee una codificacion no valida
 
 	tokenStruct := &SafetyPayExpressTokenRequest{
-		APIKey:              safetyPay.APIKey,
-		RequestDateTime:     requestDateTime,
-		CurrencyID:          currencyID,
-		Amount:              amount,
-		MerchantSalesID:     strconv.Itoa(orderID),
-		FilterBy:            filterBy,
-		ProductID:           productID,
-		TransactionOkURL:    transactionOkURL,
-		TransactionErrorURL: transactionErrorURL,
-		TrackingCode:        "X",
-		ExpirationTime:      "120",
-		Language:            "ES",
-		Signature:           signature,
+		APIKey:          safetyPay.APIKey,
+		RequestDateTime: requestDateTime,
+		CurrencyID:      "EUR",
+		Amount:          amount,
+		MerchantSalesID: strconv.Itoa(orderID),
+		Language:        "ES",
+		TrackingCode:    "",
+		ExpirationTime:  "120",
+		// FilterBy:                  filterBy,
+		TransactionOkURL:          transactionOkURL,
+		TransactionErrorURL:       transactionErrorURL,
+		TransactionExpirationTime: "120",
+		ProductID:                 productID,
+		Signature:                 signature,
 	}
 
 	safetyPayStruct := &SafetyPayRequest{
 		SoapEnv:            "http://schemas.xmlsoap.org/soap/envelope/",
 		Urn:                "urn:safetypay:messages:mws:api",
+		Urn1:               "urn:safetypay:schema:mws:api",
 		CreateExpressToken: tokenStruct,
+		SOAPAction:         "CreateExpressToken",
 	}
 
 	expressToken, err = safetyPayStruct.createExpressTokenRequest()
@@ -221,7 +228,7 @@ func (s *SafetyPayRequest) getNewOperationActivity() (operationActivities []*Saf
 	}
 
 	req.Header.Add("Content-Type", "text/xml")
-	req.Header.Add("SOAPAction", "urn:safetypay:contract:mws:api:CreateExpressToken") //TODO: Cambiar soapaction al correcto
+	req.Header.Add("SOAPAction", "urn:safetypay:contract:mws:api:"+s.SOAPAction)
 
 	client := &http.Client{}
 	res, err := client.Do(req)
@@ -265,6 +272,7 @@ func SafetyPayGetNewOperationActivity() (operationActivities []*SafetyPayOperati
 		SoapEnv:           "http://schemas.xmlsoap.org/soap/envelope/",
 		Urn:               "urn:safetypay:messages:mws:api",
 		OperationActivity: operationStruct,
+		SOAPAction:        "GetNewOperationActivity",
 	}
 
 	operationActivities, err = safetyPayStruct.getNewOperationActivity()
@@ -295,9 +303,10 @@ func SafetypayConfirmNewOperationActivity(operationActivities []*SafetyPayOperat
 	}
 
 	safetyPayStruct := &SafetyPayRequest{
-		SoapEnv:                     "http://schemas.xmlsoap.org/soap/envelope/",
-		Urn:                         "urn:safetypay:messages:mws:api",
+		SoapEnv: "http://schemas.xmlsoap.org/soap/envelope/",
+		Urn:     "urn:safetypay:messages:mws:api",
 		ConfirmNewOperationActivity: operationStruct,
+		SOAPAction:                  "ConfirmNewOperationActivity",
 	}
 
 	operationActivities, err = safetyPayStruct.getNewOperationActivity()
