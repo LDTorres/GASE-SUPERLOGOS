@@ -504,7 +504,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		}
 
 		paid = false
-		redirect = data.ShopperRedirectURL
+		redirect = data.CreateExpressToken.ShopperRedirectURL
 
 	default:
 		err = errors.New("Invalid Gateway code")
