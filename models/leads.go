@@ -16,9 +16,9 @@ type Leads struct {
 	Name      string     `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Email     string     `orm:"column(email);size(255)" json:"email,omitempty" valid:"Required"`
 	Phone     string     `orm:"column(phone);size(255);null" json:"phone,omitempty"`
-	PageView  string     `orm:"column(page_view);size(255);null" json:"page_view,omitempty"`
-	Promo     bool       `orm:"column(promo);size(1);" json:"promo,omitempty"`
-	Reseller  bool       `orm:"column(reseller);size(1);" json:"reseller,omitempty"`
+	PageView  string     `orm:"column(page_view);size(255);null" json:"page_view"`
+	Promo     bool       `orm:"column(promo);size(1);" json:"promo"`
+	Reseller  bool       `orm:"column(reseller);size(1);" json:"reseller"`
 	Message   string     `orm:"column(message);" json:"message,omitempty" valid:"Required"`
 	Schedule  string     `orm:"column(schedule);size(255);null" json:"schedule,omitempty" `
 	Source    string     `orm:"column(source);size(255);null" json:"source,omitempty" `

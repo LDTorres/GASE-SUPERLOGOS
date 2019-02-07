@@ -29,6 +29,10 @@ func (c *GatewaysController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("DeleteCurrencies", c.DeleteCurrencies)
+
+	/* SafetyPay */
+	c.Mapping("GetSafetypayNotifications", c.GetSafetypayNotifications)
+	c.Mapping("GetSafetypayTestRequestToken", c.GetSafetypayTestRequestToken)
 }
 
 // Post ...
@@ -491,12 +495,16 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 		filter := paymentData["filter"].(string)
 
-		redirect, err = payments.SafetyPayCreateExpressToken(countries.Currency.Iso, price, orderID, "http://google.com/success", "http://google.com/error", filter)
+		data, err := payments.SafetyPayCreateExpressToken(countries.Currency.Iso, price, orderID, "http://google.com/success", "http://google.com/error", filter)
+
+		beego.Debug("Data", data)
+
 		if err != nil {
-			return
+			return false, "", "", err
 		}
 
 		paid = false
+		redirect = data.ShopperRedirectURL
 
 	default:
 		err = errors.New("Invalid Gateway code")
@@ -550,7 +558,6 @@ func (c *GatewaysController) RestoreFromTrash() {
 
 	c.Data["json"] = v
 	c.ServeJSON()
-
 }
 
 // GetSafetypayNotifications ...
@@ -592,4 +599,21 @@ func (c *GatewaysController) GetSafetypayNotifications() {
 	c.Data["json"] = operations
 	c.ServeJSON()
 
+}
+
+// GetSafetypayTestRequestToken ...
+// @Title Get Safetypay Notifications
+// @Description Get Safetypay Notifications
+// @router /safetypay/test-express-token [get]
+func (c *GatewaysController) GetSafetypayTestRequestToken() {
+
+	json, err := payments.SafetyPayCreateExpressToken("EUR", 300, 1, "http://liderlogos.com/gracias?por=safetypay", "http://liderlogos.com/error", "online")
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	c.Data["json"] = json
+	c.ServeJSON()
 }
