@@ -35,6 +35,8 @@
           <td >{{ props.item.schedule }}</td>
           <td >{{ props.item.medium }}</td>
           <td >{{ props.item.countries.name }}</td>
+          <td >{{ props.item.countries.page_view }}</td>
+          
           <td class="justify-center layout">
             <!-- <v-icon
               title
@@ -57,6 +59,10 @@
           <v-layout row wrap>
             <v-flex xs5 text-xs-left>
               <p><b>Mensaje:</b> {{props.item.message}}</p>
+
+              <p><b>Tipo de usuario:</b> {{props.item.resseler ? 'Revendedor' : 'Empresa'}}</p>
+
+              <p><b>Recibir promos:</b> {{props.item.promo ? 'SI' : 'NO'}}</p>
             </v-flex>
             <v-flex xs5 text-xs-left>
               <p><b>Campaña:</b> {{props.item.campaign}}</p>

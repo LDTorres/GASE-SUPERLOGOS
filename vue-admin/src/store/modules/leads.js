@@ -12,6 +12,7 @@ var struct = [
   { text: 'Horario', value: 'schedule' },
   { text: 'Medio', value: 'medium' },
   { text: 'Pais', value: 'countries.name' },
+  { text: 'Pagina Vista', value: 'page_view' },
   {text: 'Eliminar', align: 'center', value: ''}
 ]
 
