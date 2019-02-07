@@ -220,7 +220,7 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 }
 
 // getNewOperationActivityRequest GET NEW PAID ORDERS
-func (s *SafetyPayRequest) getNewOperationActivityRequest() (operationActivities []*SafetyPayOperationActivity, err error) {
+func (s *SafetyPayRequest) getNewOperationActivityRequest() (operationActivities []*SafetyPayConfirmOperationActivity, err error) {
 
 	output, err := xml.MarshalIndent(s, "  ", "    ")
 	if err != nil {
@@ -264,7 +264,7 @@ func (s *SafetyPayRequest) getNewOperationActivityRequest() (operationActivities
 }
 
 // SafetyPayGetNewOperationActivity ...
-func SafetyPayGetNewOperationActivity() (operationActivities []*SafetyPayOperationActivity, err error) {
+func SafetyPayGetNewOperationActivity() (operationActivities []*SafetyPayConfirmOperationActivity, err error) {
 
 	requestDateTime := jodaTime.Format("yyyy-MM-ddThh:mm:ss", time.Now())
 
