@@ -31,8 +31,6 @@ type SafetyPayOperationActivity struct {
 	OperationStatus    string  `xml:"urn:OperationStatus,omitempty"`
 }
 
-//TODO: AGFREGAR ENMARCADO XML BASADO EN Manual
-
 // SafetyPayOperationActivityRequest describe a Safetypay operation activity request
 type SafetyPayOperationActivityRequest struct {
 	XMLName         xml.Name `xml:"urn:GetNewOperationActivity"`
@@ -41,13 +39,22 @@ type SafetyPayOperationActivityRequest struct {
 	Signature       string   `xml:"urn:Signature,omitempty"`
 }
 
+// SafetyPayConfirmOperationActivity describe a confirm operation Object from Safety Pay
+type SafetyPayConfirmOperationActivity struct {
+	CreationDateTime string `xml:"urn1:CreationDateTime"`
+	OperationID      string `xml:"urn1:OperationID"`
+	MerchantSalesID  string `xml:"urn1:MerchantSalesID"`
+	MerchantOrderID  string `xml:"urn1:MerchantOrderID"`
+	OperationStatus  string `xml:"urn1:OperationStatus,omitempty"`
+}
+
 // SafetyPayConfirmNewOperationActivityRequest confirm multiple operations
 type SafetyPayConfirmNewOperationActivityRequest struct {
-	XMLName             xml.Name                      `xml:"urn:GetNewOperationActivity"`
-	APIKey              string                        `xml:"urn:ApiKey,omitempty"`
-	RequestDateTime     string                        `xml:"urn:RequestDateTime,omitempty"`
-	OperationActivities []*SafetyPayOperationActivity `xml:"urn:ListOfOperationsActivityNotified,omitempty"`
-	Signature           string                        `xml:"urn:Signature,omitempty"`
+	XMLName             xml.Name                             `xml:"urn:GetNewOperationActivity"`
+	APIKey              string                               `xml:"urn:ApiKey,omitempty"`
+	RequestDateTime     string                               `xml:"urn:RequestDateTime,omitempty"`
+	OperationActivities []*SafetyPayConfirmOperationActivity `xml:"urn1:ListOfOperationsActivityNotified,omitempty"`
+	Signature           string                               `xml:"urn:Signature,omitempty"`
 }
 
 // SafetyPayExpressTokenRequest describe a SafetyPay Express Token Request
@@ -212,7 +219,8 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 
 }
 
-func (s *SafetyPayRequest) getNewOperationActivity() (operationActivities []*SafetyPayOperationActivity, err error) {
+// getNewOperationActivityRequest GET NEW PAID ORDERS
+func (s *SafetyPayRequest) getNewOperationActivityRequest() (operationActivities []*SafetyPayOperationActivity, err error) {
 
 	output, err := xml.MarshalIndent(s, "  ", "    ")
 	if err != nil {
@@ -275,14 +283,58 @@ func SafetyPayGetNewOperationActivity() (operationActivities []*SafetyPayOperati
 		SOAPAction:        "GetNewOperationActivity",
 	}
 
-	operationActivities, err = safetyPayStruct.getNewOperationActivity()
+	operationActivities, err = safetyPayStruct.getNewOperationActivityRequest()
 
 	return
 
 }
 
+// confirmNewOperationActivity CONFIRM NEW PAID ORDERS
+func (s *SafetyPayRequest) confirmNewOperationActivityRequest() (operationActivities []*SafetyPayConfirmOperationActivity, err error) {
+
+	output, err := xml.MarshalIndent(s, "  ", "    ")
+	if err != nil {
+		return
+	}
+
+	requestBodyData := bytes.NewReader(output)
+
+	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
+
+	if err != nil {
+		return
+	}
+
+	req.Header.Add("Content-Type", "text/xml")
+	req.Header.Add("SOAPAction", "urn:safetypay:contract:mws:api:"+s.SOAPAction)
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return
+	}
+
+	if res.StatusCode != 200 {
+		err = errors.New("Error with token request")
+		return
+	}
+
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+
+	fmt.Println(body)
+
+	//TODO: RECUPERAR DEL CUERPO DE LA RESPUESTA las operationsActivities
+
+	return
+}
+
 // SafetypayConfirmNewOperationActivity ...
-func SafetypayConfirmNewOperationActivity(operationActivities []*SafetyPayOperationActivity) (err error) {
+func SafetypayConfirmNewOperationActivity(operationActivities []*SafetyPayConfirmOperationActivity) (err error) {
 
 	requestDateTime := jodaTime.Format("yyyy-MM-ddThh:mm:ss", time.Now())
 
@@ -297,19 +349,21 @@ func SafetypayConfirmNewOperationActivity(operationActivities []*SafetyPayOperat
 	signature := createSignature256(operationActivitiesStrings...)
 
 	operationStruct := &SafetyPayConfirmNewOperationActivityRequest{
-		APIKey:          safetyPay.APIKey,
-		RequestDateTime: requestDateTime,
-		Signature:       signature,
+		APIKey:              safetyPay.APIKey,
+		RequestDateTime:     requestDateTime,
+		Signature:           signature,
+		OperationActivities: operationActivities,
 	}
 
 	safetyPayStruct := &SafetyPayRequest{
 		SoapEnv: "http://schemas.xmlsoap.org/soap/envelope/",
 		Urn:     "urn:safetypay:messages:mws:api",
+		Urn1:    "urn:safetypay:schema:mws:api",
 		ConfirmNewOperationActivity: operationStruct,
 		SOAPAction:                  "ConfirmNewOperationActivity",
 	}
 
-	operationActivities, err = safetyPayStruct.getNewOperationActivity()
+	operationActivities, err = safetyPayStruct.confirmNewOperationActivityRequest()
 
 	return
 

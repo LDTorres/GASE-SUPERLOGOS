@@ -28,27 +28,43 @@
         :search="search"
       >
       <template slot="items" slot-scope="props">
-        <td>{{ props.item.id }}</td>
-        <td >{{ props.item.email }}</td>
-        <td >{{ props.item.phone }}</td>
-        <td >{{ props.item.schedule }}</td>
-        <td >{{ props.item.medium }}</td>
-        <td >{{ props.item.countries.name }}</td>
-        <td class="justify-center layout">
-          <!-- <v-icon
-            title
-            class="mr-2" color="primary"
-            @click="makeUser(props.item)"
-          >
-            people
-          </v-icon> -->
-          <v-icon
-            title
-            @click="deleteItem(props.item)" color="error"
-          >
-            delete
-          </v-icon>
-        </td>
+        <tr @click="props.expanded = !props.expanded">
+          <td>{{ props.item.id }}</td>
+          <td >{{ props.item.email }}</td>
+          <td >{{ props.item.phone }}</td>
+          <td >{{ props.item.schedule }}</td>
+          <td >{{ props.item.medium }}</td>
+          <td >{{ props.item.countries.name }}</td>
+          <td class="justify-center layout">
+            <!-- <v-icon
+              title
+              class="mr-2" color="primary"
+              @click="makeUser(props.item)"
+            >
+              people
+            </v-icon> -->
+            <v-icon
+              title
+              @click="deleteItem(props.item)" color="error"
+            >
+              delete
+            </v-icon>
+          </td>
+        </tr>
+      </template>
+      <template slot="expand" slot-scope="props">
+        <v-container grid-list-md text-xs-center>
+          <v-layout row wrap>
+            <v-flex xs5 text-xs-left>
+              <p><b>Mensaje:</b> {{props.item.message}}</p>
+            </v-flex>
+            <v-flex xs5 text-xs-left>
+              <p><b>Campaña:</b> {{props.item.campaign}}</p>
+              <p><b>Medio:</b> {{props.item.medium}}</p>
+              <p><b>Fuente:</b> {{props.item.source}}</p>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </template>
     </v-data-table>
     </v-card>

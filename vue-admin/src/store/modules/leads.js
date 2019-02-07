@@ -12,7 +12,7 @@ var struct = [
   { text: 'Horario', value: 'schedule' },
   { text: 'Medio', value: 'medium' },
   { text: 'Pais', value: 'countries.name' },
-  {text: 'Acciones', align: 'center', value: ''}
+  {text: 'Eliminar', align: 'center', value: ''}
 ]
 
 export default {

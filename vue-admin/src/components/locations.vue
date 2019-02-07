@@ -131,7 +131,7 @@
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
-        }, 300)
+        }, 1500)
       },
       save () {
         this.$validator.validate().then(result => {
