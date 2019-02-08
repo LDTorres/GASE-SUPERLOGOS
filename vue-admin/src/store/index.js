@@ -22,6 +22,7 @@ import users from './modules/users'
 import portfolios from './modules/portfolios'
 import projects from './modules/projects'
 import leads from './modules/leads'
+import safetypay from './modules/safetypay'
 
 import app from './modules/app'
 
@@ -67,6 +68,7 @@ export default new Vuex.Store({
     portfolios: portfolios,
     app: app,
     projects: projects,
-    leads: leads
+    leads: leads,
+    safetypay: safetypay
   }
 })

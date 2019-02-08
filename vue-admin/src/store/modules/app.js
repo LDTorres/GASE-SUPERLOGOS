@@ -53,6 +53,11 @@ const app = {
         route: 'orders'
       },
       {
+        icon: 'payment',
+        title: 'Safety Pay',
+        route: 'safetypay'
+      },
+      {
         icon: 'money',
         title: 'Monedas',
         route: 'currencies'

@@ -32,6 +32,7 @@ func (c *GatewaysController) URLMapping() {
 
 	/* SafetyPay */
 	c.Mapping("GetSafetypayNotifications", c.GetSafetypayNotifications)
+	c.Mapping("GetSafetypayNotificationsConfirm", c.GetSafetypayNotificationsConfirm)
 	c.Mapping("GetSafetypayTestRequestToken", c.GetSafetypayTestRequestToken)
 }
 
@@ -566,20 +567,64 @@ func (c *GatewaysController) RestoreFromTrash() {
 // @router /safetypay/notifications [get]
 func (c *GatewaysController) GetSafetypayNotifications() {
 
-	operations, err := payments.SafetyPayGetNewOperationActivity()
-	if err != nil {
-		c.BadRequest(err)
-		return
-	}
+	response := &payments.SafetyPayResponse{}
 
-	err = payments.SafetypayConfirmNewOperationActivity(operations)
+	response, err := payments.SafetyPayGetNewOperationActivity()
+
+	beego.Debug(response)
 
 	if err != nil {
 		c.BadRequest(err)
 		return
 	}
 
-	for _, operation := range operations {
+	if response.OperationActivity == nil {
+		err = errors.New("No se encontraron pagos pendientes")
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	pendingOperations := []*payments.SafetyPayConfirmOperationActivity{}
+
+	for _, pendingOperation := range response.OperationActivity.Operations {
+		m := &payments.SafetyPayConfirmOperationActivity{
+			CreationDateTime: pendingOperation.CreationDateTime,
+			OperationID:      pendingOperation.OperationID,
+			MerchantSalesID:  pendingOperation.MerchantSalesID,
+			MerchantOrderID:  pendingOperation.MerchantSalesID,
+			OperationStatus:  "102",
+		}
+
+		pendingOperations = append(pendingOperations, m)
+	}
+
+	c.Data["json"] = pendingOperations
+	c.ServeJSON()
+
+}
+
+// GetSafetypayNotificationsConfirm ...
+// @Title Safetypay Notifications Confirm
+// @Description Safetypay Notifications Confirm
+// @router /safetypay/notifications/confirm [put]
+func (c *GatewaysController) GetSafetypayNotificationsConfirm() {
+	pendingOperations := []*payments.SafetyPayConfirmOperationActivity{}
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &pendingOperations)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	_, err = payments.SafetypayConfirmNewOperationActivity(pendingOperations)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	for _, operation := range pendingOperations {
 
 		orderID, err := strconv.Atoi(operation.MerchantOrderID)
 		if err != nil {
@@ -596,9 +641,12 @@ func (c *GatewaysController) GetSafetypayNotifications() {
 
 	}
 
-	c.Data["json"] = operations
-	c.ServeJSON()
+	c.Data["json"] = MessageResponse{
+		Message:       "Confirm payments",
+		PrettyMessage: "Pagos confirmados",
+	}
 
+	c.ServeJSON()
 }
 
 // GetSafetypayTestRequestToken ...

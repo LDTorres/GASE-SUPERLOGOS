@@ -91,8 +91,8 @@ type SafetyPayOperationActivityResponse struct {
 type SafetyPayOperationActivityResponseOperation struct {
 	XMLName          xml.Name `xml:"Operation"`
 	CreationDateTime string   `xml:"CreationDateTime,omitempty"`
-	OperationID      string   `xml:"ShopperRedirectURL,omitempty"`
-	MerchantSalesID  string   `xml:"Signature,omitempty"`
+	OperationID      string   `xml:"OperationID,omitempty"`
+	MerchantSalesID  string   `xml:"MerchantSalesID,omitempty"`
 	Status           string   `xml:"OperationActivities>OperationActivity>Status>StatusCode,omitempty"`
 }
 
@@ -111,13 +111,17 @@ type SafetyPayOperationActivity struct {
 	OperationStatus    string  `xml:"urn:OperationStatus,omitempty"`
 }
 
+type ConfirmOperation struct {
+	Operations []*SafetyPayConfirmOperationActivity `xml:"urn1:ConfirmOperation"`
+}
+
 // SafetyPayConfirmNewOperationActivityRequest confirm multiple operations
 type SafetyPayConfirmNewOperationActivityRequest struct {
-	XMLName             xml.Name                             `xml:"urn:OperationActivityNotifiedRequest"`
-	APIKey              string                               `xml:"urn:ApiKey,omitempty"`
-	RequestDateTime     string                               `xml:"urn:RequestDateTime,omitempty"`
-	OperationActivities []*SafetyPayConfirmOperationActivity `xml:"urn1:ListOfOperationsActivityNotified,omitempty"`
-	Signature           string                               `xml:"urn:Signature,omitempty"`
+	XMLName             xml.Name          `xml:"urn:OperationActivityNotifiedRequest"`
+	APIKey              string            `xml:"urn:ApiKey,omitempty"`
+	RequestDateTime     string            `xml:"urn:RequestDateTime,omitempty"`
+	OperationActivities *ConfirmOperation `xml:"urn:ListOfOperationsActivityNotified,omitempty"`
+	Signature           string            `xml:"urn:Signature,omitempty"`
 }
 
 // SafetyPayConfirmNewOperationActivityResponse ...
@@ -170,7 +174,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 
 	requestBodyData := bytes.NewReader(output)
 
-	fmt.Println(string(output))
+	// fmt.Println(string(output))
 
 	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
 
@@ -285,11 +289,10 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 	beego.Debug("expressToken: ", expressToken)
 
 	return
-
 }
 
 // getNewOperationActivityRequest GET NEW PAID ORDERS
-func (s *SafetyPayRequest) getNewOperationActivityRequest() (operationActivities []*SafetyPayConfirmOperationActivity, err error) {
+func (s *SafetyPayRequest) getNewOperationActivityRequest() (r *SafetyPayResponse, err error) {
 
 	output, err := xml.MarshalIndent(s, "  ", "    ")
 	if err != nil {
@@ -325,15 +328,28 @@ func (s *SafetyPayRequest) getNewOperationActivityRequest() (operationActivities
 		return
 	}
 
-	fmt.Println(body)
+	r = &SafetyPayResponse{}
 
-	//TODO: RECUPERAR DEL CUERPO DE LA RESPUESTA las operationsActivities
+	err = xml.Unmarshal([]byte(body), &r)
 
-	return
+	if err != nil {
+		fmt.Printf("error: %v", err)
+		return
+	}
+
+	fmt.Println(&r)
+
+	if res.StatusCode != 200 {
+		beego.Debug("Response: ", res.Body)
+		err = errors.New("Error with token request")
+		return
+	}
+
+	return r, nil
 }
 
 // SafetyPayGetNewOperationActivity ...
-func SafetyPayGetNewOperationActivity() (operationActivities []*SafetyPayConfirmOperationActivity, err error) {
+func SafetyPayGetNewOperationActivity() (response *SafetyPayResponse, err error) {
 
 	requestDateTime := jodaTime.Format("yyyy-MM-ddThh:mm:ss", time.Now())
 
@@ -352,19 +368,20 @@ func SafetyPayGetNewOperationActivity() (operationActivities []*SafetyPayConfirm
 		OperationActivity: operationStruct,
 	}
 
-	operationActivities, err = safetyPayStruct.getNewOperationActivityRequest()
+	response, err = safetyPayStruct.getNewOperationActivityRequest()
 
 	return
-
 }
 
 // confirmNewOperationActivity CONFIRM NEW PAID ORDERS
-func (s *SafetyPayRequest) confirmNewOperationActivityRequest() (operationActivities []*SafetyPayConfirmOperationActivity, err error) {
+func (s *SafetyPayRequest) confirmNewOperationActivityRequest() (r *SafetyPayResponse, err error) {
 
 	output, err := xml.MarshalIndent(s, "  ", "    ")
 	if err != nil {
 		return
 	}
+
+	fmt.Println(string(output))
 
 	requestBodyData := bytes.NewReader(output)
 
@@ -395,15 +412,28 @@ func (s *SafetyPayRequest) confirmNewOperationActivityRequest() (operationActivi
 		return
 	}
 
-	fmt.Println(body)
+	r = &SafetyPayResponse{}
 
-	//TODO: RECUPERAR DEL CUERPO DE LA RESPUESTA las operationsActivities
+	err = xml.Unmarshal([]byte(body), &r)
 
-	return
+	if err != nil {
+		fmt.Printf("error: %v", err)
+		return
+	}
+
+	fmt.Println(&r)
+
+	if res.StatusCode != 200 {
+		beego.Debug("Response: ", res.Body)
+		err = errors.New("Error with token request")
+		return
+	}
+
+	return r, nil
 }
 
 // SafetypayConfirmNewOperationActivity ...
-func SafetypayConfirmNewOperationActivity(operationActivities []*SafetyPayConfirmOperationActivity) (err error) {
+func SafetypayConfirmNewOperationActivity(operationActivities []*SafetyPayConfirmOperationActivity) (r *SafetyPayResponse, err error) {
 
 	requestDateTime := jodaTime.Format("yyyy-MM-ddThh:mm:ss", time.Now())
 
@@ -417,11 +447,15 @@ func SafetypayConfirmNewOperationActivity(operationActivities []*SafetyPayConfir
 
 	signature := createSignature256(operationActivitiesStrings...)
 
+	confirmOperations := &ConfirmOperation{
+		Operations: operationActivities,
+	}
+
 	operationStruct := &SafetyPayConfirmNewOperationActivityRequest{
 		APIKey:              APIKey,
 		RequestDateTime:     requestDateTime,
 		Signature:           signature,
-		OperationActivities: operationActivities,
+		OperationActivities: confirmOperations,
 	}
 
 	safetyPayStruct := &SafetyPayRequest{
@@ -431,8 +465,7 @@ func SafetypayConfirmNewOperationActivity(operationActivities []*SafetyPayConfir
 		ConfirmNewOperationActivity: operationStruct,
 	}
 
-	operationActivities, err = safetyPayStruct.confirmNewOperationActivityRequest()
+	r, err = safetyPayStruct.confirmNewOperationActivityRequest()
 
 	return
-
 }

@@ -65,7 +65,8 @@
         <td >{{ props.item.id }}</td>
         <td >{{ props.item.initial_value }}</td>
         <td >{{ props.item.final_value }}</td>
-        <td >{{ props.item.discount }}</td>
+        <td >{{ props.item.initial_discount }}</td>
+        <td >{{ props.item.final_discount }}</td>
         <td >{{ props.item.status }}</td>
         <td >{{ props.item.clients.email }}</td>
         <td >{{ props.item.gateways.name }}</td>

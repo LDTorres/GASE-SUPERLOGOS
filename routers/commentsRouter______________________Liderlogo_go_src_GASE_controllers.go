@@ -609,6 +609,14 @@ func init() {
 
 	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
 		beego.ControllerComments{
+			Method: "GetSafetypayNotificationsConfirm",
+			Router: `/safetypay/notifications/confirm`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+		beego.ControllerComments{
 			Method: "GetSafetypayTestRequestToken",
 			Router: `/safetypay/test-express-token`,
 			AllowHTTPMethods: []string{"get"},
