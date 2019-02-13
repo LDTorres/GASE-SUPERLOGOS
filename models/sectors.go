@@ -17,7 +17,7 @@ type Sectors struct {
 	ID         int           `orm:"column(id);pk" json:"id"`
 	Name       string        `orm:"column(name);size(255)" json:"name,omitempty" valid:"Required"`
 	Slug       string        `orm:"column(slug);size(255)" json:"slug,omitempty" valid:"AlphaDash"`
-	Code       string        `orm:"column(code);size(255)" json:"-" valid:"Required; AlphaNumeric"`
+	Code       string        `orm:"column(code);size(255)" json:"-"`
 	Activities []*Activities `orm:"reverse(many)" json:"activities,omitempty"`
 	CreatedAt  time.Time     `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt  time.Time     `orm:"column(updated_at);type(datetime);null" json:"-"`
