@@ -174,7 +174,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 
 	requestBodyData := bytes.NewReader(output)
 
-	fmt.Println(string(output))
+	// fmt.Println(string(output))
 
 	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
 

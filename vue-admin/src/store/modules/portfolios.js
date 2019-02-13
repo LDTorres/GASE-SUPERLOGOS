@@ -8,7 +8,6 @@ const route = '/portfolios'
 var struct = [
   { text: 'Id', align: 'left', sortable: true, value: 'id' },
   { text: 'Nombre', value: 'name' },
-  { text: 'Descripción', value: 'description' },
   { text: 'Cliente', value: 'client' },
   { text: 'Locación', value: 'location.name' },
   { text: 'Servicio', value: 'service.name' },

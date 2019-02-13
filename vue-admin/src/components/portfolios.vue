@@ -128,7 +128,6 @@
         <tr @click="props.expanded = !props.expanded">
           <td>{{ props.item.id }}</td>
           <td >{{ props.item.name }}</td>
-          <td >{{ props.item.description }}</td>
           <td >{{ props.item.client }}</td>
           <td >{{ props.item.location.name }}</td>
           <td >{{ props.item.service.name }}</td>
