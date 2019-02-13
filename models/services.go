@@ -55,7 +55,9 @@ func AddServices(m *Services) (id int64, err error) {
 	UUID, err := uuid.NewV4()
 	m.Code = UUID.String()
 
-	m.Slug = GenerateSlug(m.TableName(), m.Name)
+	if m.Slug == "" {
+		m.Slug = GenerateSlug(m.TableName(), m.Name)
+	}
 
 	id, err = o.Insert(m)
 

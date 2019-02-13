@@ -174,7 +174,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 
 	requestBodyData := bytes.NewReader(output)
 
-	// fmt.Println(string(output))
+	fmt.Println(string(output))
 
 	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
 
@@ -227,15 +227,15 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 
 	//condicional filter online o efectivo
 	var (
-		// filterBy  string
+		filterBy  string
 		productID string
 	)
 
 	if filter == "online" {
-		// filterBy = "CHANNEL(OL)"
+		filterBy = "CHANNEL(OL)"
 		productID = "1"
 	} else if filter == "cash" {
-		// filterBy = "CHANNEL(WP)"
+		filterBy = "CHANNEL(WP)"
 		productID = "2"
 	} else {
 		err = errors.New("filter value is not valid")
@@ -252,15 +252,15 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 	// beego.Debug("APIKey: ", APIKey)
 
 	tokenStruct := &SafetyPayExpressTokenRequest{
-		APIKey:          APIKey,
-		RequestDateTime: requestDateTime,
-		CurrencyID:      "EUR",
-		Amount:          amountString,
-		MerchantSalesID: strconv.Itoa(orderID),
-		Language:        "ES",
-		TrackingCode:    "",
-		ExpirationTime:  "120",
-		// FilterBy:                  filterBy,
+		APIKey:                    APIKey,
+		RequestDateTime:           requestDateTime,
+		CurrencyID:                "EUR",
+		Amount:                    amountString,
+		MerchantSalesID:           strconv.Itoa(orderID),
+		Language:                  "ES",
+		TrackingCode:              "",
+		ExpirationTime:            "120",
+		FilterBy:                  filterBy,
 		TransactionOkURL:          transactionOkURL,
 		TransactionErrorURL:       transactionErrorURL,
 		TransactionExpirationTime: "120",

@@ -174,7 +174,7 @@ func GetAllPortfolios(query map[string]string, fields []string, sortby []string,
 		}
 		return ml, nil
 	}
-	return nil, err
+	return ml, err
 }
 
 //UpdatePortfoliosByID updates Portfolios by Id and returns error if the record to be updated doesn't exist

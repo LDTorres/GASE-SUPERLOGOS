@@ -655,7 +655,7 @@ func (c *GatewaysController) GetSafetypayNotificationsConfirm() {
 // @router /safetypay/test-express-token [get]
 func (c *GatewaysController) GetSafetypayTestRequestToken() {
 
-	json, err := payments.SafetyPayCreateExpressToken("EUR", 300, 1, "http://liderlogos.com/gracias?por=safetypay", "http://liderlogos.com/error", "online")
+	json, err := payments.SafetyPayCreateExpressToken("EUR", 300, 1, "http://liderlogos.com/gracias?por=safetypay", "http://liderlogos.com/error", "cash")
 
 	if err != nil {
 		c.BadRequest(err)

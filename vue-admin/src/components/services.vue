@@ -14,11 +14,17 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs6>
+                <v-flex xs4>
                   <v-text-field type="text" name="Nombre" v-validate="'required'" v-model="editedItem.name" label="Nombre"></v-text-field>                   
                   <span v-show="errors.has('Nombre')">{{ errors.first('Nombre') }}</span>
                 </v-flex>
-                <v-flex xs6>
+
+                <v-flex xs4>
+                  <v-text-field type="text" name="Slug" v-validate="'required'" v-model="editedItem.slug" label="Slug"></v-text-field>                   
+                  <span v-show="errors.has('Slug')">{{ errors.first('Slug') }}</span>
+                </v-flex>
+
+                <v-flex xs4>
                   <v-text-field type="number" name="Porcentage" v-validate="'required|numeric|max:2'" v-model="editedItem.percentage" label="Porcentage"></v-text-field>
                   <span v-show="errors.has('Porcentage')">{{ errors.first('Porcentage') }}</span>
                 </v-flex>
