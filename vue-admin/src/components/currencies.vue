@@ -115,9 +115,9 @@
     },
     data () {
       return {
-         status: [
+        status: [
           { text: 'Izquierda', value: 'left' },
-          { text: 'Derecha', value: 'right' },
+          { text: 'Derecha', value: 'right' }
         ],
         selectErrors: [],
         pagination: {},
