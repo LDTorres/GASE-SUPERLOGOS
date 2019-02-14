@@ -26,6 +26,20 @@
                   <v-text-field type="text" name="Simbolo" v-validate="'required|max:3'" v-model="editedItem.symbol" label="Simbolo"></v-text-field>
                   <span v-show="errors.has('Simbolo')">{{ errors.first('Simbolo') }}</span>
                 </v-flex>
+
+                <v-flex xs12>
+                  <v-select
+                  v-model="editedItem.display"
+                  :items="status"
+                  item-text="text"
+                  :error-messages="selectErrors"
+                  label="Posición del simbolo"
+                  required
+                  name="Posicion" 
+                  v-validate="'required'"
+                  ></v-select>
+                  <span v-show="errors.has('Posicion')">{{ errors.first('Posicion') }}</span>
+                </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
@@ -101,6 +115,10 @@
     },
     data () {
       return {
+         status: [
+          { text: 'Izquierda', value: 'left' },
+          { text: 'Derecha', value: 'right' },
+        ],
         selectErrors: [],
         pagination: {},
         dialog: false,
