@@ -3,6 +3,13 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require("path");
+import config from './../devConfig.js'
+
+let buildFolder = config.prod.buildFolderName
+
+if(!buildFolder) {
+	buildFolder = "../admin.liderlogos.com"
+}
 
 module.exports = {
 	dev: {
@@ -44,10 +51,10 @@ module.exports = {
 
 	build: {
 		// Template for index.html
-		index: path.resolve(__dirname, "../admin.liderlogos.com/index.html"),
+		index: path.resolve(__dirname, buildFolder + "/index.html"),
 
 		// Paths
-		assetsRoot: path.resolve(__dirname, "../admin.liderlogos.com"),
+		assetsRoot: path.resolve(__dirname, buildFolder),
 		assetsSubDirectory: "assets",
 		assetsPublicPath: "/",
 
