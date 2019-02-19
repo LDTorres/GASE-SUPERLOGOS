@@ -222,7 +222,7 @@ func GetActivitiesFromTrash() (activities []*Activities, err error) {
 
 }
 
-func addDefaultDataActivities() (count int64, errors []error) {
+func AddDefaultDataActivities() (count int64, errors []error) {
 
 	o := orm.NewOrm()
 
@@ -264,13 +264,13 @@ func addDefaultDataActivities() (count int64, errors []error) {
 				Name:        "Pentagono",
 				Description: "",
 			},
-		}, */
-		"02" /* agricultura-y-ganaderia */ : {
+		},
+		"02": {
 			{
 				Name:        "Agricultura",
 				Description: "",
 			},
-		},
+		}, */
 	}
 
 	for key, dummySector := range dummyData {

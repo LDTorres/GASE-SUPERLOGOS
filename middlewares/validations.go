@@ -14,6 +14,7 @@ var (
 	}
 	// ExcludeUrls ...
 	ExcludeUrls = map[string][]string{
+		"database":        {"GET"},
 		"login":           {"POST"},
 		"clients":         {"POST"},
 		"carts":           {"POST", "PUT"},

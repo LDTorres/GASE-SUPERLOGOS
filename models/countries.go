@@ -244,7 +244,7 @@ func GetCountriesFromTrash() (countries []*Countries, err error) {
 
 }
 
-func addDefaultDataCountries() (count int64, err error) {
+func AddDefaultDataCountries() (count int64, err error) {
 
 	o := orm.NewOrm()
 

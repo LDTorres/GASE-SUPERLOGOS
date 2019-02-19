@@ -204,6 +204,8 @@
 </template>
 
 <script lang="js">
+  import { default as config } from './../../config.js'
+
   export default {
     name: 'portfolios',
     props: ['search'],
@@ -217,8 +219,7 @@
     },
     data () {
       return {
-        // Cambiar dependiendo del enviroment
-        urlHosting: process.env.NODE_ENV === 'development' ? 'http://localhost:9090' : 'http://api.liderlogos.com',
+        urlHosting: process.env.NODE_ENV === 'development' ? config.dev.imageURL : config.prod.imageURL,
         selectErrors: [],
         pagination: {},
         dialog: false,

@@ -6,10 +6,10 @@ import (
 	"GASE/models"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
+	"github.com/astaxie/beego"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -136,14 +136,16 @@ func (c *BriefsController) Post() {
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{mails.DefaultEmail, "cisliderlogofreelancer@gmail.com"},
+			To:         []string{mails.DefaultEmail},
 			Subject:    "Nuevo Brief - " + string(v.ID),
 			HTMLParams: HTMLParams,
 		}
 
-		errnBrief := mails.SendMail(mailNotification, "555")
+		err = mails.SendMail(mailNotification, "005")
 
-		fmt.Println(errnBrief)
+		if err != nil {
+			beego.Debug(err)
+		}
 
 	}()
 

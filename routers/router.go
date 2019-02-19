@@ -153,6 +153,11 @@ func init() {
 				&controllers.LeadsController{},
 			),
 		),
+		beego.NSNamespace("/database",
+			beego.NSInclude(
+				&controllers.DatabaseController{},
+			),
+		),
 	)
 
 	beego.AddNamespace(ns)

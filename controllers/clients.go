@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/sethvargo/go-password/password"
 )
@@ -108,7 +109,11 @@ func (c *ClientsController) Post() {
 			To:         []string{v.Email},
 			HTMLParams: HTMLParams,
 		}
-		mails.SendMail(Email, "001")
+		err = mails.SendMail(Email, "001")
+
+		if err != nil {
+			beego.Debug(err)
+		}
 	})()
 
 	c.Ctx.Output.SetStatus(201)
@@ -413,7 +418,11 @@ func (c *ClientsController) ChangePasswordRequest() {
 			To:         []string{v.Email},
 			HTMLParams: HTMLParams,
 		}
-		mails.SendMail(Email, "002")
+		err = mails.SendMail(Email, "002")
+
+		if err != nil {
+			beego.Debug(err)
+		}
 	})()
 
 	c.Ctx.Output.SetStatus(201)
@@ -476,7 +485,11 @@ func (c *ClientsController) ChangePassword() {
 			To:         []string{v.Email},
 			HTMLParams: HTMLParams,
 		}
-		mails.SendMail(Email, "003")
+		err = mails.SendMail(Email, "003")
+
+		if err != nil {
+			beego.Debug(err)
+		}
 	})()
 
 	c.Ctx.Output.SetStatus(200)

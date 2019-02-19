@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -60,49 +59,6 @@ func init() {
 	orm.RegisterDataBase("default", "mysql", mysqlConnData.user+":"+mysqlConnData.pass+"@/"+mysqlConnData.dbName+"?charset=utf8")
 
 	orm.RegisterModel(new(Activities), new(Carts), new(Countries), new(Clients), new(Coupons), new(Currencies), new(Gateways), new(Images), new(Locations), new(Orders), new(Portfolios), new(Prices), new(Sectors), new(Services), new(Projects), new(Comments), new(Attachments), new(Releases), new(Sketchs), new(SketchsFiles), new(Leads))
-
-	// Add defaults to database
-	count, _ := AddDefaultDataCurrencies()
-	if count > 0 {
-		fmt.Println("Added Currencies : ", count)
-	}
-
-	count, _ = addDefaultDataCountries()
-	if count > 0 {
-		fmt.Println("Added Countries : ", count)
-	}
-
-	count, _ = AddDefaultDataSectors()
-	if count > 0 {
-		fmt.Println("Added Sectors : ", count)
-	}
-
-	count, _ = addDefaultDataActivities()
-	if count > 0 {
-		fmt.Println("Added Activities : ", count)
-	}
-
-	count, _ = AddDefaultDataGateways()
-	if count > 0 {
-		fmt.Println("Added Gateways : ", count)
-	}
-
-	/* count, _ = addRelationsGatewaysCurrencies()
-	if count > 0 {
-		fmt.Println("Added relations GatewaysCurrencies : ", count)
-	} */
-
-	/*
-		count, _ = AddDefaultDataServices()
-		if count > 0 {
-			fmt.Println("Added Services : ", count)
-		}
-	*/
-
-	// AddDefaultDataPrices()
-
-	AddDefaultDataUsers()
-
 }
 
 //LoadRelations of the model

@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego"
+
 	"github.com/astaxie/beego/validation"
 )
 
@@ -97,13 +99,16 @@ func (c *LeadsController) Post() {
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{mails.DefaultEmail, "cisliderlogofreelancer@gmail.com"},
+			To:         []string{mails.DefaultEmail},
 			Subject:    "Nuevo Lead",
 			HTMLParams: HTMLParams,
 		}
 
-		mails.SendMail(mailNotification, "777")
+		err = mails.SendMail(mailNotification, "003")
 
+		if err != nil {
+			beego.Debug(err)
+		}
 	}()
 
 	c.Ctx.Output.SetStatus(201)
@@ -363,12 +368,16 @@ func (c *LeadsController) Newsletter() {
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{mails.DefaultEmail, "cisliderlogofreelancer@gmail.com"},
+			To:         []string{mails.DefaultEmail},
 			Subject:    "Subscripción a newsletter - " + v.Email,
 			HTMLParams: HTMLParams,
 		}
 
-		mails.SendMail(mailNotification, "002")
+		err = mails.SendMail(mailNotification, "002")
+
+		if err != nil {
+			beego.Debug(err)
+		}
 
 	}()
 

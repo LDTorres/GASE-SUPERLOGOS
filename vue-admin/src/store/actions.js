@@ -21,12 +21,16 @@ export default {
   },
   async getAll ({ commit }, params) {
     await axios.get('/' + params.state + '?limit=1000').then((res) => {
+      if (res.data === null) return
+
       params.res = res.data
       commit('GET_ALL', params)
     }).catch(() => {})
   },
   async getOne ({ commit }, params) {
     await axios.get('/' + params.state + '/' + params.item.id).then((res) => {
+      if (res.data === null) return
+
       params.res = res.data
       commit('GET_ONE', params)
     }).catch(() => {})
@@ -51,6 +55,8 @@ export default {
   },
   async getAllTrashed ({ commit }, params) {
     await axios.get('/' + params.state + '/trashed').then((res) => {
+      if (res.data === null) return
+
       params.res = res.data
       commit('GET_ALL_TRASHED', params)
     }).catch(() => {})

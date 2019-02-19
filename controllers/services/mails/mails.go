@@ -88,7 +88,6 @@ func getTemplate(code string, HTMLParams *HTMLParams) (tplHTML *string, err erro
 	var tplName string
 
 	for _, filesInfo := range filesInfo {
-
 		fileInfoName := filesInfo.Name()
 
 		fileInfoNameSplited := strings.Split(fileInfoName, ".")

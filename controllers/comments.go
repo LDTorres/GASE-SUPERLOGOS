@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 )
 
@@ -126,8 +127,11 @@ func (c *CommentsController) Post() {
 				HTMLParams: HTMLParams,
 			}
 
-			mails.SendMail(mailNotification, "616")
+			err = mails.SendMail(mailNotification, "004")
 
+			if err != nil {
+				beego.Debug(err)
+			}
 		}()
 	}
 
