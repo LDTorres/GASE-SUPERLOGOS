@@ -204,7 +204,7 @@
 </template>
 
 <script lang="js">
-  import { default as config } from './../../config.js'
+  import config from './../../devConfig.js'
 
   export default {
     name: 'portfolios',

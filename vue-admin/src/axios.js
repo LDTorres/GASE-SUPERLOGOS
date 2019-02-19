@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { default as config } from './../config.js'
+import config from './../devConfig.js'
 
 var headers = {}
 const token = localStorage.getItem('bazam-token')
