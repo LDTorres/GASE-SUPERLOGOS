@@ -1,10 +1,35 @@
 package models
 
 import (
+	"io"
+	"net/http"
+	"os"
+
 	"github.com/astaxie/beego/orm"
 	"github.com/globalsign/mgo/bson"
 	"github.com/gosimple/slug"
 )
+
+func DownloadFile(filepath string, url string) error {
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
+}
 
 //AddDefaultDataCurrencies on init app
 func AddDefaultDataCurrencies() (count int64, err error) {
@@ -29,7 +54,7 @@ func AddDefaultDataCurrencies() (count int64, err error) {
 	return
 }
 
-func addRelationsGatewaysCurrencies() (count int64, errors []error) {
+func AddRelationsGatewaysCurrencies() (count int64, errors []error) {
 
 	o := orm.NewOrm()
 
