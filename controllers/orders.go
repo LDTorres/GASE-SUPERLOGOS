@@ -188,7 +188,7 @@ func (c *OrdersController) Post() {
 		return
 	}
 
-	paid, _, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment)
+	paid, redirect, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment)
 
 	if err != nil {
 		c.BadRequest(err)
@@ -199,6 +199,7 @@ func (c *OrdersController) Post() {
 		Order.PaymentID = paymentID
 		Order.Status = "COMPLETED"
 		models.UpdateOrdersByID(Order)
+		Order.Redirect = redirect
 	}
 
 	/* Set used to true */

@@ -504,7 +504,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 			return false, "", "", err
 		}
 
-		paid = false
+		paid = true
 		redirect = data.CreateExpressToken.ShopperRedirectURL
 
 	default:
