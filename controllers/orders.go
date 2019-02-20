@@ -195,12 +195,15 @@ func (c *OrdersController) Post() {
 		return
 	}
 
+	beego.Debug(paid, redirect)
+
 	if paid {
-		Order.PaymentID = paymentID
 		Order.Status = "COMPLETED"
+		Order.PaymentID = paymentID
 		models.UpdateOrdersByID(Order)
-		Order.Redirect = redirect
 	}
+
+	Order.Redirect = redirect
 
 	/* Set used to true */
 	for _, el := range Order.Coupons {
@@ -215,8 +218,6 @@ func (c *OrdersController) Post() {
 			return
 		}
 	}
-
-	beego.Debug("Servicios del carrito ", cart.Services)
 
 	go func() {
 

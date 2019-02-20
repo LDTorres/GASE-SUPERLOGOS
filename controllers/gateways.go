@@ -496,17 +496,19 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 
 		filter := paymentData["filter"].(string)
 
-		data, err := payments.SafetyPayCreateExpressToken(countries.Currency.Iso, price, orderID, "http://google.com/success", "http://google.com/error", filter)
-
-		beego.Debug("Data", data)
+		// countries.Currency.Iso
+		data, err := payments.SafetyPayCreateExpressToken("EUR", price, orderID, "http://liderlogos.com/gracias?por=safetypay", "http://liderlogos.com/error", filter)
 
 		if err != nil {
 			return false, "", "", err
 		}
 
-		paid = true
-		redirect = data.CreateExpressToken.ShopperRedirectURL
+		// beego.Debug("ResponseDateTime: ", data.CreateExpressToken.ResponseDateTime)
+		// beego.Debug("ShopperRedirectURL: ", data.CreateExpressToken.ShopperRedirectURL)
+		// beego.Debug("ErrorManager: ", data.CreateExpressToken.ErrorManager)
 
+		paid = false
+		redirect = data.CreateExpressToken.ShopperRedirectURL
 	default:
 		err = errors.New("Invalid Gateway code")
 		return

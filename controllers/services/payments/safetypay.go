@@ -158,8 +158,9 @@ func createSignature256(args ...string) (signature256 string) {
 
 	sha := hex.EncodeToString(hash.Sum(nil))
 
-	// beego.Debug(stringArgs)
-	// beego.Debug(sha)
+	// beego.Debug("Argumentos:", args)
+	// beego.Debug("Argumentos String:", stringArgs)
+	// beego.Debug("Signature:", sha)
 
 	signature256 = sha
 	return
@@ -174,7 +175,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 
 	requestBodyData := bytes.NewReader(output)
 
-	// fmt.Println(string(output))
+	// beego.Debug(string(output))
 
 	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
 
@@ -185,7 +186,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 	req.Header.Add("Content-Type", "text/xml")
 	req.Header.Add("SOAPAction", "urn:safetypay:contract:mws:api:CreateExpressToken")
 
-	beego.Debug("Req Headers: ", req.Header.Get("SOAPAction"))
+	// beego.Debug("Req Headers: ", req.Header.Get("SOAPAction"))
 
 	client := &http.Client{}
 	res, err := client.Do(req)
@@ -286,7 +287,7 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 		return
 	}
 
-	beego.Debug("expressToken: ", expressToken)
+	// beego.Debug("expressToken: ", expressToken)
 
 	return
 }
