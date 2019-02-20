@@ -25,7 +25,7 @@ type Orders struct {
 	Coupons         []*Coupons `orm:"rel(m2m)" json:"coupons,omitempty"`
 	Country         *Countries `orm:"column(countries_id);rel(fk)" json:"countries,omitempty"`
 	PaymentID       string     `orm:"column(payment_id)" json:"payment_id,omitempty"`
-	Redirect        string     `json:"redirect,omitempty"`
+	Redirect        string     `orm:"-" json:"redirect,omitempty"`
 	CreatedAt       time.Time  `orm:"column(created_at);type(datetime);null;auto_now_add" json:"-"`
 	UpdatedAt       time.Time  `orm:"column(updated_at);type(datetime);null" json:"-"`
 	DeletedAt       time.Time  `orm:"column(deleted_at);type(datetime);null" json:"-"`
