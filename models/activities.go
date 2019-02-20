@@ -9,7 +9,6 @@ import (
 	"github.com/astaxie/beego"
 
 	"github.com/astaxie/beego/orm"
-	"github.com/gosimple/slug"
 )
 
 //Activities Model
@@ -220,87 +219,4 @@ func GetActivitiesFromTrash() (activities []*Activities, err error) {
 
 	return
 
-}
-
-func AddDefaultDataActivities() (count int64, errors []error) {
-
-	o := orm.NewOrm()
-
-	dummyData := map[string][]Activities{
-		/* 		"01": /* "figuras-geometricas-y-abstractas  {
-			{
-				Name:        "Figuras",
-				Description: "",
-			},
-			{
-				Name:        "Abstractos",
-				Description: "",
-			},
-			{
-				Name:        "3d",
-				Description: "",
-			},
-			{
-				Name:        "Esfera",
-				Description: "",
-			},
-			{
-				Name:        "Rectangulo",
-				Description: "",
-			},
-			{
-				Name:        "Piramide",
-				Description: "",
-			},
-			{
-				Name:        "Cuadrado",
-				Description: "",
-			},
-			{
-				Name:        "Rombo",
-				Description: "",
-			},
-			{
-				Name:        "Pentagono",
-				Description: "",
-			},
-		},
-		"02": {
-			{
-				Name:        "Agricultura",
-				Description: "",
-			},
-		}, */
-	}
-
-	for key, dummySector := range dummyData {
-
-		sector := Sectors{Code: key}
-
-		err := o.Read(&sector, "code")
-
-		if err != nil {
-			continue
-		}
-
-		for key, dummyActivity := range dummySector {
-
-			dummySector[key].Slug = slug.Make(dummyActivity.Name)
-			dummySector[key].Sector = &sector
-
-		}
-
-		result, err := o.InsertMulti(100, dummySector)
-
-		if err != nil {
-
-			errors = append(errors, err)
-			continue
-		}
-
-		count += result
-
-	}
-
-	return
 }

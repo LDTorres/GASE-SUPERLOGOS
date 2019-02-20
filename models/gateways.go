@@ -199,8 +199,34 @@ func AddDefaultDataGateways() (count int64, err error) {
 
 	dummyData := []*Gateways{
 		{
-			Name: "Paypal",
-			Code: "01",
+			Name:         "Paypal",
+			Code:         "01",
+			Description:  "Paga con PayPal; puedes pagar con tu tarjeta de crédito si no tienes una cuenta PayPal.",
+			Instructions: "1: Verifique su bandeja de entrada para ver si ha recibido un mensaje de correo electrónico que incluya la solicitud de pago o el formato de pago .<br><br> 2: Haga clic en el botón Pagar ahora en el correo electrónico. (Si no lo ve, haga clic en el link del correo electrónico o copie y pegue el link en la barra de direcciones del navegador).<br><br> 3: Si ya tiene una cuenta PayPal, ingrese su contraseña y haga clic en Iniciar sesión.<br><br> Revise la solicitud de pago o el formato de pago y, a continuación, haga clic en Pagar ahora para completar la transacción.",
+		},
+		{
+			Name:         "Stripe",
+			Code:         "02",
+			Description:  "Paga con tu tarjeta de crédito a través de Stripe, es rápido y seguro.",
+			Instructions: "1: Ingresa los datos de tu tarjeta de crédito habilitada para pagos internacionales <br><br> 2: Has clic en pagar y ¡LISTO!",
+		},
+		{
+			Name:         "Transferencia Bancaría Banco Santander",
+			Code:         "03",
+			Description:  "Pago a través de Transferencia o Ingreso en cuenta en el Banco Santander. Por favor use su nombre de proyecto como referencia en su pago. Su orden será tramitada una vez se confirme su pago.",
+			Instructions: "Pago a través de Transferencia o Ingreso en cuenta en Banco Santander Central Hispano<br> Numero de cuenta bancaria: 0049 1555 14 2810178350 <br> Beneficiario: Solmax Europe SLU<br> CIF: B64493018<br>",
+		},
+		{
+			Name:         "Deposito o transferencia",
+			Code:         "04",
+			Description:  "Pago a través de Transferencia o Ingreso en cuenta en el Banco Santander. Por favor use su nombre de proyecto como referencia en su pago. Su orden será tramitada una vez se confirme su pago.",
+			Instructions: "Pago a través de Transferencia o Ingreso en cuenta:<br> Banco santander<br> Beneficiario: Solmax Europe SLU<br> Identificación Fiscal y Tributaria: B64493018<br> Número de Cuenta Bancaria: 65-50362108-8<br> CLABE 014180655036210882 <br>",
+		},
+		{
+			Name:         "Paypal",
+			Code:         "05",
+			Description:  "SafetyPay te permite realizar pagos en línea desde tu cuenta bancaria. La dirección de facturación debe estar en Brasil, México, Costa Rica, Perú, España o Austria para pagar mediante SafetyPay.",
+			Instructions: "1: Se te remitirá al sitio web de SafetyPay. <br><br> 2: En el sitio web de SafetyPay, selecciona el banco desde el que deseas efectuar el pago. <br><br> 3: Aparecerá un mensaje que indica las horas durante el cual se aceptarán los pagos. Sigue las instrucciones del sitio para hacer un pago.<br><br> 4: SafetyPay autoriza la transacción una vez que se ha completado el pago. El tiempo que tarda este proceso puede variar de un banco a otro. <br><br> 5: Recibirás una confirmación cuando el pago se realice correctamente.<br><br>",
 		},
 	}
 

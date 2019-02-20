@@ -46,10 +46,10 @@ func (c *DatabaseController) GenerateDatabase() {
 		fmt.Println("Added Gateways : ", count)
 	}
 
-	/* count, _ = models.addRelationsGatewaysCurrencies()
+	count, _ = models.addRelationsGatewaysCurrencies()
 	if count > 0 {
 		fmt.Println("Added relations GatewaysCurrencies : ", count)
-	} */
+	}
 
 	/*
 		count, _ = models.AddDefaultDataServices()

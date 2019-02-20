@@ -9,8 +9,6 @@ import (
 
 	"github.com/astaxie/beego/orm"
 	"github.com/gofrs/uuid"
-
-	"github.com/gosimple/slug"
 )
 
 //Services Model
@@ -211,61 +209,6 @@ func DeleteServices(id int, trash bool) (err error) {
 	if err != nil {
 		return
 	}
-
-	return
-}
-
-//AddDefaultDataServices on init app
-func AddDefaultDataServices() (result int64, err error) {
-
-	o := orm.NewOrm()
-
-	dummyData := []*Services{
-		{
-			Name:       "Logo a Medida",
-			Percertage: 10.0,
-			Code:       "01",
-		},
-	}
-
-	for _, dummyService := range dummyData {
-		dummyService.Slug = slug.Make(dummyService.Name)
-	}
-
-	result, err = o.InsertMulti(100, dummyData)
-
-	return
-}
-
-//GetPricesServicesByID retrieves Services by Id. Returns error if Id doesn't exist
-func (m *Services) GetPricesServicesByID(iso string) (err error) {
-	o := orm.NewOrm()
-
-	err = o.Read(m)
-
-	if err != nil {
-		return
-	}
-
-	//Get countries by Iso
-	country, err := GetCountriesByIso(iso)
-
-	if err != nil {
-		return
-	}
-
-	price := &Prices{Currency: country.Currency, Service: m}
-
-	err = o.Read(price, "Currency", "Service")
-
-	if err != nil {
-		return
-	}
-
-	err = searchFK(price.TableName(), price.ID).One(price)
-
-	price.Service = nil
-	m.Price = price
 
 	return
 }

@@ -186,16 +186,3 @@ func (u *User) LoginUsers() (err error) {
 
 	return
 }
-
-//AddDefaultDataUsers ...
-func AddDefaultDataUsers() (id *bson.ObjectId, err error) {
-	u := User{ID: bson.NewObjectId(), Name: defaultUsername, Email: defaultMail, Password: defaultPassword}
-
-	err = u.Insert()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &u.ID, nil
-}
