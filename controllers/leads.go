@@ -100,11 +100,11 @@ func (c *LeadsController) Post() {
 
 		mailNotification := &mails.Email{
 			To:         []string{mails.DefaultEmail},
-			Subject:    "Nuevo Lead",
+			Subject:    "Nuevo Lead " + v.Email,
 			HTMLParams: HTMLParams,
 		}
 
-		err = mails.SendMail(mailNotification, "003")
+		err = mails.SendMail(mailNotification, "002")
 
 		if err != nil {
 			beego.Debug(err)
@@ -368,12 +368,12 @@ func (c *LeadsController) Newsletter() {
 		}
 
 		mailNotification := &mails.Email{
-			To:         []string{mails.DefaultEmail},
+			To:         []string{mails.DefaultEmail, v.Email},
 			Subject:    "Subscripción a newsletter - " + v.Email,
 			HTMLParams: HTMLParams,
 		}
 
-		err = mails.SendMail(mailNotification, "002")
+		err = mails.SendMail(mailNotification, "003")
 
 		if err != nil {
 			beego.Debug(err)

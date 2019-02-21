@@ -54,7 +54,8 @@ func AddDefaultDataCurrencies() (count int64, err error) {
 	return
 }
 
-func AddRelationsGatewaysCurrencies() (count int64, errors []error) {
+// AddRelationsGatewaysCurrencies ...
+func AddRelationsGatewaysCurrencies() (result int, errors []error) {
 
 	o := orm.NewOrm()
 
@@ -90,9 +91,7 @@ func AddRelationsGatewaysCurrencies() (count int64, errors []error) {
 			continue
 		}
 
-		m2m := o.QueryM2M(&gateway, "Currencies")
-
-		var InsertManyCurrencies []*Currencies
+		var relationsIDs []int
 
 		for _, iso := range dummyGateway {
 
@@ -104,19 +103,10 @@ func AddRelationsGatewaysCurrencies() (count int64, errors []error) {
 				continue
 			}
 
-			InsertManyCurrencies = append(InsertManyCurrencies, &currency)
-
+			relationsIDs = append(relationsIDs, currency.ID)
 		}
 
-		result, err := m2m.Add(InsertManyCurrencies)
-
-		if err != nil {
-			errors = append(errors, err)
-			continue
-		}
-
-		count += result
-
+		RelationsM2M("INSERT", "gateways", gateway.ID, "currencies", relationsIDs)
 	}
 
 	return
@@ -516,11 +506,11 @@ func AddDefaultDataServices() (result int64, err error) {
 	o := orm.NewOrm()
 
 	dummyData := []*Services{
-		{
+		/* {
 			Name:       "Logo a Medida",
 			Percertage: 10.0,
 			Code:       "01",
-		},
+		}, */
 	}
 
 	for _, dummyService := range dummyData {

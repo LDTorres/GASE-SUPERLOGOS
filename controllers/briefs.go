@@ -131,13 +131,14 @@ func (c *BriefsController) Post() {
 	go func() {
 
 		HTMLParams := &mails.HTMLParams{
-			Client: client,
-			Brief:  &v,
+			Client:  client,
+			BriefID: v.ID.Hex(),
+			Country: country,
 		}
 
 		mailNotification := &mails.Email{
 			To:         []string{mails.DefaultEmail},
-			Subject:    "Nuevo Brief - " + string(v.ID),
+			Subject:    "Nuevo Brief - " + v.ID.Hex(),
 			HTMLParams: HTMLParams,
 		}
 

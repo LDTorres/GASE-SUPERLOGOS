@@ -20,6 +20,8 @@ import (
 type HTMLParams struct {
 	ClientName string
 	AdminName  string
+	Token      string
+	BriefID    string
 	Client     *models.Clients
 	Service    *models.Services
 	Services   []*models.Services
@@ -36,7 +38,7 @@ type HTMLParams struct {
 	Sketch     *models.Sketchs
 	Comment    *models.Comments
 	Lead       *models.Leads
-	Token      string
+	Price      *models.Prices
 }
 
 //Email ...
@@ -52,11 +54,12 @@ type Email struct {
 }
 
 var (
-	from         = beego.AppConfig.String("email::from")
-	name         = beego.AppConfig.String("email::name")
-	pass         = beego.AppConfig.String("email::pass")
-	host         = beego.AppConfig.String("email::host")
-	port, _      = beego.AppConfig.Int("email::port")
+	from    = beego.AppConfig.String("email::from")
+	name    = beego.AppConfig.String("email::name")
+	pass    = beego.AppConfig.String("email::pass")
+	host    = beego.AppConfig.String("email::host")
+	port, _ = beego.AppConfig.Int("email::port")
+	// DefaultEmail ...
 	DefaultEmail = beego.AppConfig.String("email::default")
 )
 

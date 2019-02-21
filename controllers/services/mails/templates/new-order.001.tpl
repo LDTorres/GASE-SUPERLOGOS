@@ -178,7 +178,7 @@
         text-align: center;
         "
         >
-        {{.Services[0].Price.Currency.Symbol}}{{.Order.GetInitialPaymentAmount}}
+        {{.Price.Currency.Symbol}} {{.Order.GetInitialPaymentAmount}}
         </td>
         <td
           style="    
@@ -193,7 +193,7 @@
         text-align: center;
         "
         >
-        {{.Services[0].Price.Currency.Symbol}}{{.Order.GetFinalPaymentAmount}}
+        {{.Price.Currency.Symbol}} {{.Order.GetFinalPaymentAmount}}
         </td>
       </tr>
     </table>

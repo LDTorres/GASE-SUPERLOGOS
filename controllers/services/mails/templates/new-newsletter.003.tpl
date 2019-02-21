@@ -20,14 +20,24 @@
     font-size: 26px;
     font-weight: bolder;
     margin-top: 30px;
+    text-align: center;
     "
     >
-      SUBSCRITO A NUESTRO NEWSLETTER
+      SUBSCRITO AL NEWSLETTER
     </h1>
+    <hr
+    style="
+    margin-bottom: 0;
+    height: 3px;
+    background: #007ab5;
+    border: none;
+    "
+    />
+
     <h4
       style="  
       color: #414143;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 500;
       font-family: sans-serif;
       margin-top: 8px;
@@ -49,13 +59,5 @@
     >
       <b>Pais:</b> {{.Country.Name}}
     </h4>
-    <hr
-      style="
-    margin-bottom: 0;
-    height: 3px;
-    background: #007ab5;
-    border: none;
-    "
-    />
   </div>
 </div>

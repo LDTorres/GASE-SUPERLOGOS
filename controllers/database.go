@@ -41,15 +41,9 @@ func (c *DatabaseController) GenerateDatabase() {
 		fmt.Println("Added Activities : ", count)
 	} */
 
-	count, _ = models.AddDefaultDataGateways()
-	if count > 0 {
-		fmt.Println("Added Gateways : ", count)
-	}
+	models.AddDefaultDataGateways()
 
-	count, _ = models.AddRelationsGatewaysCurrencies()
-	if count > 0 {
-		fmt.Println("Added relations GatewaysCurrencies : ", count)
-	}
+	models.AddRelationsGatewaysCurrencies()
 
 	/*
 		count, _ = models.AddDefaultDataServices()
