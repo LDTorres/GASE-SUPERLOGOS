@@ -20,6 +20,7 @@
     font-size: 26px;
     font-weight: bolder;
     margin-top: 30px;
+    text-align: center;
     "
     >
       GRACIAS POR SU PEDIDO
@@ -154,10 +155,12 @@
           justify-content: space-between;
           margin-left: auto;
       ">
-            <span>
+            <span style="width: 135px;
+            text-align: left;">
               Pago Inicial
             </span>
-            <span>
+            <span style="width: 135px;
+            text-align: right;">
               Pago Total
             </span>
           </div>        
@@ -182,10 +185,12 @@
           justify-content: space-between;
           margin-left: auto;
       ">
-            <span>
+            <span style="width: 135px;
+            text-align: left;">
               {{.Symbol}} {{.Order.GetInitialPaymentAmount}} 
             </span>
-            <span>
+            <span style="width: 135px;
+            text-align: right;">
               {{.Symbol}} {{.Order.GetFinalPaymentAmount}}
             </span>
           </div>
