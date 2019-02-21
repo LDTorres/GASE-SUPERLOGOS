@@ -156,9 +156,17 @@ func (c *OrdersController) Post() {
 		return
 	}
 
+	price, err := models.GetPricesByID(cart.Services[0].Price.ID)
+
+	if err != nil {
+		c.ServeErrorJSON(err)
+		return
+	}
+
 	// Add Prices relations
 	var pricesRelations []map[string]int
 	for _, service := range cart.Services {
+		service.Price.Symbol = price.Currency.Symbol
 
 		relation := map[string]int{"id": service.Price.ID, "quantity": service.Quantity}
 
@@ -226,9 +234,11 @@ func (c *OrdersController) Post() {
 			Order:    Order,
 			Gateway:  gateway,
 			Country:  country,
-			Currency: country.Currency,
+			Symbol:   price.Currency.Symbol,
 			Services: cart.Services,
 		}
+
+		beego.Debug(HTMLParams.Price)
 
 		mailNotification := &mails.Email{
 			To:         []string{client.Email, mails.DefaultEmail},

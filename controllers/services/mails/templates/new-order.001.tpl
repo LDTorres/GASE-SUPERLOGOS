@@ -129,7 +129,7 @@
           text-align: center;
           "
           >
-            {{.Price.Value}} {{.Price.Currency.Symbol}}
+          {{.Price.Symbol}} {{.Price.Value}} 
           </td>
         </tr>
       {{ end }}
@@ -178,7 +178,7 @@
         text-align: center;
         "
         >
-        {{.Price.Currency.Symbol}} {{.Order.GetInitialPaymentAmount}}
+        {{.Symbol}} {{.Order.GetInitialPaymentAmount}}
         </td>
         <td
           style="    
@@ -193,7 +193,7 @@
         text-align: center;
         "
         >
-        {{.Price.Currency.Symbol}} {{.Order.GetFinalPaymentAmount}}
+        {{.Symbol}} {{.Order.GetFinalPaymentAmount}}
         </td>
       </tr>
     </table>

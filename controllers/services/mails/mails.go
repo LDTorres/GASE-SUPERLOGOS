@@ -22,6 +22,7 @@ type HTMLParams struct {
 	AdminName  string
 	Token      string
 	BriefID    string
+	Symbol     string
 	Client     *models.Clients
 	Service    *models.Services
 	Services   []*models.Services
