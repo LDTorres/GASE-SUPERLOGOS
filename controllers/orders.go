@@ -238,8 +238,6 @@ func (c *OrdersController) Post() {
 			Services: cart.Services,
 		}
 
-		beego.Debug(HTMLParams.Price)
-
 		mailNotification := &mails.Email{
 			To:         []string{client.Email, mails.DefaultEmail},
 			Subject:    "Gracias por su pedido - " + strconv.Itoa(Order.ID),
