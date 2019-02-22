@@ -566,14 +566,12 @@ func (c *GatewaysController) RestoreFromTrash() {
 // GetSafetypayNotifications ...
 // @Title Get Safetypay Notifications
 // @Description Get Safetypay Notifications
-// @router /safetypay/notifications [get]
+// @router /safetypay/notifications [post]
 func (c *GatewaysController) GetSafetypayNotifications() {
 
 	response := &payments.SafetyPayResponse{}
 
 	response, err := payments.SafetyPayGetNewOperationActivity()
-
-	beego.Debug(response)
 
 	if err != nil {
 		c.BadRequest(err)

@@ -508,6 +508,7 @@ func AddDefaultDataServices() (result int64, err error) {
 	dummyData := []*Services{
 		/* {
 			Name:       "Logo a Medida",
+			Slug:       "Logo a Medida",
 			Percertage: 10.0,
 			Code:       "01",
 		}, */

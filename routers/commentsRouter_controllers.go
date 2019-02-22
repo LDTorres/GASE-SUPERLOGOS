@@ -611,7 +611,7 @@ func init() {
 		beego.ControllerComments{
 			Method: "GetSafetypayNotifications",
 			Router: `/safetypay/notifications`,
-			AllowHTTPMethods: []string{"get"},
+			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
 
