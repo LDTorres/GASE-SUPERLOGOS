@@ -497,7 +497,7 @@ func paymentsHandler(orderID int, gateway *models.Gateways, price float32, count
 		filter := paymentData["filter"].(string)
 
 		// countries.Currency.Iso
-		data, err := payments.SafetyPayCreateExpressToken("EUR", price, orderID, "http://liderlogos.com/gracias?por=compra", "http://liderlogos.com", filter)
+		data, err := payments.SafetyPayCreateExpressToken("EUR", price, orderID, "http://liderlogos.com/gracias?por=compra", "http://liderlogos.com/gracias?por=no-pago", filter)
 
 		if err != nil {
 			return false, "", "", err
@@ -655,7 +655,7 @@ func (c *GatewaysController) GetSafetypayNotificationsConfirm() {
 // @router /safetypay/test-express-token [get]
 func (c *GatewaysController) GetSafetypayTestRequestToken() {
 
-	json, err := payments.SafetyPayCreateExpressToken("EUR", 300, 1, "http://liderlogos.com/gracias?por=compra", "http://liderlogos.com", "cash")
+	json, err := payments.SafetyPayCreateExpressToken("EUR", 300, 1, "http://liderlogos.com/gracias?por=compra", "http://liderlogos.com/gracias?por=no-pago", "cash")
 
 	if err != nil {
 		c.BadRequest(err)
