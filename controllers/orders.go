@@ -196,7 +196,7 @@ func (c *OrdersController) Post() {
 		return
 	}
 
-	paid, redirect, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment)
+	paid, redirect, paymentID, err := paymentsHandler(Order.ID, Order.Gateway, paymentAmount, country, orderPayment.Payment, client)
 
 	if err != nil {
 		c.BadRequest(err)

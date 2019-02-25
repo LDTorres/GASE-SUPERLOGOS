@@ -2,11 +2,9 @@ package controllers
 
 import (
 	"GASE/controllers/services/mails"
-	"GASE/controllers/services/payments"
 	"GASE/models"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -31,19 +29,6 @@ func (c *LeadsController) URLMapping() {
 	c.Mapping("Delete", c.Delete)
 
 	c.Mapping("Newsletter", c.Newsletter)
-}
-
-// Test ...
-// @Title Post
-// @router /test [post]
-func (c *LeadsController) Test() {
-
-	token, err := payments.SafetyPayCreateExpressToken("USD", 100.00, 23432, "http://liderlogos.com/success", "http://liderlogos.com/error", "online")
-
-	fmt.Println(err)
-	fmt.Println(token)
-
-	c.ServeJSON()
 }
 
 // Post ...

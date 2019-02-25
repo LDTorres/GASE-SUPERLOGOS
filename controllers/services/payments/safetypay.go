@@ -1,6 +1,7 @@
 package payments
 
 import (
+	"GASE/models"
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
@@ -47,21 +48,33 @@ type SafetyPayResponse struct {
 
 // SafetyPayExpressTokenRequest describe a SafetyPay Express Token Request
 type SafetyPayExpressTokenRequest struct {
-	XMLName                   xml.Name `xml:"urn:ExpressTokenRequest"`
-	APIKey                    string   `xml:"urn:ApiKey,omitempty"`
-	RequestDateTime           string   `xml:"urn:RequestDateTime,omitempty"`
-	CurrencyID                string   `xml:"urn:CurrencyID,omitempty"`
-	Amount                    string   `xml:"urn:Amount,omitempty"`
-	MerchantSalesID           string   `xml:"urn:MerchantSalesID,omitempty"`
-	Language                  string   `xml:"urn1:Language,omitempty"`
-	TrackingCode              string   `xml:"urn:TrackingCode"`
-	ExpirationTime            string   `xml:"urn:ExpirationTime,omitempty"`
-	TransactionExpirationTime string   `xml:"urn:TransactionExpirationTime,omitempty"`
-	FilterBy                  string   `xml:"urn:FilterBy,omitempty"`
-	TransactionOkURL          string   `xml:"urn:TransactionOkURL,omitempty"`
-	TransactionErrorURL       string   `xml:"urn:TransactionErrorURL,omitempty"`
-	ProductID                 string   `xml:"urn:ProductID,omitempty"`
-	Signature                 string   `xml:"urn:Signature,omitempty"`
+	XMLName                   xml.Name               `xml:"urn:ExpressTokenRequest"`
+	APIKey                    string                 `xml:"urn:ApiKey,omitempty"`
+	RequestDateTime           string                 `xml:"urn:RequestDateTime,omitempty"`
+	CurrencyID                string                 `xml:"urn:CurrencyID,omitempty"`
+	Amount                    string                 `xml:"urn:Amount,omitempty"`
+	MerchantSalesID           string                 `xml:"urn:MerchantSalesID,omitempty"`
+	Language                  string                 `xml:"urn1:Language,omitempty"`
+	TrackingCode              string                 `xml:"urn:TrackingCode"`
+	ExpirationTime            string                 `xml:"urn:ExpirationTime,omitempty"`
+	TransactionExpirationTime string                 `xml:"urn:TransactionExpirationTime,omitempty"`
+	FilterBy                  string                 `xml:"urn:FilterBy,omitempty"`
+	TransactionOkURL          string                 `xml:"urn:TransactionOkURL,omitempty"`
+	TransactionErrorURL       string                 `xml:"urn:TransactionErrorURL,omitempty"`
+	ProductID                 string                 `xml:"urn:ProductID,omitempty"`
+	Signature                 string                 `xml:"urn:Signature,omitempty"`
+	ShopperInformation        *shopperInformationXML `xml:"urn:ShopperInformation,omitempty"`
+}
+
+type shopperInformationXML struct {
+	XMLName xml.Name `xml:"urn:ShopperInformation"`
+	Attrs   *[]attr  `xml:"urn:ShopperFieldType"`
+}
+
+type attr struct {
+	XMLName xml.Name `xml:"urn:ShopperFieldType"`
+	Key     string   `xml:"Key,attr"`
+	Value   string   `xml:"Value,attr"`
 }
 
 // SafetyPayExpressTokenResponse ...
@@ -175,7 +188,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 
 	requestBodyData := bytes.NewReader(output)
 
-	// beego.Debug(string(output))
+	beego.Debug(string(output))
 
 	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
 
@@ -224,7 +237,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 }
 
 // SafetyPayCreateExpressToken ...
-func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int, transactionOkURL string, transactionErrorURL string, filter string) (expressToken *SafetyPayResponse, err error) {
+func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int, transactionOkURL string, transactionErrorURL string, filter string, client *models.Clients) (expressToken *SafetyPayResponse, err error) {
 
 	//condicional filter online o efectivo
 	var (
@@ -252,6 +265,18 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 	// beego.Debug("Signature: ", signature)
 	// beego.Debug("APIKey: ", APIKey)
 
+	shopperInformation := &shopperInformationXML{
+		Attrs: &[]attr{
+			{
+				Key:   "first_name",
+				Value: client.Name,
+			}, {
+				Key:   "email",
+				Value: client.Email,
+			},
+		},
+	}
+
 	tokenStruct := &SafetyPayExpressTokenRequest{
 		APIKey:                    APIKey,
 		RequestDateTime:           requestDateTime,
@@ -267,6 +292,7 @@ func SafetyPayCreateExpressToken(currencyID string, amount float32, orderID int,
 		TransactionExpirationTime: "120",
 		ProductID:                 productID,
 		Signature:                 signature,
+		ShopperInformation:        shopperInformation,
 	}
 
 	// beego.Debug("tokenStruct: ", tokenStruct)
