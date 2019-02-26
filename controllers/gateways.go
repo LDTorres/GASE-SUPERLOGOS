@@ -32,6 +32,7 @@ func (c *GatewaysController) URLMapping() {
 
 	/* SafetyPay */
 	c.Mapping("GetSafetypayNotifications", c.GetSafetypayNotifications)
+	c.Mapping("GetSafetypayAdminNotifications", c.GetSafetypayAdminNotifications)
 	c.Mapping("GetSafetypayNotificationsConfirm", c.GetSafetypayNotificationsConfirm)
 	c.Mapping("GetSafetypayTestRequestToken", c.GetSafetypayTestRequestToken)
 }
@@ -568,6 +569,75 @@ func (c *GatewaysController) RestoreFromTrash() {
 // @Description Get Safetypay Notifications
 // @router /safetypay/notifications [post]
 func (c *GatewaysController) GetSafetypayNotifications() {
+
+	response := &payments.SafetyPayResponse{}
+
+	response, err := payments.SafetyPayGetNewOperationActivity()
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	if response.OperationActivity == nil {
+		err = errors.New("No se encontraron pagos pendientes")
+		c.ServeErrorJSON(err)
+		return
+	}
+
+	// Get pending operations
+	pendingOperations := []*payments.SafetyPayConfirmOperationActivity{}
+
+	for _, pendingOperation := range response.OperationActivity.Operations {
+		m := &payments.SafetyPayConfirmOperationActivity{
+			CreationDateTime: pendingOperation.CreationDateTime,
+			OperationID:      pendingOperation.OperationID,
+			MerchantSalesID:  pendingOperation.MerchantSalesID,
+			MerchantOrderID:  pendingOperation.MerchantSalesID,
+			OperationStatus:  "102",
+		}
+
+		pendingOperations = append(pendingOperations, m)
+	}
+
+	/* Confirm pendings operations */
+	_, err = payments.SafetypayConfirmNewOperationActivity(pendingOperations)
+
+	if err != nil {
+		c.BadRequest(err)
+		return
+	}
+
+	for _, operation := range pendingOperations {
+
+		orderID, err := strconv.Atoi(operation.MerchantOrderID)
+		if err != nil {
+			continue
+		}
+
+		order, err := models.GetOrdersByID(orderID)
+		if err != nil {
+			continue
+		}
+
+		order.Status = "COMPLETED"
+		models.UpdateOrdersByID(order)
+
+	}
+
+	c.Data["json"] = MessageResponse{
+		Message:       "Confirm payments",
+		PrettyMessage: "Pagos confirmados",
+	}
+
+	c.ServeJSON()
+}
+
+// GetSafetypayAdminNotifications ...
+// @Title Get Safetypay Notifications
+// @Description Get Safetypay Notifications
+// @router /safetypay/admin/notifications [post]
+func (c *GatewaysController) GetSafetypayAdminNotifications() {
 
 	response := &payments.SafetyPayResponse{}
 

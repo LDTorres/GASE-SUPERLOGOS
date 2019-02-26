@@ -188,7 +188,8 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 
 	requestBodyData := bytes.NewReader(output)
 
-	beego.Debug(string(output))
+	// Peticion
+	// fmt.Println(string(output))
 
 	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
 
@@ -225,7 +226,8 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 		return
 	}
 
-	fmt.Println(&r)
+	// Respuesta
+	// fmt.Println(&r)
 
 	if res.StatusCode != 200 {
 		beego.Debug("Response: ", res.Body)
@@ -328,6 +330,9 @@ func (s *SafetyPayRequest) getNewOperationActivityRequest() (r *SafetyPayRespons
 
 	requestBodyData := bytes.NewReader(output)
 
+	// Peticion
+	// fmt.Println(string(output))
+
 	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
 
 	if err != nil {
@@ -364,7 +369,8 @@ func (s *SafetyPayRequest) getNewOperationActivityRequest() (r *SafetyPayRespons
 		return
 	}
 
-	fmt.Println(&r)
+	// Respuesta
+	// fmt.Println(&r)
 
 	if res.StatusCode != 200 {
 		beego.Debug("Response: ", res.Body)
@@ -408,7 +414,8 @@ func (s *SafetyPayRequest) confirmNewOperationActivityRequest() (r *SafetyPayRes
 		return
 	}
 
-	fmt.Println(string(output))
+	// Peticion
+	// fmt.Println(string(output))
 
 	requestBodyData := bytes.NewReader(output)
 
@@ -448,7 +455,8 @@ func (s *SafetyPayRequest) confirmNewOperationActivityRequest() (r *SafetyPayRes
 		return
 	}
 
-	fmt.Println(&r)
+	// Respuesta
+	// fmt.Println(&r)
 
 	if res.StatusCode != 200 {
 		beego.Debug("Response: ", res.Body)
