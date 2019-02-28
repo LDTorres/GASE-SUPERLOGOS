@@ -22,8 +22,8 @@ import (
 )
 
 var (
-	APIKey       = beego.AppConfig.String("safetypay::apiKey")
-	SignatureKey = beego.AppConfig.String("safetypay::signatureKey")
+	APIKey       = beego.AppConfig.String(beego.BConfig.RunMode + "::safetyPayApiKey")
+	SignatureKey = beego.AppConfig.String(beego.BConfig.RunMode + "::safetyPaySignatureKey")
 )
 
 // SafetyPayRequest describe a SafetyPay xml Env
@@ -191,7 +191,7 @@ func (s *SafetyPayRequest) createExpressTokenRequest() (URL *SafetyPayResponse, 
 	// Peticion
 	// fmt.Println(string(output))
 
-	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
+	req, err := http.NewRequest("POST", beego.AppConfig.String(beego.BConfig.RunMode+"::safetyPayURL"), requestBodyData)
 
 	if err != nil {
 		return
@@ -333,7 +333,7 @@ func (s *SafetyPayRequest) getNewOperationActivityRequest() (r *SafetyPayRespons
 	// Peticion
 	// fmt.Println(string(output))
 
-	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
+	req, err := http.NewRequest("POST", beego.AppConfig.String(beego.BConfig.RunMode+"::safetyPayURL"), requestBodyData)
 
 	if err != nil {
 		return
@@ -419,7 +419,7 @@ func (s *SafetyPayRequest) confirmNewOperationActivityRequest() (r *SafetyPayRes
 
 	requestBodyData := bytes.NewReader(output)
 
-	req, err := http.NewRequest("POST", "https://sandbox-mws2.safetypay.com/express/ws/v.3.0/", requestBodyData)
+	req, err := http.NewRequest("POST", beego.AppConfig.String(beego.BConfig.RunMode+"::safetyPayURL"), requestBodyData)
 
 	if err != nil {
 		return

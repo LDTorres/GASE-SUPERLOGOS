@@ -39,7 +39,7 @@ func getPaypalBearerToken() (bearerToken string, err error) {
 	data.Set("grant_type", "client_credentials")
 	requestBodyData := data.Encode()
 
-	req, err := http.NewRequest("POST", "https://api.sandbox.paypal.com/v1/oauth2/token", strings.NewReader(requestBodyData))
+	req, err := http.NewRequest("POST", beego.AppConfig.String(beego.BConfig.RunMode+"::paypalURL"), strings.NewReader(requestBodyData))
 
 	if err != nil {
 		return
@@ -93,7 +93,7 @@ func (wcp *WebCheckoutPayment) ButtonCheckoutPaypal() (err error) {
 
 	requestBodyBytes, _ := json.Marshal(requestBodyData)
 
-	req, err := http.NewRequest("POST", "https://api.sandbox.paypal.com/v1/payments/payment/"+wcp.ID+"/execute", bytes.NewReader(requestBodyBytes))
+	req, err := http.NewRequest("POST", beego.AppConfig.String(beego.BConfig.RunMode+"::paypalPAYMENT")+wcp.ID+"/execute", bytes.NewReader(requestBodyBytes))
 
 	if err != nil {
 		return
