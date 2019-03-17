@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"GASE/controllers/services/statics"
-	"GASE/models"
+	"GASE-SUPERLOGOS/controllers/services/statics"
+	"GASE-SUPERLOGOS/models"
 	"encoding/json"
 	"errors"
 	"io/ioutil"

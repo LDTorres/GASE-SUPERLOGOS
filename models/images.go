@@ -1,7 +1,7 @@
 package models
 
 import (
-	"GASE/controllers/services/statics"
+	"GASE-SUPERLOGOS/controllers/services/statics"
 	"errors"
 	"fmt"
 	"io/ioutil"

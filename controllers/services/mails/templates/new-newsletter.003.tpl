@@ -6,12 +6,6 @@
 "
 >
   <div>
-    <img
-      style="display: block; width: 40%; margin: auto;"
-      src="http://liderlogos.com/_nuxt/img/logo.f23ffaf.png"
-    />
-  </div>
-  <div>
     <h1
       style="
     margin-bottom: 0;

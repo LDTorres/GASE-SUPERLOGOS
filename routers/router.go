@@ -5,8 +5,8 @@ package routers
 // @Description GASE autogenerate documents for your API
 
 import (
-	"GASE/controllers"
-	"GASE/middlewares"
+	"GASE-SUPERLOGOS/controllers"
+	"GASE-SUPERLOGOS/middlewares"
 
 	"github.com/astaxie/beego"
 )

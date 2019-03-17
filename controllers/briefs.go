@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"GASE/controllers/services/files"
-	"GASE/controllers/services/mails"
-	"GASE/models"
+	"GASE-SUPERLOGOS/controllers/services/files"
+	"GASE-SUPERLOGOS/controllers/services/mails"
+	"GASE-SUPERLOGOS/models"
 	"encoding/json"
 	"errors"
 	"net/http"

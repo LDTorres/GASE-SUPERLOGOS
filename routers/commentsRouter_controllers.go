@@ -7,7 +7,7 @@ import (
 
 func init() {
 
-	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -15,7 +15,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -23,7 +23,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -31,7 +31,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -39,7 +39,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -47,7 +47,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -55,7 +55,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ActivitiesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ActivitiesController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -63,7 +63,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -71,7 +71,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -79,7 +79,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -87,7 +87,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -95,7 +95,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -103,7 +103,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:AttachmentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:AttachmentsController"],
 		beego.ControllerComments{
 			Method: "GetAttachmentsByUUID",
 			Router: `/attachment/:uuid`,
@@ -111,7 +111,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -119,7 +119,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -127,7 +127,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/:id`,
@@ -135,7 +135,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -143,7 +143,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "GetOneByCookie",
 			Router: `/:service/:cookie`,
@@ -151,7 +151,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE/controllers:BriefsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:BriefsController"],
 		beego.ControllerComments{
 			Method: "GetImageByUUID",
 			Router: `/image/:uuid`,
@@ -159,7 +159,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -167,7 +167,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -175,7 +175,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -183,7 +183,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -191,7 +191,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -199,7 +199,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"],
 		beego.ControllerComments{
 			Method: "GetOneByCookie",
 			Router: `/cookie`,
@@ -207,7 +207,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CartsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CartsController"],
 		beego.ControllerComments{
 			Method: "AddOrDeleteServices",
 			Router: `/services`,
@@ -215,7 +215,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -223,7 +223,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -231,7 +231,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -239,7 +239,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -247,7 +247,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -255,7 +255,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -263,7 +263,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "ChangePasswordRequest",
 			Router: `/change-password/:email`,
@@ -271,7 +271,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "ChangePassword",
 			Router: `/change-password/:token`,
@@ -279,7 +279,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "GetOneByEmail",
 			Router: `/email/:email`,
@@ -287,7 +287,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "Login",
 			Router: `/login`,
@@ -295,7 +295,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ClientsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ClientsController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -303,7 +303,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -311,7 +311,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -319,7 +319,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -327,7 +327,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -335,7 +335,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -343,7 +343,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CommentsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CommentsController"],
 		beego.ControllerComments{
 			Method: "GetAttachmentsByUUID",
 			Router: `/attachment/:uuid`,
@@ -351,7 +351,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -359,7 +359,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -367,7 +367,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -375,7 +375,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -383,7 +383,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -391,7 +391,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -399,7 +399,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "GetOneByIso",
 			Router: `/iso/:iso`,
@@ -407,7 +407,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CountriesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CountriesController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -415,7 +415,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -423,7 +423,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -431,7 +431,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -439,7 +439,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -447,7 +447,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -455,7 +455,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -463,7 +463,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -471,7 +471,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE/controllers:CouponsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CouponsController"],
 		beego.ControllerComments{
 			Method: "GetOneByCode",
 			Router: `/value/:code`,
@@ -479,7 +479,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -487,7 +487,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -495,7 +495,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -503,7 +503,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -511,7 +511,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -519,7 +519,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -527,7 +527,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE/controllers:CurrenciesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:CurrenciesController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -535,7 +535,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:DatabaseController"] = append(beego.GlobalControllerRouter["GASE/controllers:DatabaseController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:DatabaseController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:DatabaseController"],
 		beego.ControllerComments{
 			Method: "GenerateDatabase",
 			Router: `/generate`,
@@ -543,7 +543,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -551,7 +551,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -559,7 +559,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -567,7 +567,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -575,7 +575,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -583,7 +583,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "AddNewsCurrencies",
 			Router: `/:id/currencies`,
@@ -591,7 +591,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "DeleteCurrencies",
 			Router: `/:id/currencies`,
@@ -599,7 +599,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -607,7 +607,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "GetSafetypayAdminNotifications",
 			Router: `/safetypay/admin/notifications`,
@@ -615,7 +615,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "GetSafetypayNotifications",
 			Router: `/safetypay/notifications`,
@@ -623,7 +623,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "GetSafetypayNotificationsConfirm",
 			Router: `/safetypay/notifications/confirm`,
@@ -631,7 +631,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "GetSafetypayTestRequestToken",
 			Router: `/safetypay/test-express-token`,
@@ -639,7 +639,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE/controllers:GatewaysController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:GatewaysController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -647,7 +647,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -655,7 +655,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -663,7 +663,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -671,7 +671,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -679,7 +679,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -687,7 +687,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ImagesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ImagesController"],
 		beego.ControllerComments{
 			Method: "ServeImageBySlug",
 			Router: `/slug/:slug`,
@@ -695,7 +695,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -703,7 +703,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -711,7 +711,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -719,7 +719,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -727,7 +727,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -735,7 +735,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -743,7 +743,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"],
 		beego.ControllerComments{
 			Method: "Newsletter",
 			Router: `/newsletter`,
@@ -751,7 +751,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LeadsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LeadsController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -759,7 +759,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LocationsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -767,7 +767,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LocationsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -775,7 +775,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LocationsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -783,7 +783,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LocationsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -791,7 +791,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LocationsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -799,7 +799,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LocationsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -807,7 +807,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE/controllers:LocationsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:LocationsController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -815,7 +815,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -823,7 +823,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -831,7 +831,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -839,7 +839,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -847,7 +847,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -855,7 +855,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -863,7 +863,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "GetSelf",
 			Router: `/self`,
@@ -871,7 +871,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE/controllers:OrdersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:OrdersController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -879,7 +879,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -887,7 +887,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -895,7 +895,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -903,7 +903,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -911,7 +911,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -919,7 +919,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -927,7 +927,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "GetByCustomSearch",
 			Router: `/custom-search`,
@@ -935,7 +935,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "GetPortfoliosByCountry",
 			Router: `/iso`,
@@ -943,7 +943,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "GetOneBySlug",
 			Router: `/slug/:slug`,
@@ -951,7 +951,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE/controllers:PortfoliosController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PortfoliosController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -959,7 +959,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE/controllers:PricesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -967,7 +967,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE/controllers:PricesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -975,7 +975,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE/controllers:PricesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -983,7 +983,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE/controllers:PricesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -991,7 +991,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE/controllers:PricesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:PricesController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -999,7 +999,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -1007,7 +1007,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -1015,7 +1015,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -1023,7 +1023,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -1031,7 +1031,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -1039,7 +1039,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"],
 		beego.ControllerComments{
 			Method: "GenerateUploadToken",
 			Router: `/:id/token`,
@@ -1047,7 +1047,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE/controllers:ProjectsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ProjectsController"],
 		beego.ControllerComments{
 			Method: "VerifyUploadToken",
 			Router: `/token/:token`,
@@ -1055,7 +1055,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ReleasesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -1063,7 +1063,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ReleasesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -1071,7 +1071,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ReleasesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -1079,7 +1079,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ReleasesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -1087,7 +1087,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ReleasesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ReleasesController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -1095,7 +1095,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -1103,7 +1103,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -1111,7 +1111,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -1119,7 +1119,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -1127,7 +1127,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -1135,7 +1135,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -1143,7 +1143,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SectorsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SectorsController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -1151,7 +1151,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -1159,7 +1159,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -1167,7 +1167,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -1175,7 +1175,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -1183,7 +1183,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -1191,7 +1191,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"],
 		beego.ControllerComments{
 			Method: "GetPricesServiceByCountry",
 			Router: `/:id/prices`,
@@ -1199,7 +1199,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"],
 		beego.ControllerComments{
 			Method: "RestoreFromTrash",
 			Router: `/:id/restore`,
@@ -1207,7 +1207,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE/controllers:ServicesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:ServicesController"],
 		beego.ControllerComments{
 			Method: "GetAllFromTrash",
 			Router: `/trashed`,
@@ -1215,7 +1215,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -1223,7 +1223,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -1231,7 +1231,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -1239,7 +1239,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -1247,7 +1247,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -1255,7 +1255,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsController"],
 		beego.ControllerComments{
 			Method: "NewPublicSketch",
 			Router: `/token/:token`,
@@ -1263,7 +1263,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -1271,7 +1271,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/`,
@@ -1279,7 +1279,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -1287,7 +1287,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -1295,7 +1295,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -1303,7 +1303,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE/controllers:SketchsFilesController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:SketchsFilesController"],
 		beego.ControllerComments{
 			Method: "GetAttachmentsByUUID",
 			Router: `/attachment/:uuid`,
@@ -1311,7 +1311,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"],
 		beego.ControllerComments{
 			Method: "Post",
 			Router: `/`,
@@ -1319,7 +1319,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"],
 		beego.ControllerComments{
 			Method: "GetOne",
 			Router: `/:id`,
@@ -1327,7 +1327,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"],
 		beego.ControllerComments{
 			Method: "GetAll",
 			Router: `/:id`,
@@ -1335,7 +1335,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"],
 		beego.ControllerComments{
 			Method: "Put",
 			Router: `/:id`,
@@ -1343,7 +1343,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"],
 		beego.ControllerComments{
 			Method: "Delete",
 			Router: `/:id`,
@@ -1351,7 +1351,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"],
 		beego.ControllerComments{
 			Method: "ChangePassword",
 			Router: `/change-password`,
@@ -1359,7 +1359,7 @@ func init() {
 			MethodParams: param.Make(),
 			Params: nil})
 
-	beego.GlobalControllerRouter["GASE/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE/controllers:UsersController"],
+	beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"] = append(beego.GlobalControllerRouter["GASE-SUPERLOGOS/controllers:UsersController"],
 		beego.ControllerComments{
 			Method: "Login",
 			Router: `/login`,

@@ -1,7 +1,7 @@
 package mails
 
 import (
-	"GASE/models"
+	"GASE-SUPERLOGOS/models"
 	"bytes"
 	"errors"
 	"fmt"

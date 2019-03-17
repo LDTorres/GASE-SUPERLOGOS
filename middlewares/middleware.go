@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"GASE/controllers"
+	"GASE-SUPERLOGOS/controllers"
 	"errors"
 	"strings"
 

@@ -5,12 +5,6 @@
   margin: auto;
 "
 >
-  <div>
-    <img
-      style="display: block; width: 40%; margin: auto;"
-      src="http://liderlogos.com/_nuxt/img/logo.f23ffaf.png"
-    />
-  </div>
 
   <h1
     style="

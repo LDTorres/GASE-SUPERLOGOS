@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"GASE/controllers/services/payments"
-	"GASE/models"
+	"GASE-SUPERLOGOS/controllers/services/payments"
+	"GASE-SUPERLOGOS/models"
 	"encoding/json"
 	"errors"
 	"strconv"

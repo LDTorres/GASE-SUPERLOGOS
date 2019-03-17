@@ -1,7 +1,7 @@
 package payments
 
 import (
-	"GASE/models"
+	"GASE-SUPERLOGOS/models"
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"

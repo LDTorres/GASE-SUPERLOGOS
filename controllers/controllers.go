@@ -8,8 +8,8 @@ import (
 
 	"github.com/astaxie/beego/orm"
 
-	"GASE/controllers/services/statics"
-	"GASE/models"
+	"GASE-SUPERLOGOS/controllers/services/statics"
+	"GASE-SUPERLOGOS/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"

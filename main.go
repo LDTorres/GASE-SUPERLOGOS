@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "GASE/routers"
+	_ "GASE-SUPERLOGOS/routers"
 
-	_ "GASE/tasks"
+	_ "GASE-SUPERLOGOS/tasks"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"GASE/controllers/services/token"
-	"GASE/models"
+	"GASE-SUPERLOGOS/controllers/services/token"
+	"GASE-SUPERLOGOS/models"
 	"encoding/json"
 	"errors"
 	"strconv"
